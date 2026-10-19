@@ -1,13 +1,20 @@
 import styles from "../css/components/Sidebar.module.css";
 import logo from "../assets/icon.svg";
-import { Plus } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react";
+import { useState } from "react";
+import clsx from "clsx";
 
 export default function SideBar() {
+  const [open, setOpen] = useState(true);
+
   return (
-    <div className={styles.container}>
+    <div className={clsx(styles.container, !open ? styles.close : "")}>
       <div className={styles.content}>
         <div className={styles.logo}>
           <img src={logo} alt="" />
+          <div className={styles.logoIcon} onClick={() => setOpen((prev) => !prev)}>
+            {open ? <PanelLeftClose /> : <PanelLeftOpen />}
+          </div>
         </div>
         <div className={styles.create}>
           <div className={styles.createTop}></div>

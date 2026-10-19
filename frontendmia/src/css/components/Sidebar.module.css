@@ -10,15 +10,32 @@
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.close .content {
+  width: 50px;
 }
 
 .logo {
   padding-inline: 1rem;
   border-right: 2px solid #ddd;
+  display: flex;
+  justify-content: space-between;
 }
 
 .logo img {
   height: 20px;
+}
+
+.logoIcon {
+  display: flex;
+  align-items: center;
+  color: var(--electric);
+  cursor: pointer;
+}
+.logoIcon > * {
+  stroke-width: 2px;
 }
 
 .create {
@@ -98,29 +115,11 @@
   position: relative;
   cursor: pointer;
 }
-
-/* 
-
-.createButton::after,
-.createButton::before {
-  content: '';
-  cursor: pointer;
-  position: absolute;
-  height: 1rem;
-  width: 1rem;
-  right: 0;
-  background-color: var(--electric);
-  mask: url(../../assets/component/corner.svg) no-repeat center / contain;
-  -webkit-mask: url(../../assets/component/corner.svg) no-repeat center / contain;
+.createButton > div {
+  text-wrap: nowrap;
+  overflow: hidden;
+  width: 200px;
 }
-.createButton::after {
-  top: calc(-1rem + 1px);
-  transform: scaleX(-1);
-}
-.createButton::before {
-  bottom: calc(-1rem + 1px);
-  rotate: 180deg;
-} */
 
 .reports {
   padding-left: 1rem;

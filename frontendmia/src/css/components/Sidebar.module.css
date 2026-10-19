@@ -1,0 +1,167 @@
+.container {
+  height: 100vh;
+}
+
+.content {
+  background-color: #f0f0f0;
+  height: 100%;
+  width: 250px;
+  padding-top: 1rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  padding-inline: 1rem;
+  border-right: 2px solid #ddd;
+}
+
+.logo img {
+  height: 20px;
+}
+
+.create {
+  padding-left: 1rem;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.create:has(.createButton:hover),
+.create:has(.createTop:hover),
+.create:has(.createBottom:hover) {
+  padding-left: 2rem;
+}
+
+.create:has(.createButton:active),
+.create:has(.createTop:active),
+.create:has(.createBottom:active) {
+  padding-left: 4rem;
+}
+
+.createTop,
+.createBottom {
+  height: 1rem;
+  width: 100%;
+  position: relative;
+  pointer-events: none;
+}
+.createTop {
+  margin-top: -1rem;
+}
+.createBottom {
+  margin-bottom: -1rem;
+}
+
+.createTop::before,
+.createBottom::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 1rem;
+  position: absolute;
+  background-color: var(--electric);
+  right: 0;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.createTop::after,
+.createBottom::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: #f0f0f0;
+  right: 0;
+  pointer-events: all;
+}
+
+.createTop::after {
+  border-bottom-right-radius: 3rem;
+}
+
+.createBottom::after {
+  border-top-right-radius: 3rem;
+}
+
+.createButton {
+  background-color: var(--electric);
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  color: white;
+  border-radius: 5rem 0 0 5rem;
+  padding: .5rem 1rem;
+  font-size: 14px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* 
+
+.createButton::after,
+.createButton::before {
+  content: '';
+  cursor: pointer;
+  position: absolute;
+  height: 1rem;
+  width: 1rem;
+  right: 0;
+  background-color: var(--electric);
+  mask: url(../../assets/component/corner.svg) no-repeat center / contain;
+  -webkit-mask: url(../../assets/component/corner.svg) no-repeat center / contain;
+}
+.createButton::after {
+  top: calc(-1rem + 1px);
+  transform: scaleX(-1);
+}
+.createButton::before {
+  bottom: calc(-1rem + 1px);
+  rotate: 180deg;
+} */
+
+.reports {
+  padding-left: 1rem;
+  gap: .3rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 2px solid #ddd;
+}
+
+.reportsLabel {
+  padding-right: 1rem;
+  font-weight: bold;
+  color: #666;
+}
+
+.reportsWrapper {
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+}
+
+.reportsItem {
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+
+.reportsItem>* {
+  padding: .2rem .5rem;
+  font-size: .8em;
+  border-radius: 3rem;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+}
+
+.reportsItem>*:hover {
+  background-color: #d9d9d9;
+  cursor: pointer;
+}

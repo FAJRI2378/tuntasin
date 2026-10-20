@@ -4,6 +4,7 @@ import logo from "../assets/icon.svg";
 import { PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
+import { Link } from "react-router-dom"; // 1. Import Link
 
 export default function SideBar() {
   const [open, setOpen] = useState(true);
@@ -37,44 +38,6 @@ export default function SideBar() {
               <div>aaa</div>
               <div>aaa</div>
               <div>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
             </div>
           </div>
         </div>

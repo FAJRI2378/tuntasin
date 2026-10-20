@@ -1,4 +1,5 @@
 import styles from "../css/components/Sidebar.module.css";
+import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
 import { PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react";
 import { useState } from "react";
@@ -10,16 +11,22 @@ export default function SideBar() {
   return (
     <div className={clsx(styles.container, !open ? styles.close : "")}>
       <div className={styles.content}>
-        <div className={styles.logo}>
-          <img src={logo} alt="" />
-          <div className={styles.logoIcon} onClick={() => setOpen((prev) => !prev)}>
+        <div className={styles.topWrapper}>
+          <div className={styles.logoWrapper}>
+            <img src={icon} alt="" className={styles.icon} />
+            <img src={logo} alt="" className={styles.logo} />
+          </div>
+          <div
+            className={styles.logoIcon}
+            onClick={() => setOpen((prev) => !prev)}
+          >
             {open ? <PanelLeftClose /> : <PanelLeftOpen />}
           </div>
         </div>
         <div className={styles.create}>
           <div className={styles.createTop}></div>
           <div className={styles.createButton}>
-            <Plus size={16} /> <div>Create Submission</div>
+            <Plus /> <div>Create Submission</div>
           </div>
           <div className={styles.createBottom}></div>
         </div>

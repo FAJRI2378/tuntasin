@@ -17,22 +17,54 @@
   width: 50px;
 }
 
-.logo {
+.topWrapper {
+  height: 24px;
   padding-inline: 1rem;
   border-right: 2px solid #ddd;
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
-.logo img {
+.topWrapper img {
   height: 20px;
 }
+.logoWrapper {
+  display: flex;
+  align-items: center;
+}
+.logoWrapper > * {
+  transition: all 0.3s ease;
+}
+.icon {
+  width: 0%;
+}
+.logo {
+  width: 90%;
+}
+.close .icon {
+  width: 120%;
+}
+.close .logo {
+  width: 0%;
+}
+
 
 .logoIcon {
   display: flex;
   align-items: center;
   color: var(--electric);
   cursor: pointer;
+}
+.close .logoIcon {
+  position: absolute;
+  opacity: 0;
+  background-color: #f0f0f0;
+  transition: all 0.3s ease;
+}
+.close .logoIcon:hover {
+  opacity: 1;
+pointer-events: auto;
 }
 .logoIcon > * {
   stroke-width: 2px;
@@ -43,16 +75,19 @@
   transition: all 0.3s ease;
   user-select: none;
 }
+.close .create {
+  padding-left: .5rem;
+}
 
-.create:has(.createButton:hover),
-.create:has(.createTop:hover),
-.create:has(.createBottom:hover) {
+.container:not(.close) .create:has(.createButton:hover),
+.container:not(.close) .create:has(.createTop:hover),
+.container:not(.close) .create:has(.createBottom:hover) {
   padding-left: 2rem;
 }
 
-.create:has(.createButton:active),
-.create:has(.createTop:active),
-.create:has(.createBottom:active) {
+.container:not(.close) .create:has(.createButton:active),
+.container:not(.close) .create:has(.createTop:active),
+.container:not(.close) .create:has(.createBottom:active) {
   padding-left: 4rem;
 }
 
@@ -114,6 +149,21 @@
   font-size: 14px;
   position: relative;
   cursor: pointer;
+  flex-shrink: 0;
+}
+.close .createButton {
+  padding-inline: .8rem;
+}
+.createButton > svg {
+  height: 16px;
+  width: 16px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.close .createButton > svg 
+{
+  height: 24px;
+  width: 24px;
 }
 .createButton > div {
   text-wrap: nowrap;

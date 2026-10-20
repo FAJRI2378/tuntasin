@@ -3,6 +3,7 @@ import logo from "../assets/icon.svg";
 import { PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
+import { Link } from "react-router-dom"; // 1. Import Link
 
 export default function SideBar() {
   const [open, setOpen] = useState(true);
@@ -12,15 +13,21 @@ export default function SideBar() {
       <div className={styles.content}>
         <div className={styles.logo}>
           <img src={logo} alt="" />
-          <div className={styles.logoIcon} onClick={() => setOpen((prev) => !prev)}>
+          <div
+            className={styles.logoIcon}
+            onClick={() => setOpen((prev) => !prev)}
+          >
             {open ? <PanelLeftClose /> : <PanelLeftOpen />}
           </div>
         </div>
         <div className={styles.create}>
           <div className={styles.createTop}></div>
-          <div className={styles.createButton}>
+          
+          {/* 2. Ubah div menjadi Link ke /create */}
+          <Link to="/create" className={styles.createButton}>
             <Plus size={16} /> <div>Create Submission</div>
-          </div>
+          </Link>
+
           <div className={styles.createBottom}></div>
         </div>
         <div className={styles.reports}>
@@ -30,44 +37,6 @@ export default function SideBar() {
               <div>aaa</div>
               <div>aaa</div>
               <div>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaa</div>
             </div>
           </div>
         </div>

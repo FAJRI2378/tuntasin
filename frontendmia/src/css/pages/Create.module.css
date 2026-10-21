@@ -19,6 +19,23 @@
 .form {
   flex: 1;
   display: flex;
+  gap: 1rem;
+  min-height: 0;
+}
+
+.formLeft,
+.formRight {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formLeft {
+  overflow-y: auto;
+}
+
+.formLong {
+  display: flex;
   flex-direction: column;
   gap: 1rem;
 }
@@ -36,13 +53,6 @@
 .form .subject input,
 .form textarea {
   width: 100%;
-  border: 3px solid var(--lime);
-}
-
-.form textarea {
-  height: 100%;
-  resize: none;
-  padding: .5rem;
 }
 
 .subject input {
@@ -53,8 +63,64 @@
   font-size: 1.2em;
   border-bottom: 3px solid var(--lime) !important;
 }
+
 .subject input::placeholder {
   color: var(--lime-50);
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.addCategory {
+  background-color: var(--lime-25);
+  border: 2px solid var(--lime);
+  border-radius: 4px;
+  padding: .3rem .5rem;
+  color: white;
+}
+
+.addCategory::placeholder {
+  color: var(--lime);
+}
+
+.categoryWrapper {
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.categoryWrapper::-webkit-scrollbar {
+  width: 5px;
+}
+
+.categoryWrapper::-webkit-scrollbar-thumb {
+  background-color: var(--lime-50);
+}
+
+.categoryLong {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+}
+
+.category {
+  width: fit-content;
+  display: flex;
+  font-size: .8em;
+  align-items: center;
+  gap: .3rem;
+  background-color: white;
+  color: var(--electric);
+  padding: .1rem .5rem;
+  border-radius: 4px;
+}
+
+.removeCategory {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .image {
@@ -79,8 +145,10 @@
   justify-content: center;
   cursor: pointer;
 }
+
 .imageItem {
   aspect-ratio: 2 / 1;
+  position: relative;
 }
 
 .imageInput {
@@ -99,6 +167,7 @@
 .imageWrapper::-webkit-scrollbar {
   height: 12px;
 }
+
 .imageWrapper::-webkit-scrollbar-thumb {
   background-color: var(--lime-50);
   margin: 10px;
@@ -117,12 +186,63 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
+  pointer-events: none;
+}
+
+.removeBtn {
+  position: absolute;
+  height: 100%;
+  width: 2rem;
+  top: 0;
+  right: 0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: red;
+  border: none;
+  margin-right: -2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.imageItem:hover .removeBtn {
+  margin-right: 0;
+}
+
+.removeBtn:hover {
+  background-color: #ff6565;
 }
 
 .description {
   flex: 1;
-}
-.description textarea {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  background-color: #ddd;
+  padding: .3rem;
   border-radius: .3rem;
 }
 
+.descriptionLabel {
+  color: var(--electric);
+  font-weight: bold;
+  padding: .3rem;
+}
+
+.description textarea {
+  border-radius: .3rem;
+  border: none;
+  height: 100%;
+  resize: none;
+  padding: .5rem;
+}
+
+.submitBtn {
+  height: 2rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: var(--lime);
+  font-weight: bold;
+  color: white;
+}

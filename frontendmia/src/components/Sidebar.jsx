@@ -1,13 +1,15 @@
 import styles from "../css/components/Sidebar.module.css";
 import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
-import { PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Pen, Plus } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom"; // 1. Import Link
+import { useSubmission } from "../contexts/SubmissionContext";
 
 export default function SideBar() {
   const [open, setOpen] = useState(true);
+  const { submission } = useSubmission()
 
   return (
     <div className={clsx(styles.container, !open ? styles.close : "")}>
@@ -32,12 +34,15 @@ export default function SideBar() {
           <div className={styles.createBottom}></div>
         </div>
         <div className={styles.reports}>
-          <div className={styles.reportsLabel}>Submission</div>
+          <div className={styles.reportsLabel}>Recent Submissions</div>
           <div className={styles.reportsWrapper}>
             <div className={styles.reportsItem}>
-              <div>aaa</div>
-              <div>aaa</div>
-              <div>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+              <div className={styles.report}>
+                <div className={styles.reportName}>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+                <div className={styles.reportEdit}>
+                  <Pen size={12} />
+                </div>
+              </div>
             </div>
           </div>
         </div>

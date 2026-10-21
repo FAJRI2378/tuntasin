@@ -180,6 +180,9 @@ pointer-events: auto;
   min-height: 0;
   border-right: 2px solid #ddd;
 }
+.reportsLabel {
+  font-size: .8em;
+}
 
 .reportsLabel {
   padding-right: 1rem;
@@ -208,9 +211,26 @@ pointer-events: auto;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
 }
 
 .reportsItem>*:hover {
   background-color: #d9d9d9;
   cursor: pointer;
+}
+.reportsItem>*:hover .reportEdit {
+  display: flex;
+}
+
+.reportName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reportEdit {
+  align-items: center;
+  display: none;
 }

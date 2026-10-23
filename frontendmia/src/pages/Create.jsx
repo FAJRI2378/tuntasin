@@ -46,7 +46,7 @@ export default function Create() {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
-  // Submit Handler ke API Laravel
+ // Submit Handler ke API Laravel menggunakan Axios
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -62,30 +62,32 @@ export default function Create() {
       formData.append("label", label);
       formData.append("description", description);
       formData.append("location", location);
-      formData.append("categories", categories || "Umum");
+      formData.append("categories", categories.length > 0 ? categories.join(",") : "Umum");
 
       selectedFiles.forEach((file) => {
         formData.append("images[]", file);
       });
 
+      // Mengirim data menggunakan Axios instance
       const response = await api.post("submissions", formData);
 
-      const result = await response.json();
-
-      if (response.ok) {
+      // Axios otomatis mengembalikan status sukses di range 2xx
+      if (response.status === 200 || response.status === 201) {
+        alert("Submission berhasil dibuat!");
         // Reset Form
         setLabel("");
         setDescription("");
         setLocation("");
         setCategories([]);
         setSelectedFiles([]);
-      } else {
-        console.error("Error Validation:", result);
-        alert(result.message || "Gagal membuat submission.");
       }
     } catch (error) {
-      console.error("Network Error:", error);
-      alert("Gagal terhubung ke server Laravel!");
+      console.error("Detail Error:", error.response);
+      // Mengambil pesan error yang akurat dari validasi Laravel (jika ada)
+      const errorMessage = error.response?.data?.message || 
+                           (error.response?.data?.errors ? Object.values(error.response.data.errors)[0][0] : null) || 
+                           "Gagal terhubung ke server Laravel!";
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }

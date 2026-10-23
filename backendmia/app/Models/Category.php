@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['submission_id', 'name'];
+    protected $fillable = [
+        'submission_id', 
+        'name'
+    ];
 
     public function submission()
     {

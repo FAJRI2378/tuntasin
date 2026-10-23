@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('label');
-            $table->string('description');
+            $table->text('description');
             $table->string('location');
           $table->enum('status', ['pending', 'process', 'invalid', 'completed'])->default('pending');
             $table->text('feedback')->nullable();

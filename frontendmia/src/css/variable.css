@@ -1,7 +1,10 @@
 :root {
+  --l-electric: #1e4b8f;
   --electric: #163769;
   --electric-50: rgba(22, 55, 105, .5);
+  --b-electric: #0b1c35;
   --lime: #1EC76A;
   --lime-25: rgba(30, 199, 106, .25);
   --lime-50: rgba(30, 199, 106, .5);
+  --b-lime: #16934e;
 }

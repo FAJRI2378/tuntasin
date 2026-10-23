@@ -234,3 +234,17 @@ pointer-events: auto;
   align-items: center;
   display: none;
 }
+
+.account {
+  padding: 1rem;
+  border-top: 1px solid #999;
+}
+
+.accContent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.accRight {
+  cursor: pointer;
+}

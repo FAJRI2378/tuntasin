@@ -1,10 +1,9 @@
 import styles from "../css/components/Sidebar.module.css";
 import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
-import { PanelLeftClose, PanelLeftOpen, Pen, Plus } from "lucide-react";
+import { EllipsisVertical, PanelLeftClose, PanelLeftOpen, Pen, Plus } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
-import { Link } from "react-router-dom"; // 1. Import Link
 import { useSubmission } from "../contexts/SubmissionContext";
 
 export default function SideBar() {
@@ -43,6 +42,18 @@ export default function SideBar() {
                   <Pen size={12} />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.account}>
+          <div className={styles.accContent}>
+            <div className={styles.accLeft}>
+              <div className={styles.accName}>
+                Kim ilahi
+              </div>
+            </div>
+            <div className={styles.accRight}>
+              <EllipsisVertical size={14}/>
             </div>
           </div>
         </div>

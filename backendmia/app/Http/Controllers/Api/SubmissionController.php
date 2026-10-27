@@ -10,7 +10,8 @@ class SubmissionController extends Controller
 {
     public function index()
     {
-        $submissions = Submission::with(['categories', 'images', 'user'])
+        // Ubah 'categories' menjadi 'category' (karena 1 laporan = 1 kategori master)
+        $submissions = Submission::with(['category', 'images', 'user'])
             ->latest()
             ->get();
 
@@ -22,17 +23,16 @@ class SubmissionController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validasi Request
+        // 1. Validasi Request (Ubah validasi dari string menjadi category_id)
         $request->validate([
             'label'       => 'required|string|max:255',
             'description' => 'required|string',
             'location'    => 'required|string|max:255',
-            'categories'  => 'nullable|string',
+            'category_id' => 'required|exists:categories,id', // Harus memilih ID kategori yang ada
             'images'      => 'nullable|array',
             'images.*'    => 'image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // 2. Ambil user yang sedang aktif login lewat token Sanctum
         $userId = auth()->id();
         if (!$userId) {
             return response()->json([
@@ -40,33 +40,19 @@ class SubmissionController extends Controller
             ], 401);
         }
 
-        // 3. Simpan Data Utama Submission
+        // 2. Simpan Data Utama Submission (Termasuk category_id)
         $submission = Submission::create([
             'user_id'     => $userId,
+            'category_id' => $request->category_id,
             'label'       => $request->label,
             'description' => $request->description,
             'location'    => $request->location,
             'status'      => 'pending',
         ]);
 
-        // 4. Simpan Kategori (jika dikirim dari frontend dipisah koma)
-        if ($request->filled('categories')) {
-            $categoriesList = explode(',', $request->categories);
-            foreach ($categoriesList as $catName) {
-                $cleanCatName = trim($catName);
-                if (!empty($cleanCatName)) {
-                    $submission->categories()->create([
-                        'name' => $cleanCatName,
-                    ]);
-                }
-            }
-        } else {
-            $submission->categories()->create([
-                'name' => 'Umum',
-            ]);
-        }
+        // 3. Blok kode if($request->filled('categories')) DIHAPUS SEPENUHNYA
 
-        // 5. Simpan Gambar ke Storage
+        // 4. Simpan Gambar ke Storage
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 $path = $file->store('submissions', 'public');
@@ -78,7 +64,7 @@ class SubmissionController extends Controller
 
         return response()->json([
             'message' => 'Submission berhasil dibuat!',
-            'data'    => $submission->load(['categories', 'images', 'user'])
+            'data'    => $submission->load(['category', 'images', 'user'])
         ], 201);
     }
 }

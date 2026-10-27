@@ -6,7 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Http\\Controllers\\Api\\AdminController' => $baseDir . '/app/Http/Controllers/Api/AdminController.php',
+    'App\\Http\\Controllers\\Api\\AuthController' => $baseDir . '/app/Http/Controllers/Api/AuthController.php',
     'App\\Http\\Controllers\\Api\\SubmissionController' => $baseDir . '/app/Http/Controllers/Api/SubmissionController.php',
+    'App\\Http\\Controllers\\Api\\VoteController' => $baseDir . '/app/Http/Controllers/Api/VoteController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Requests\\StoreSubmissionRequest' => $baseDir . '/app/Http/Requests/StoreSubmissionRequest.php',
     'App\\Http\\Resources\\SubmissionResource' => $baseDir . '/app/Http/Resources/SubmissionResource.php',
@@ -14,6 +17,7 @@ return array(
     'App\\Models\\Image' => $baseDir . '/app/Models/Image.php',
     'App\\Models\\Submission' => $baseDir . '/app/Models/Submission.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
+    'App\\Models\\Vote' => $baseDir . '/app/Models/Vote.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Brick\\Math\\BigDecimal' => $vendorDir . '/brick/math/src/BigDecimal.php',

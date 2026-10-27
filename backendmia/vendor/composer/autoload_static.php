@@ -541,7 +541,10 @@ class ComposerStaticInit30ede9cc2d9eecae449b0452a2292045
     );
 
     public static $classMap = array (
+        'App\\Http\\Controllers\\Api\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AdminController.php',
+        'App\\Http\\Controllers\\Api\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AuthController.php',
         'App\\Http\\Controllers\\Api\\SubmissionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/SubmissionController.php',
+        'App\\Http\\Controllers\\Api\\VoteController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/VoteController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Requests\\StoreSubmissionRequest' => __DIR__ . '/../..' . '/app/Http/Requests/StoreSubmissionRequest.php',
         'App\\Http\\Resources\\SubmissionResource' => __DIR__ . '/../..' . '/app/Http/Resources/SubmissionResource.php',
@@ -549,6 +552,7 @@ class ComposerStaticInit30ede9cc2d9eecae449b0452a2292045
         'App\\Models\\Image' => __DIR__ . '/../..' . '/app/Models/Image.php',
         'App\\Models\\Submission' => __DIR__ . '/../..' . '/app/Models/Submission.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
+        'App\\Models\\Vote' => __DIR__ . '/../..' . '/app/Models/Vote.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',

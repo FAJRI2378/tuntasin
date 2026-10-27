@@ -27,7 +27,10 @@ class Submission extends Model
     {
         return $this->hasMany(Category::class);
     }
-
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
     public function images()
     {
         return $this->hasMany(Image::class);

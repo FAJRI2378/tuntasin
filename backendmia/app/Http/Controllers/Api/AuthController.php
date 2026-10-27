@@ -28,14 +28,20 @@ class AuthController extends Controller
         ]);
 
         // 3. Buat token Sanctum untuk user
-        $token = $user->createToken('auth_token')->plainTextToken;
+       $token = $user->createToken('auth_token')->plainTextToken;
 
         // 4. Kembalikan respons JSON ke frontend
-        return response()->json([
-            'message' => 'Registrasi berhasil!',
+      return response()->json([
+            'message' => 'Login berhasil!',
             'token'   => $token,
-            'user'    => $user,
-        ], 201);
+            'user'    => [
+                'id'       => $user->id,
+                'name'     => $user->username, 
+                'email'    => $user->email,
+                'nik'      => $user->nik,
+                'role'     => $user->role, // TAMBAHKAN BARIS INI
+            ]
+        ], 200);
     }
 
     public function login(Request $request)
@@ -57,17 +63,18 @@ class AuthController extends Controller
         }
 
         // 4. Buat token Sanctum baru untuk sesi login ini
-        $token = $user->createToken('auth_token')->plainTextToken;
+      $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-    'message' => 'Login berhasil!',
-    'token'   => $token,
-    'user'    => [
-        'id'       => $user->id,
-        'name'     => $user->username, // Memetakan username database ke key 'name' untuk frontend
-        'email'    => $user->email,
-        'nik'      => $user->nik,
-    ]
-], 200);
+     return response()->json([
+            'message' => 'Login berhasil!',
+            'token'   => $token,
+            'user'    => [
+                'id'       => $user->id,
+                'name'     => $user->username, 
+                'email'    => $user->email,
+                'nik'      => $user->nik,
+                'role'     => $user->role, // TAMBAHKAN BARIS INI
+            ]
+        ], 200);
     }
 }

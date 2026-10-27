@@ -2,6 +2,16 @@
   font-family: Nunito;
   src: url(../assets/font/NunitoSans.ttf);
 }
+@font-face {
+  font-family: Poppins;
+  src: url(../assets/font/Poppins/Poppins-Regular.ttf);
+}
+@font-face {
+  font-family: Poppins;
+  src: url(../assets/font/Poppins/Poppins-Bold.ttf);
+  font-weight: bold;
+}
+
 
 * {
   font-family: Nunito;
@@ -17,4 +27,8 @@
 
 body {
   margin: 0;
+}
+
+a:focus {
+  outline: none;
 }

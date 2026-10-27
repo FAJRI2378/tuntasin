@@ -2,6 +2,7 @@ import { Camera, X } from "lucide-react";
 import styles from "../css/pages/Create.module.css";
 import { useRef, useState } from "react";
 import api from "../js/api";
+import MapLocation from "../components/Map";
 
 export default function Create() {
   const imageRef = useRef(null);
@@ -46,7 +47,7 @@ export default function Create() {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
- // Submit Handler ke API Laravel menggunakan Axios
+  // Submit Handler ke API Laravel menggunakan Axios
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -62,7 +63,10 @@ export default function Create() {
       formData.append("label", label);
       formData.append("description", description);
       formData.append("location", location);
-      formData.append("categories", categories.length > 0 ? categories.join(",") : "Umum");
+      formData.append(
+        "categories",
+        categories.length > 0 ? categories.join(",") : "Umum",
+      );
 
       selectedFiles.forEach((file) => {
         formData.append("images[]", file);
@@ -84,9 +88,12 @@ export default function Create() {
     } catch (error) {
       console.error("Detail Error:", error.response);
       // Mengambil pesan error yang akurat dari validasi Laravel (jika ada)
-      const errorMessage = error.response?.data?.message || 
-                           (error.response?.data?.errors ? Object.values(error.response.data.errors)[0][0] : null) || 
-                           "Gagal terhubung ke server Laravel!";
+      const errorMessage =
+        error.response?.data?.message ||
+        (error.response?.data?.errors
+          ? Object.values(error.response.data.errors)[0][0]
+          : null) ||
+        "Gagal terhubung ke server Laravel!";
       alert(errorMessage);
     } finally {
       setIsLoading(false);
@@ -139,7 +146,6 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* Input & Preview Image */}
               <div className={styles.image}>
                 <div className={styles.imageInput} onClick={handleUpload}>
                   <input
@@ -173,15 +179,15 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* Lokasi */}
               <div className={styles.location}>
-                <input
+                <MapLocation />
+                {/* <input
                   type="text"
                   placeholder="Input Location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   required
-                />
+                /> */}
               </div>
 
               {/* Tombol Submit */}
@@ -197,9 +203,7 @@ export default function Create() {
           <div className={styles.formRight}>
             {/* Description */}
             <div className={styles.description}>
-              <div className={styles.descriptionLabel}>
-                Input Description
-              </div>
+              <div className={styles.descriptionLabel}>Input Description</div>
               <textarea
                 placeholder="Explain "
                 value={description}

@@ -7,10 +7,8 @@ const api = axios.create({
   },
 });
 
-// Interceptor untuk otomatis menyisipkan token ke setiap request API
 api.interceptors.request.use(
   (config) => {
-    // Sesuaikan key "token" dengan nama yang kamu pakai saat menyimpan di localStorage saat login
     const token = localStorage.getItem("token"); 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

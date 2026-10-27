@@ -17,7 +17,6 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // 1. Kirim request login ke backend Laravel
       const response = await api.post("login", {
         email: email,
         password: password,

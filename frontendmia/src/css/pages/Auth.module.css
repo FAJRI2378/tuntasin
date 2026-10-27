@@ -25,10 +25,21 @@
   min-width: 0;
 }
 
+.panelLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.abtTitle {
+  font-family: Poppins;
+  font-weight: bold;
+  font-size: 3em;
+}
+
 .logoWrapper {
   display: flex;
   gap: 1rem;
-  align-items: center;
 }
 .logoWrapper > * {
   display: flex;
@@ -44,6 +55,10 @@
 .panelRight {
   background-color: var(--electric);
   color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .title {
@@ -91,17 +106,24 @@
 .submitBtn {
   display: flex;
   justify-content: center;
-  padding-block: .3rem ;
+  padding-block: .5rem ;
   border-radius: 100px;
-  background-color: var(--lime);
+  background-color: var(--b-lime);
   color: white;
   font-weight: bold;
   cursor: pointer;
+  margin-top: 2rem;
+  gap: .3rem;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+.submitBtn:hover {
+  background-color: var(--b-lime-50);
 }
 
 .addition {
   color: white;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -111,147 +133,8 @@
 .addition span {
   font-weight: bold;
   transition: all 0.3s ease;
+  color: var(--ll-electric);
 }
 .addition span:hover {
   color: var(--b-lime);
-}
-
-/* yang bawah buat login sama register ya kim */
-.container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #cad4fc; /* Warna soft blue/purple sesuai gambar */
-  padding: 20px;
-  font-family: sans-serif;
-  position: relative; /* Penting untuk tombol back absolute */
-}
-
-/* Tombol Back */
-.backBtn {
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #1e293b;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-  transition: opacity 0.2s ease;
-}
-
-.backBtn:hover {
-  opacity: 0.6;
-}
-
-.card {
-  width: 100%;
-  max-width: 400px;
-  padding: 40px 30px;
-  border-radius: 16px;
-  /* Glassmorphism Terang */
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-  color: #1e293b;
-}
-
-.logoWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-
-.logoIcon {
-  height: 42px;
-  width: auto;
-}
-
-.logoText {
-  height: 32px;
-  width: auto;
-}
-
-.title {
-  text-align: center;
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 24px;
-  color: #1e293b;
-}
-
-.formGroup {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.formGroup label {
-  font-size: 14px;
-  color: #334155;
-  font-weight: 500;
-}
-
-.input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.6); /* Input lebih putih */
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  color: #1e293b;
-  outline: none;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-.input::placeholder {
-  color: #94a3b8;
-}
-
-.input:focus {
-  border-color: #3b82f6;
-  background: #ffffff;
-}
-
-.submitBtn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submitBtn:hover {
-  background-color: #2563eb;
-}
-
-.linkText {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: #475569;
-}
-
-.link {
-  color: #3b82f6;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.link:hover {
-  text-decoration: underline;
 }

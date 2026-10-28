@@ -10,9 +10,11 @@ class SubmissionController extends Controller
 {
     public function index()
     {
-        // Ubah 'categories' menjadi 'category' (karena 1 laporan = 1 kategori master)
+        // Tambahkan withCount('votes') dan orderByDesc
         $submissions = Submission::with(['category', 'images', 'user'])
-            ->latest()
+            ->withCount('votes') // Menghitung total relasi votes sebagai 'votes_count'
+            ->orderByDesc('votes_count') // Mengurutkan dari vote terbanyak ke terkecil
+            ->orderByDesc('created_at') // Urutan kedua berdasarkan waktu terbaru
             ->get();
 
         return response()->json([

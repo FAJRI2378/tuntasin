@@ -1,11 +1,12 @@
 import styles from "../css/components/Sidebar.module.css";
 import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
-import { EllipsisVertical, PanelLeftClose, PanelLeftOpen, Pen, Plus, LogIn, LogOut, User } from "lucide-react";
+// Tambahkan import ikon History di sini
+import { EllipsisVertical, PanelLeftClose, PanelLeftOpen, Pen, Plus, LogIn, LogOut, User, History } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../js/api"; // Pastikan path import api sudah benar
+import api from "../js/api"; 
 
 export default function SideBar() {
   const [open, setOpen] = useState(true);
@@ -30,7 +31,6 @@ export default function SideBar() {
     async function fetchSubmissions() {
       try {
         const response = await api.get("submissions");
-        // Sesuaikan dengan struktur response Laravel (misal: response.data.data)
         setSubmissions(response.data.data || response.data);
       } catch (error) {
         console.error("Gagal memuat submissions:", error);
@@ -83,6 +83,37 @@ export default function SideBar() {
             <Plus /> <div>Create Submission</div>
           </Link>
           <div className={styles.createBottom}></div>
+        </div>
+
+        {/* TOMBOL BARU: Riwayat Submission */}
+        <div style={{ padding: "0 15px", marginTop: "10px", marginBottom: "10px" }}>
+          <Link 
+            to="/history" 
+            style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "10px", 
+              padding: "10px 15px", 
+              backgroundColor: "#1e293b", 
+              color: "#cbd5e1", 
+              borderRadius: "8px", 
+              textDecoration: "none",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "all 0.2s ease-in-out"
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#334155";
+              e.currentTarget.style.color = "#fff";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#1e293b";
+              e.currentTarget.style.color = "#cbd5e1";
+            }}
+          >
+            <History size={18} />
+            <div>Riwayat Submission</div>
+          </Link>
         </div>
 
         {/* Submissions List (Dinamis dari state) */}

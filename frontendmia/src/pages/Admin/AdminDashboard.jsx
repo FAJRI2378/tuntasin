@@ -1,12 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../../js/api.js";
-import { FileText, Clock, RefreshCw, CheckCircle, Flame, BarChart3 } from "lucide-react";
+import { FileText, Clock, RefreshCw, CheckCircle, Flame, BarChart3, XCircle } from "lucide-react"; // Tambah XCircle
 import styles from "../../css/pages/Admin.module.css";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStats();
@@ -31,9 +33,11 @@ export default function AdminDashboard() {
     );
   }
 
+  // Masukkan Invalid ke dalam chart data
   const chartData = [
     { name: "Pending", total: stats?.pending || 0, color: "#f59e0b" }, 
     { name: "Diproses", total: stats?.process || 0, color: "#3b82f6" }, 
+    { name: "Invalid", total: stats?.invalid || 0, color: "#ef4444" }, // Warna merah untuk invalid
     { name: "Selesai", total: stats?.completed || 0, color: "#10b981" }, 
   ];
 
@@ -44,8 +48,8 @@ export default function AdminDashboard() {
         <p className={styles.subtitle}>Pantau laporan masyarakat dan statistik infrastruktur secara real-time.</p>
       </header>
 
-      {/* Grid Statistik 4 Kartu */}
-      <div className={styles.statsGrid}>
+      {/* Grid Statistik 5 Kartu (Termasuk Invalid) */}
+      <div className={styles.statsGrid} style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <span>Total Laporan Masuk</span>
@@ -68,6 +72,15 @@ export default function AdminDashboard() {
             <div className={styles.iconBox} style={{ background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6" }}><RefreshCw size={20}/></div>
           </div>
           <div className={styles.statValue}>{stats?.process || 0}</div>
+        </div>
+
+        {/* Kartu Statistik Invalid */}
+        <div className={styles.statCard}>
+          <div className={styles.statHeader}>
+            <span>Laporan Invalid</span>
+            <div className={styles.iconBox} style={{ background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}><XCircle size={20}/></div>
+          </div>
+          <div className={styles.statValue}>{stats?.invalid || 0}</div>
         </div>
 
         <div className={styles.statCard}>
@@ -105,7 +118,13 @@ export default function AdminDashboard() {
         <div className={styles.votedSection}>
           <h3 className={styles.sectionTitle}><Flame size={20} color="#ef4444" /> Skala Prioritas Utama</h3>
           {stats?.top_voted ? (
-            <div className={styles.votedCard}>
+            <div 
+              className={styles.votedCard} 
+              onClick={() => navigate('/admin/submissions')}
+              style={{ cursor: "pointer", transition: "all 0.2s ease-in-out" }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
                 <h4 style={{ fontSize: "1.1rem", margin: 0, color: "#fff" }}>{stats.top_voted.label}</h4>
                 <div className={styles.votedBadge}>

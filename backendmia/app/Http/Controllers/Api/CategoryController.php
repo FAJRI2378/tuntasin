@@ -13,13 +13,23 @@ class CategoryController extends Controller
         return response()->json(Category::latest()->get());
     }
 
-    public function store(Request $request)
+  public function store(Request $request)
     {
-        $request->validate(['name' => 'required|string|unique:categories,name|max:255']);
-        $category = Category::create(['name' => $request->name]);
-        return response()->json(['message' => 'Kategori dibuat', 'data' => $category], 201);
-    }
+        $request->validate([
+            'name' => 'required|string|unique:categories,name|max:255'
+        ]);
 
+        $category = Category::create([
+            'name' => $request->name
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Kategori berhasil dibuat',
+            'data'    => $category,
+            'id'      => $category->id // Tambahkan ini agar bisa diakses langsung via catRes.data.id
+        ], 201);
+    }
     public function update(Request $request, int $id)
     {
         $category = Category::findOrFail($id);

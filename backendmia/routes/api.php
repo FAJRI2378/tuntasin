@@ -12,7 +12,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/submissions', [SubmissionController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
-
 // Protected Auth Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/check', [AuthController::class, 'checkUser']);
@@ -22,6 +21,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/vote', [VoteController::class, 'toggleVote']);
     });
 
+    // Pindahkan POST kategori ke sini agar warga/user biasa bisa menambah kategori baru saat laporan
+    Route::post('/categories', [CategoryController::class, 'store']);
+
     Route::middleware('admin')->group(function () {
         
         // Admin Routes
@@ -30,9 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/submissions/{id}/status', [AdminController::class, 'updateStatus']);
         });
 
-        // CRUD Categories (Admin)
+        // CRUD Categories khusus Admin (Update & Delete)
         Route::prefix("/categories")->group(function () {
-            Route::post('/', [CategoryController::class, 'store']);
+            // Route::post('/', [CategoryController::class, 'store']); // Hapus dari sini
             Route::put('/{id}', [CategoryController::class, 'update']);
             Route::delete('/{id}', [CategoryController::class, 'destroy']);
         });

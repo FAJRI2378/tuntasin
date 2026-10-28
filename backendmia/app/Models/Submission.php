@@ -12,6 +12,7 @@ class Submission extends Model
     protected $fillable = [
         'user_id',
         'label',
+        'category_id',
         'description',
         'location',
         'status',
@@ -23,9 +24,9 @@ class Submission extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->hasMany(Category::class);
+        return $this->belongsTo(Category::class);
     }
     public function votes()
     {

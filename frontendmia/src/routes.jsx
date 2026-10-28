@@ -4,9 +4,11 @@ import AdminLayout from "./layouts/AdminLayouts";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Auth from "./pages/Auth";
+import History from "./pages/Home";
 
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminCategories from "./pages/Admin/AdminCategories";
+import AdminSubmissions from "./pages/Admin/AdminSubmissionn";
 
 export const routes = createBrowserRouter([
   {
@@ -20,6 +22,10 @@ export const routes = createBrowserRouter([
       {
         path: "/create",
         element: <Create />,
+      },
+      {
+        path: "/history",
+        element: <History />,
       },
     ],
   },
@@ -44,6 +50,10 @@ export const routes = createBrowserRouter([
       {
         path: "categories",
         element: <AdminCategories />,
+      },
+      {
+        path: "Submission",
+        element: <AdminSubmissions />,
       },
     ],
   },

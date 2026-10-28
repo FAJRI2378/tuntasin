@@ -2,11 +2,9 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  Popup,
   useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
-
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -19,7 +17,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-function LocationMarker() {
+function LocationMarker({ onLocationSelect }) {
   const [position, setPosition] = useState(null);
 
   // Event handler peta
@@ -27,18 +25,24 @@ function LocationMarker() {
     click(e) {
       console.log(e.latlng);
       setPosition(e.latlng); // Mengambil koordinat tempat yang diklik
+      
+      // Mengirim data koordinat ke komponen Create
+      if (onLocationSelect) {
+        onLocationSelect(`${e.latlng.lat}, ${e.latlng.lng}`);
+      }
     },
   });
 
   return position === null ? null : <Marker position={position}></Marker>;
 }
 
-export default function MapLocation() {
+export default function MapLocation({ onLocationSelect }) {
   const [userPosition, setUserPosition] = useState([-6.1753924, 106.8271528]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (!navigator.geolocation) {
-      alert("Browser kamu tidakmendukung Geolocation.");
+      alert("Browser kamu tidak mendukung Geolocation.");
       return;
     }
 
@@ -47,7 +51,7 @@ export default function MapLocation() {
       (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        console.log([lat, lng])
+        console.log([lat, lng]);
         setUserPosition([lat, lng]);
         setLoading(false);
       },
@@ -74,7 +78,8 @@ export default function MapLocation() {
       />
       {loading ? "Loading..." : ""}
 
-      <LocationMarker />
+      {/* Teruskan props ke LocationMarker */}
+      <LocationMarker onLocationSelect={onLocationSelect} />
     </MapContainer>
   );
 }

@@ -183,6 +183,7 @@ export default function Auth({ type }) {
           title: "Error",
           text: errorMessage,
         });
+        return; 
       }
     } finally {
       setIsLoading(false);

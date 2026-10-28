@@ -12,25 +12,27 @@ class AdminController extends Controller
     // Mengambil statistik & top voted submission
     public function stats()
     {
-        $pending   = Submission::where('status', 'pending')->count();
-        $process   = Submission::where('status', 'process')->count();
+        $total = Submission::count();
+        $pending = Submission::where('status', 'pending')->count();
+        $process = Submission::where('status', 'process')->count();
+        $invalid = Submission::where('status', 'invalid')->count();
         $completed = Submission::where('status', 'completed')->count();
-        $total     = Submission::count();
 
-        // Ambil submission dengan vote terbanyak
-        $topVoted = Submission::withCount('votes')
-            ->with(['user', 'categories', 'images'])
-            ->orderBy('votes_count', 'desc')
-            ->first();
+        // Cari laporan dengan vote terbanyak (Top Voted) beserta data usernya
+        $topVoted = Submission::with('user')
+            ->withCount('votes')
+            ->orderByDesc('votes_count')
+            ->first(); // Mengambil satu data teratas sebagai object tunggal
 
         return response()->json([
             'status' => 'success',
-            'data'   => [
-                'pending'   => $pending,
-                'process'   => $process,
+            'data' => [
+                'total' => $total,
+                'pending' => $pending,
+                'process' => $process,
                 'completed' => $completed,
-                'total'     => $total,
-                'top_voted' => $topVoted
+                'invalid' => $invalid,
+                'top_voted' => $topVoted // Dikirim ke frontend
             ]
         ], 200);
     }
@@ -39,7 +41,7 @@ class AdminController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,process,completed,rejected'
+            'status' => 'required|in:pending,process,completed,invalid'
         ]);
 
         $submission = Submission::findOrFail($id);

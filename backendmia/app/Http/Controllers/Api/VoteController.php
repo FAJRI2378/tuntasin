@@ -3,31 +3,38 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Submission;
 use App\Models\Vote;
 use Illuminate\Http\Request;
 
 class VoteController extends Controller
 {
-    public function toggleVote($submissionId)
+    public function togglevote($id)
     {
         $userId = auth()->id();
+        
         if (!$userId) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+        $submission = Submission::findOrFail($id);
+
+        // Cek apakah user sudah pernah vote laporan ini
         $existingVote = Vote::where('user_id', $userId)
-            ->where('submission_id', $submissionId)
-            ->first();
+                            ->where('submission_id', $id)
+                            ->first();
 
         if ($existingVote) {
+            // Jika sudah vote, maka cabut (unlike/unvote)
             $existingVote->delete();
-            return response()->json(['message' => 'Dukungan dicabut', 'voted' => false]);
+            return response()->json(['message' => 'Vote berhasil ditarik!'], 200);
         } else {
+            // Jika belum, tambahkan vote baru
             Vote::create([
-                'user_id'       => $userId,
-                'submission_id' => $submissionId
+                'user_id' => $userId,
+                'submission_id' => $id
             ]);
-            return response()->json(['message' => 'Berhasil mendukung laporan!', 'voted' => true]);
+            return response()->json(['message' => 'Berhasil memberikan Vote!'], 201);
         }
     }
 }

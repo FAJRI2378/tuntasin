@@ -4,7 +4,7 @@ import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
 import { ArrowRight } from "lucide-react";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../js/api";
 
 export default function Auth({ type }) {
@@ -17,8 +17,32 @@ export default function Auth({ type }) {
   const navigate = useNavigate();
 
   if (!["login", "register"].includes(type)) {
-    return;
+    navigate("/login");
   }
+
+  useEffect(() => {
+    const verify = async () => {
+      try {
+        const response = await api.get("/check");
+        const data = response.data;
+
+        if (data.valid) {
+          if (data.is_admin) {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
+        }
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    verify();
+  }, []);
+
+  
 
   const isLogin = type == "login";
 
@@ -105,12 +129,15 @@ export default function Auth({ type }) {
       } else {
         navigate("/");
       }
-      // ----------------------------------------------------
     } catch (error) {
       console.error("Login Error:", error.response);
       const errorMessage =
         error.response?.data?.message || "Email atau password salah!";
-      alert(errorMessage);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -150,13 +177,13 @@ export default function Auth({ type }) {
           ? Object.values(error.response.data.errors)[0][0]
           : null) ||
         "Gagal melakukan registrasi!";
-          if (password != confirmPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: errorMessage
-      });
-    }
+      if (password != confirmPassword) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: errorMessage,
+        });
+      }
     } finally {
       setIsLoading(false);
     }

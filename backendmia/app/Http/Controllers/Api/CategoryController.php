@@ -20,7 +20,7 @@ class CategoryController extends Controller
         return response()->json(['message' => 'Kategori dibuat', 'data' => $category], 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $category = Category::findOrFail($id);
         $request->validate(['name' => 'required|string|max:255|unique:categories,name,' . $id]);
@@ -28,7 +28,7 @@ class CategoryController extends Controller
         return response()->json(['message' => 'Kategori diperbarui', 'data' => $category]);
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $category = Category::findOrFail($id);
         $category->delete();

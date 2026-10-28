@@ -7,8 +7,7 @@ import Swal from "sweetalert2";
 import { useState } from "react";
 import api from "../js/api";
 
-export default function Auth() {
-  const { type } = useParams();
+export default function Auth({ type }) {
   const [nik, setNik] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -96,15 +95,17 @@ export default function Auth() {
         password: password,
       });
 
-      // 2. Ambil token dan data user dari respons Laravel
       const { token, user } = response.data;
 
-      // 3. Simpan token dan data user ke localStorage agar terbaca oleh api.js
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      // 4. Redirect ke halaman utama / dashboard
-      navigate("/");
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+      // ----------------------------------------------------
     } catch (error) {
       console.error("Login Error:", error.response);
       const errorMessage =
@@ -114,10 +115,10 @@ export default function Auth() {
       setIsLoading(false);
     }
   };
-  
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
     if (password != confirmPassword) {
       Swal.fire({
         icon: "error",
@@ -137,7 +138,6 @@ export default function Auth() {
       });
 
       const { token, user } = response.data;
-
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -150,6 +150,13 @@ export default function Auth() {
           ? Object.values(error.response.data.errors)[0][0]
           : null) ||
         "Gagal melakukan registrasi!";
+          if (password != confirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage
+      });
+    }
     } finally {
       setIsLoading(false);
     }
@@ -210,9 +217,7 @@ export default function Auth() {
                 ? "Doesn't have an account?"
                 : "Already have an account?"}
               <span
-                onClick={() =>
-                  navigate(`/auth/${isLogin ? "register" : "login"}`)
-                }
+                onClick={() => navigate(`/${isLogin ? "register" : "login"}`)}
               >
                 {isLogin ? " Register" : " Login"}
               </span>

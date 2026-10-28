@@ -1,7 +1,8 @@
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, FolderKanban, LogOut, FileText } from "lucide-react";
+import { LayoutDashboard, FolderKanban, LogOut, FileText, Sidebar } from "lucide-react";
 import styles from "../css/pages/Admin.module.css";
 import icon from "../assets/iconSimple.svg";
+import SidebarAdmin from "../components/SidebarAdmin";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function AdminLayout() {
 
   return (
     <div className={styles.layoutContainer}>
+      <SidebarAdmin/>
       {/* Sidebar Admin */}
       <aside className={styles.sidebar}>
         <div className={styles.logoWrapper}>

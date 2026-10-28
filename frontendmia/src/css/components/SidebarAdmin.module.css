@@ -1,0 +1,192 @@
+.container {
+  height: 100vh;
+}
+
+.content {
+  background-color: #f0f0f0;
+  height: 100%;
+  width: 250px;
+  padding-top: 1rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.close .content {
+  width: 50px;
+}
+
+.topWrapper {
+  height: 24px;
+  padding-inline: 1rem;
+  border-right: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topWrapper img {
+  height: 20px;
+}
+.logoWrapper {
+  display: flex;
+  align-items: center;
+}
+.logoWrapper > * {
+  transition: all 0.3s ease;
+}
+.icon {
+  width: 0%;
+}
+.logo {
+  width: 90%;
+}
+.close .icon {
+  width: 120%;
+}
+.close .logo {
+  width: 0%;
+}
+
+
+.logoIcon {
+  display: flex;
+  align-items: center;
+  color: var(--electric);
+  cursor: pointer;
+}
+.close .logoIcon {
+  position: absolute;
+  opacity: 0;
+  background-color: #f0f0f0;
+  transition: all 0.3s ease;
+}
+.close .logoIcon:hover {
+  opacity: 1;
+pointer-events: auto;
+}
+.logoIcon > * {
+  stroke-width: 2px;
+}
+
+.navMenu {
+  flex: 1;
+  margin-top: 2rem;
+  /* min */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-left: 1rem;
+}
+.navItem {
+  background-color: #ddd;
+  color: var(--electric);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: .5rem 1rem;
+  border-radius: 2rem;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+}
+.navItemActive {
+  background-color: var(--electric);
+  color: white;
+  border-radius: 3rem 0 0 3rem;
+  margin-right: 0;
+}
+
+.account {
+  padding: 1rem;
+  border-top: 1px solid #999;
+}
+
+.accContent {
+  display: flex;
+  color: black;
+  justify-content: space-between;
+}
+.accLeft {
+  display: flex;
+  align-items: center;
+}
+
+.accRight {
+  cursor: pointer;
+}
+
+.loginBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #f0f0f0; 
+  color: #1f2937;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.loginBtn:hover {
+  background-color: #ddd;
+}
+
+/* Pastikan div .account menggunakan relative agar pop-up absolute bisa diposisikan */
+.account {
+  position: relative;
+  /* (Pertahankan properti account kamu yang sudah ada) */
+}
+
+/* Popup Dropdown Logout */
+.dropdownMenu {
+  position: absolute;
+  bottom: 110%; /* Muncul tepat di atas profil */
+  right: 10px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 6px;
+  min-width: 140px;
+  z-index: 50;
+  animation: slideUp 0.2s ease-out;
+}
+
+/* Tombol di dalam Dropdown */
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #ef4444; /* Merah untuk logout */
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.logoutBtn:hover {
+  background-color: #fee2e2; /* Hover merah tipis */
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

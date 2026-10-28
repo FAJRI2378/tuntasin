@@ -247,6 +247,11 @@ pointer-events: auto;
   justify-content: space-between;
 }
 
+.accLeft {
+  display: flex;
+  align-items: center;
+}
+
 .accRight {
   cursor: pointer;
 }

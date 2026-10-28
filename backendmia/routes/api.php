@@ -15,7 +15,7 @@ Route::get('/categories', [CategoryController::class, 'index']);
 
 // Protected Auth Routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/is-admin', [AuthController::class, 'checkIsAdmin']);
+    Route::get('/check', [AuthController::class, 'checkUser']);
 
     Route::prefix("/submissions")->group(function () {
         Route::post('/', [SubmissionController::class, 'store']);

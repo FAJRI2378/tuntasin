@@ -1,20 +1,47 @@
-import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  FolderKanban,
-  LogOut,
-  FileText,
-  Sidebar,
-} from "lucide-react";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import styles from "../css/pages/Admin.module.css";
-import icon from "../assets/iconSimple.svg";
 import SidebarAdmin from "../components/SidebarAdmin";
+import { useEffect, useState } from "react";
+import api from "../js/api";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const verifyAdmin = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+        console.log("l");
+
+        const response = await api.get("/check");
+        const data = response.data;
+
+        if (!data.is_admin) {
+          if (!data.valid) {
+            navigate("/login");
+          } else {
+            navigate("/");
+          }
+        }
+      } catch (error) {
+        navigate("/login");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    verifyAdmin();
+  }, []);
+
+  if (isLoading) {
+    return <div style={{ textAlign: "center", marginTop: "50px" }}>O</div>;
+  }
 
   return (
     <div className={styles.layoutContainer}>

@@ -78,14 +78,22 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function checkIsAdmin(Request $request)
+    public function checkUser(Request $request)
     {
         $user = $request->user();
 
-        $isAdmin = $user && $user->role === 'admin';
+        if ($user->role !== 'admin') {
+            return response()->json([
+                'valid' => true,
+                'is_admin' => false,
+                'message' => 'Token valid, tetapi Anda bukan admin.'
+            ], 200);
+        }
 
         return response()->json([
-            'is_admin' => $isAdmin,
-        ]);
+            'valid' => true,
+            'is_admin' => true,
+            'message' => 'Akses diizinkan.'
+        ], 200);
     }
 }

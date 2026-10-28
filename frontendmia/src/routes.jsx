@@ -4,8 +4,6 @@ import AdminLayout from "./layouts/AdminLayouts";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Auth from "./pages/Auth";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminCategories from "./pages/Admin/AdminCategories";

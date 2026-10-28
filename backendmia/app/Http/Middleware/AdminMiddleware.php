@@ -15,6 +15,13 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        if ($request->user() && $request->user()->role === 'admin') {
+            return $next($request);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Akses ditolak. Anda bukan admin.'
+        ], 403);
     }
 }

@@ -31,11 +31,10 @@ export default function AdminDashboard() {
     );
   }
 
-  // Data untuk Grafik Recharts
   const chartData = [
-    { name: "Pending", total: stats?.pending || 0, color: "#f59e0b" }, // Kuning
-    { name: "Diproses", total: stats?.process || 0, color: "#3b82f6" }, // Biru
-    { name: "Selesai", total: stats?.completed || 0, color: "#10b981" }, // Hijau
+    { name: "Pending", total: stats?.pending || 0, color: "#f59e0b" }, 
+    { name: "Diproses", total: stats?.process || 0, color: "#3b82f6" }, 
+    { name: "Selesai", total: stats?.completed || 0, color: "#10b981" }, 
   ];
 
   return (

@@ -28,15 +28,15 @@ class AuthController extends Controller
         ]);
 
         // 3. Buat token Sanctum untuk user
-       $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         // 4. Kembalikan respons JSON ke frontend
-      return response()->json([
+        return response()->json([
             'message' => 'Login berhasil!',
             'token'   => $token,
             'user'    => [
                 'id'       => $user->id,
-                'name'     => $user->username, 
+                'name'     => $user->username,
                 'email'    => $user->email,
                 'nik'      => $user->nik,
                 'role'     => $user->role, // TAMBAHKAN BARIS INI
@@ -63,18 +63,29 @@ class AuthController extends Controller
         }
 
         // 4. Buat token Sanctum baru untuk sesi login ini
-      $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-     return response()->json([
+        return response()->json([
             'message' => 'Login berhasil!',
             'token'   => $token,
             'user'    => [
                 'id'       => $user->id,
-                'name'     => $user->username, 
+                'name'     => $user->username,
                 'email'    => $user->email,
                 'nik'      => $user->nik,
                 'role'     => $user->role, // TAMBAHKAN BARIS INI
             ]
         ], 200);
+    }
+
+    public function checkIsAdmin(Request $request)
+    {
+        $user = $request->user();
+
+        $isAdmin = $user && $user->role === 'admin';
+
+        return response()->json([
+            'is_admin' => $isAdmin,
+        ]);
     }
 }

@@ -22,16 +22,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/vote', [VoteController::class, 'toggleVote']);
     });
 
-    // Admin Routes
-    Route::prefix("/admin")->group(function () {
-        Route::get('/stats', [AdminController::class, 'stats']);
-        Route::put('/submissions/{id}/status', [AdminController::class, 'updateStatus']);
-    });
+    Route::middleware('admin')->group(function () {
+        
+        // Admin Routes
+        Route::prefix("/admin")->group(function () {
+            Route::get('/stats', [AdminController::class, 'stats']);
+            Route::put('/submissions/{id}/status', [AdminController::class, 'updateStatus']);
+        });
 
-    // CRUD Categories (Admin)
-    Route::prefix("/categories")->group(function () {
-        Route::post('/', [CategoryController::class, 'store']);
-        Route::put('/{id}', [CategoryController::class, 'update']);
-        Route::delete('/{id}', [CategoryController::class, 'destroy']);
+        // CRUD Categories (Admin)
+        Route::prefix("/categories")->group(function () {
+            Route::post('/', [CategoryController::class, 'store']);
+            Route::put('/{id}', [CategoryController::class, 'update']);
+            Route::delete('/{id}', [CategoryController::class, 'destroy']);
+        });
     });
 });

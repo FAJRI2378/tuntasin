@@ -173,7 +173,7 @@
                         {cat.name}
                       </option>
                     ))}
-                    <option value="other">✨ Lainnya (Ketik Sendiri)</option>
+                    <option value="other">Lainnya</option>
                   </select>
 
                   {/* Input tambahan jika memilih "Lainnya" */}

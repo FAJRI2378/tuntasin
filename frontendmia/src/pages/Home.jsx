@@ -86,7 +86,7 @@ export default function Home() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+          gridTemplateColumns: loading ? "unset" : "repeat(auto-fill, minmax(320px, 1fr))",
           gap: "20px",
         }}
       >
@@ -97,7 +97,7 @@ export default function Home() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              minHeight: "80vh",
+              // minHeight: "80vh",
             }}
           >
             <div
@@ -105,6 +105,7 @@ export default function Home() {
                 color: "#3b82f6",
                 fontSize: "1.2rem",
                 fontWeight: "bold",
+                height: "100%",
                 animation: "pulse 1.5s infinite",
               }}
             >

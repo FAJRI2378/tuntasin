@@ -6,8 +6,11 @@ export default function AdminSubmissions() {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // State untuk Search & Pagination
+  // State untuk Search, Status Filter (Checkbox/Checklist), dan Sorting
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatuses, setSelectedStatuses] = useState(["pending"]); // Default checklist 'pending'
+  const [sortBy, setSortBy] = useState("latest"); // Pilihan: 'latest', 'oldest', 'most_voted'
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; 
 
@@ -45,14 +48,42 @@ export default function AdminSubmissions() {
     }
   };
 
-  // --- LOGIKA PENCARIAN (SEARCH) ---
+  // --- LOGIKA CHECKLIST STATUS ---
+  const handleStatusCheckboxChange = (statusValue) => {
+    setSelectedStatuses((prev) => {
+      if (prev.includes(statusValue)) {
+        return prev.filter((s) => s !== statusValue);
+      } else {
+        return [...prev, statusValue];
+      }
+    });
+    setCurrentPage(1);
+  };
+
+  // --- LOGIKA FILTER & SORTING ---
   const filteredSubmissions = submissions.filter((item) => {
     const searchLower = searchQuery.toLowerCase();
-    return (
+    
+    // Filter Berdasarkan Pencarian Teks
+    const matchesSearch = (
       item.label?.toLowerCase().includes(searchLower) ||
       item.location?.toLowerCase().includes(searchLower) ||
       item.user?.name?.toLowerCase().includes(searchLower)
     );
+
+    // Filter Berdasarkan Checklist Status
+    const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(item.status);
+
+    return matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    // Logika Pengurutan (Sorting)
+    if (sortBy === "most_voted") {
+      return (b.votes_count || 0) - (a.votes_count || 0);
+    } else if (sortBy === "oldest") {
+      return new Date(a.created_at) - new Date(b.created_at);
+    } else {
+      return new Date(b.created_at) - new Date(a.created_at);
+    }
   });
 
   // --- LOGIKA PAGINATION ---
@@ -61,33 +92,96 @@ export default function AdminSubmissions() {
   const currentItems = filteredSubmissions.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage);
 
+  const statusOptions = [
+    { value: "pending", label: "Pending", color: "#f59e0b" },
+    { value: "process", label: "Diproses", color: "#3b82f6" },
+    { value: "invalid", label: "Invalid", color: "#ef4444" },
+    { value: "completed", label: "Selesai", color: "#10b981" },
+  ];
+
   return (
     <div style={{ color: "#fff", padding: "20px" }}>
+      
+      {/* Tambahkan style keyframes untuk animasi pulse (skeleton) jika belum ada di file CSS global */}
+      <style>
+        {`
+          @keyframes skeleton-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}
+      </style>
+
       <h2 style={{ fontSize: "24px", marginBottom: "20px", fontWeight: "bold" }}>Manajemen Laporan (Submission)</h2>
 
-      {/* Baris Pencarian (Search Bar) */}
-      <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between" }}>
-        <input
-          type="text"
-          placeholder="Cari judul, pelapor, atau lokasi..."
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setCurrentPage(1); 
-          }}
-          style={{
-            padding: "10px 15px",
-            width: "300px",
-            borderRadius: "8px",
-            border: "1px solid #334155",
-            backgroundColor: "#1e293b",
-            color: "#fff",
-            outline: "none"
-          }}
-        />
-        <div style={{ alignSelf: "center", color: "#94a3b8" }}>
-          Total Data: {filteredSubmissions.length}
+      {/* Baris Filter: Search, Status Checklist, & Sorting */}
+      <div style={{ marginBottom: "20px", display: "flex", flexDirection: "column", gap: "15px", backgroundColor: "#1e293b", padding: "15px", borderRadius: "8px", border: "1px solid #334155" }}>
+        
+        {/* Atas: Search & Sorting */}
+        <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
+          <input
+            type="text"
+            placeholder="Cari judul, pelapor, atau lokasi..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1); 
+            }}
+            style={{
+              padding: "10px 15px",
+              width: "300px",
+              borderRadius: "8px",
+              border: "1px solid #334155",
+              backgroundColor: "#0f172a",
+              color: "#fff",
+              outline: "none"
+            }}
+          />
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "14px", color: "white" }}>Urutkan:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                setCurrentPage(1);
+              }}
+              style={{
+                padding: "8px 12px",
+                borderRadius: "8px",
+                border: "1px solid #334155",
+                backgroundColor: "#0f172a",
+                color: "#fff",
+                outline: "none",
+                cursor: "pointer"
+              }}
+            >
+              <option value="latest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+              <option value="most_voted">Vote Paling Banyak</option>
+            </select>
+          </div>
         </div>
+
+        {/* Bawah: Checklist Filter Status */}
+        <div style={{ display: "flex", alignItems: "center", gap: "15px", flexWrap: "wrap", borderTop: "1px solid #334155", paddingTop: "10px" }}>
+          <span style={{ fontSize: "14px", color: "white", fontWeight: "bold" }}>Filter Status:</span>
+          {statusOptions.map((status) => (
+            <label key={status.value} style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "14px" }}>
+              <input
+                type="checkbox"
+                checked={selectedStatuses.includes(status.value)}
+                onChange={() => handleStatusCheckboxChange(status.value)}
+                style={{ cursor: "pointer", accentColor: status.color, width: "16px", height: "16px" }}
+              />
+              <span style={{ color: status.color, fontWeight: "500" }}>{status.label}</span>
+            </label>
+          ))}
+          <div style={{ marginLeft: "auto", color: "#94a3b8", fontSize: "14px" }}>
+            Total Data Ditampilkan: {filteredSubmissions.length}
+          </div>
+        </div>
+
       </div>
 
       {/* Tabel Data */}
@@ -106,9 +200,23 @@ export default function AdminSubmissions() {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>Memuat data...</td>
-              </tr>
+              /* --- SKELETON LOADING UI --- */
+              Array.from({ length: itemsPerPage }).map((_, rowIndex) => (
+                <tr key={`skeleton-${rowIndex}`} style={{ borderBottom: "1px solid #334155" }}>
+                  {Array.from({ length: 7 }).map((_, colIndex) => (
+                    <td key={`col-${colIndex}`} style={{ padding: "12px 16px" }}>
+                      <div 
+                        style={{ 
+                          height: "20px", 
+                          backgroundColor: "#334155", 
+                          borderRadius: "4px",
+                          animation: "skeleton-pulse 1.5s infinite ease-in-out"
+                        }}
+                      ></div>
+                    </td>
+                  ))}
+                </tr>
+              ))
             ) : currentItems.length > 0 ? (
               currentItems.map((item, index) => (
                 <tr key={item.id} style={{ borderBottom: "1px solid #334155" }}>
@@ -125,7 +233,7 @@ export default function AdminSubmissions() {
                     </span>
                   </td>
 
-                  {/* Dropdown Interaktif untuk Ubah Status (Lengkap dengan Opsi Invalid) */}
+                  {/* Dropdown Interaktif untuk Ubah Status */}
                   <td style={{ padding: "12px 16px" }}>
                     <select
                       value={item.status}
@@ -155,7 +263,7 @@ export default function AdminSubmissions() {
             ) : (
               <tr>
                 <td colSpan="7" style={{ textAlign: "center", padding: "20px", color: "#94a3b8" }}>
-                  Tidak ada laporan yang ditemukan.
+                  Tidak ada laporan yang ditemukan dengan filter tersebut.
                 </td>
               </tr>
             )}

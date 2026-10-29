@@ -70,43 +70,32 @@ pointer-events: auto;
   stroke-width: 2px;
 }
 
-.create {
+.sideButtons > div {
   padding-left: 1rem;
   transition: all 0.3s ease;
   user-select: none;
+  position: relative;
 }
-.close .create {
+.close .sideButtons > div {
   padding-left: .5rem;
 }
 
-.container:not(.close) .create:has(.createButton:hover),
-.container:not(.close) .create:has(.createTop:hover),
-.container:not(.close) .create:has(.createBottom:hover) {
-  padding-left: 2rem;
-}
-
-.container:not(.close) .create:has(.createButton:active),
-.container:not(.close) .create:has(.createTop:active),
-.container:not(.close) .create:has(.createBottom:active) {
-  padding-left: 4rem;
-}
-
-.createTop,
-.createBottom {
+.sideBtnTop,
+.sideBtnBottom {
   height: 1rem;
   width: 100%;
   position: relative;
   pointer-events: none;
 }
-.createTop {
+.sideBtnTop {
   margin-top: -1rem;
 }
-.createBottom {
+.sideBtnBottom {
   margin-bottom: -1rem;
 }
 
-.createTop::before,
-.createBottom::before {
+.sideBtnTop::before,
+.sideBtnBottom::before {
   content: '';
   display: block;
   height: 100%;
@@ -118,8 +107,8 @@ pointer-events: auto;
   cursor: pointer;
 }
 
-.createTop::after,
-.createBottom::after {
+.sideBtnTop::after,
+.sideBtnBottom::after {
   content: '';
   display: block;
   height: 100%;
@@ -128,46 +117,66 @@ pointer-events: auto;
   background-color: #f0f0f0;
   right: 0;
   pointer-events: all;
+  transition: all 0.3s ease;
+  transition-delay: .3s;
 }
 
-.createTop::after {
-  border-bottom-right-radius: 3rem;
+.sideBtnTop::after {
+  border-bottom-right-radius: 0;
 }
 
-.createBottom::after {
-  border-top-right-radius: 3rem;
+.sideBtnBottom::after {
+  border-top-right-radius: 0;
 }
 
-.createButton {
+.navBtnActive .sideBtnTop::after {
+  border-bottom-right-radius: 1rem;
+}
+
+.navBtnActive .sideBtnBottom::after {
+  border-top-right-radius: 1rem;
+}
+
+.navBtnActive {
+  z-index: 10;
+}
+
+.sideButtons a {
   background-color: var(--electric);
   display: flex;
   align-items: center;
   gap: .3rem;
-  border-radius: 5rem 0 0 5rem;
+  border-radius: 5rem;
   padding: .5rem 1rem;
+  margin-right: 1rem;
   font-size: 14px;
   position: relative;
   cursor: pointer;
   flex-shrink: 0;
+  transition: all 0.3s ease;
 }
-.createButton > * {
+.navBtnActive a{
+  margin-right: 0;
+  border-radius: 5rem 0 0 5rem;
+}
+.sideButtons a > * {
   color: white;
 }
-.close .createButton {
+.close .sideButtons a {
   padding-inline: .8rem;
 }
-.createButton > svg {
+.sideButtons a > svg {
   height: 16px;
   width: 16px;
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
-.close .createButton > svg 
+.close .sideButtons a > svg 
 {
   height: 24px;
   width: 24px;
 }
-.createButton > div {
+.sideButtons a > div {
   text-wrap: nowrap;
   overflow: hidden;
   width: 200px;

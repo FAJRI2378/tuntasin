@@ -81,7 +81,7 @@ export default function Home() {
                 style={{ 
                   backgroundColor: "#1e293b", 
                   borderRadius: "12px", 
-                  border: index === 0 ? "2px solid #ef4444" : "1px solid #334155", 
+                  border: "1px solid #334155", 
                   overflow: "hidden",
                   display: "flex",
                   flexDirection: "column",
@@ -90,11 +90,6 @@ export default function Home() {
               >
                 {/* Badge Rank 1 & Status */}
                 <div style={{ position: "absolute", top: "10px", right: "10px", display: "flex", gap: "6px", zIndex: 2 }}>
-                  {index === 0 && (
-                    <div style={{ backgroundColor: "#ef4444", color: "#fff", padding: "4px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" }}>
-                      🔥 Prioritas Utama
-                    </div>
-                  )}
                   {/* Badge Status Laporan */}
                   <div style={{ backgroundColor: statusInfo.bg, color: "#fff", padding: "4px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" }}>
                     {statusInfo.label}

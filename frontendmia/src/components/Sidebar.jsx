@@ -2,11 +2,22 @@ import styles from "../css/components/Sidebar.module.css";
 import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
 // Tambahkan import ikon History di sini
-import { EllipsisVertical, PanelLeftClose, PanelLeftOpen, Pen, Plus, LogIn, LogOut, User, History } from "lucide-react";
+import {
+  EllipsisVertical,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Pen,
+  Plus,
+  LogIn,
+  LogOut,
+  User,
+  History,
+  Home,
+} from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../js/api"; 
+import api from "../js/api";
 
 export default function SideBar() {
   const [open, setOpen] = useState(true);
@@ -58,10 +69,24 @@ export default function SideBar() {
     navigate("/login");
   };
 
+  const navBtn = [
+    {
+      path: "/",
+      icon: Home,
+      label: "Home",
+      class: "home",
+    },
+    {
+      path: "/create",
+      icon: Plus,
+      label: "Create Submission",
+      class: "create",
+    },
+  ];
+
   return (
     <div className={clsx(styles.container, !open ? styles.close : "")}>
       <div className={styles.content}>
-        
         {/* Top / Logo */}
         <div className={styles.topWrapper}>
           <div className={styles.logoWrapper}>
@@ -76,47 +101,25 @@ export default function SideBar() {
           </div>
         </div>
 
-        {/* Create Button */}
-        <div className={styles.create}>
-          <div className={styles.createTop}></div>
-          <Link to="/create" className={styles.createButton} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <Plus /> <div>Create Submission</div>
-          </Link>
-          <div className={styles.createBottom}></div>
-        </div>
+        <nav className={styles.sideButtons}>
+          {navBtn.map((item) => {
+            console.log(location.pathname === item.path)
+            return (
+              <div className={clsx(styles[item.class], item.path === location.pathname && styles.navBtnActive)}>
+                <div className={styles.sideBtnTop}></div>
+                <Link
+                  to={item.path}
+                  className={styles[item.class + "Button"]}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <item.icon /> <div>{item.label}</div>
+                </Link>
+                <div className={styles.sideBtnBottom}></div>
+              </div>
+            );
+          })}
+        </nav>
 
-        {/* TOMBOL BARU: Riwayat Submission */}
-        <div style={{ padding: "0 15px", marginTop: "10px", marginBottom: "10px" }}>
-          <Link 
-            to="/history" 
-            style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              gap: "10px", 
-              padding: "10px 15px", 
-              backgroundColor: "#1e293b", 
-              color: "#cbd5e1", 
-              borderRadius: "8px", 
-              textDecoration: "none",
-              fontSize: "14px",
-              fontWeight: "500",
-              transition: "all 0.2s ease-in-out"
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "#334155";
-              e.currentTarget.style.color = "#fff";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = "#1e293b";
-              e.currentTarget.style.color = "#cbd5e1";
-            }}
-          >
-            <History size={18} />
-            <div>Riwayat Submission</div>
-          </Link>
-        </div>
-
-        {/* Submissions List (Dinamis dari state) */}
         <div className={styles.reports}>
           <div className={styles.reportsLabel}>Recent Submissions</div>
           <div className={styles.reportsWrapper}>
@@ -134,7 +137,9 @@ export default function SideBar() {
                 </div>
               ))
             ) : (
-              <div style={{ padding: '8px 12px', fontSize: '12px', opacity: 0.6 }}>
+              <div
+                style={{ padding: "8px 12px", fontSize: "12px", opacity: 0.6 }}
+              >
                 Belum ada submission.
               </div>
             )}
@@ -146,17 +151,21 @@ export default function SideBar() {
           {user ? (
             <div className={styles.accContent}>
               <div className={styles.accLeft}>
-                <User size={18} style={{ marginRight: '8px', opacity: 0.7 }} />
+                <User size={18} style={{ marginRight: "8px", opacity: 0.7 }} />
                 <div className={styles.accName}>
                   {user.name || user.username || "User"}
                 </div>
               </div>
-              <div 
-                className={styles.accRight} 
+              <div
+                className={styles.accRight}
                 onClick={() => setShowDropdown(!showDropdown)}
-                style={{ cursor: 'pointer', padding: '4px', borderRadius: '4px' }}
+                style={{
+                  cursor: "pointer",
+                  padding: "4px",
+                  borderRadius: "4px",
+                }}
               >
-                <EllipsisVertical size={16}/>
+                <EllipsisVertical size={16} />
               </div>
 
               {showDropdown && (
@@ -175,7 +184,6 @@ export default function SideBar() {
             </Link>
           )}
         </div>
-
       </div>
     </div>
   );

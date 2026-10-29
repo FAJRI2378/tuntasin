@@ -27,16 +27,13 @@ export default function AdminCategories() {
     try {
       if (editingId) {
         await api.put(`categories/${editingId}`, { name });
-        alert("Kategori diperbarui!");
       } else {
         await api.post("categories", { name });
-        alert("Kategori ditambahkan!");
       }
       setName("");
       setEditingId(null);
       fetchCategories();
     } catch (error) {
-      alert(error.response?.data?.message || "Gagal menyimpan kategori!");
     }
   }
 

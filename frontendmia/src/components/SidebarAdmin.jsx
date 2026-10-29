@@ -69,7 +69,12 @@ export default function SidebarAdmin() {
       label: "Category",
       icon: FolderKanban,
       path: "/admin/categories"
-    }
+    },
+    {
+      label: "Peta Prioritas",
+      icon: Flame,
+      path: "/admin/heatmap" // Menu baru untuk admin
+    },
   ]
 
   return (

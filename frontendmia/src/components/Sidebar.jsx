@@ -11,7 +11,8 @@ import {
   User,
   Home,
   Trash2,
-  Pen
+  Pen,
+  Map
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
@@ -117,6 +118,7 @@ export default function SideBar() {
   const navBtn = [
     { path: "/", icon: Home, label: "Home", class: "home" },
     { path: "/create", icon: Plus, label: "Create Submission", class: "create" },
+    { path: "/heatmap", icon: Map, label: "Peta Prioritas", class: "heatmap" },
   ];
 
   return (

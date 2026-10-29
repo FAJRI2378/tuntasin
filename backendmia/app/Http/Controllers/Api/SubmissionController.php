@@ -8,18 +8,26 @@ use Illuminate\Http\Request;
 
 class SubmissionController extends Controller
 {
-    public function index()
+        public function index()
     {
-        // Tambahkan withCount('votes') dan orderByDesc
-        $submissions = Submission::with(['category', 'images', 'user'])
-            ->withCount('votes') // Menghitung total relasi votes sebagai 'votes_count'
-            ->orderByDesc('votes_count') // Mengurutkan dari vote terbanyak ke terkecil
-            ->orderByDesc('created_at') // Urutan kedua berdasarkan waktu terbaru
+        // Ambil ID user yang sedang login via token
+        $userId = auth('sanctum')->id();
+
+        $submissions = Submission::with(['user', 'category', 'images']) // Sesuaikan relasi kamu
+            ->withCount('votes') // Menghitung total vote
+            ->when($userId, function ($query) use ($userId) {
+                // Mengecek apakah user yang login sudah vote laporan ini
+                // Akan menghasilkan boolean true/false di properti 'has_voted'
+                $query->withExists(['votes as has_voted' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                }]);
+            })
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json([
             'status' => 'success',
-            'data'   => $submissions
+            'data' => $submissions
         ], 200);
     }
 
@@ -68,5 +76,76 @@ class SubmissionController extends Controller
             'message' => 'Submission berhasil dibuat!',
             'data'    => $submission->load(['category', 'images', 'user'])
         ], 201);
+    }
+    // Menampilkan detail satu submission (digunakan untuk form Edit)
+    public function show($id)
+    {
+        $submission = Submission::with(['category', 'images', 'user'])->findOrFail($id);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $submission
+        ], 200);
+    }
+
+    // Mengupdate data submission
+    public function update(Request $request, $id)
+    {
+        $submission = Submission::findOrFail($id);
+        $userId = auth('sanctum')->id();
+
+        // Validasi kepemilikan (hanya pembuat laporan yang boleh mengedit)
+        if ($submission->user_id != $userId) {
+            return response()->json([
+                'message' => 'Unauthorized. Anda tidak berhak mengedit laporan ini.'
+            ], 403);
+        }
+
+        $request->validate([
+            'label'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'location'    => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        $submission->update([
+            'category_id' => $request->category_id,
+            'label'       => $request->label,
+            'description' => $request->description,
+            'location'    => $request->location,
+        ]);
+
+        return response()->json([
+            'message' => 'Laporan berhasil diperbarui!',
+            'data'    => $submission->load(['category', 'images', 'user'])
+        ], 200);
+    }
+
+    // Menghapus submission
+    public function destroy($id)
+    {
+        $submission = Submission::findOrFail($id);
+        $userId = auth('sanctum')->id();
+
+        // Validasi kepemilikan (hanya pembuat laporan yang boleh menghapus)
+        if ($submission->user_id != $userId) {
+            return response()->json([
+                'message' => 'Unauthorized. Anda tidak berhak menghapus laporan ini.'
+            ], 403);
+        }
+
+        // Hapus gambar terkait dari storage jika perlu, lalu hapus submission
+        foreach ($submission->images as $image) {
+            // Hapus file fisik jika disimpan di public disk
+            \Storage::disk('public')->delete($image->url);
+            $image->delete();
+        }
+
+        $submission->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Laporan berhasil dihapus!'
+        ], 200);
     }
 }

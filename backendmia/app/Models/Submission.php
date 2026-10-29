@@ -18,6 +18,16 @@ class Submission extends Model
         'status',
         'feedback',
     ];
+    protected $appends = ['priority_score'];
+
+// Menghitung skor prioritas: Bobot vote lebih tinggi, ditambah status pending/process
+public function getPriorityScoreAttribute()
+{
+    $voteWeight = ($this->votes_count ?? 0) * 3; // Setiap vote bernilai 3 poin
+    $statusWeight = $this->status === 'pending' ? 5 : ($this->status === 'process' ? 10 : 1);
+    
+    return $voteWeight + $statusWeight;
+}
 
     public function user()
     {

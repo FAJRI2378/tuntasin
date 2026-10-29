@@ -8,9 +8,14 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+   public function index()
     {
-        return response()->json(Category::latest()->get());
+        $categories = Category::latest()->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $categories
+        ], 200);
     }
 
   public function store(Request $request)

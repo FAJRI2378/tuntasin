@@ -12,12 +12,16 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/submissions', [SubmissionController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
+
 // Protected Auth Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/check', [AuthController::class, 'checkUser']);
 
     Route::prefix("/submissions")->group(function () {
         Route::post('/', [SubmissionController::class, 'store']);
+        Route::get('/{id}', [SubmissionController::class, 'show']);     // Ambil detail data untuk edit
+        Route::put('/{id}', [SubmissionController::class, 'update']);    // Simpan perubahan edit
+        Route::delete('/{id}', [SubmissionController::class, 'destroy']);// Hapus laporan
         Route::post('/{id}/vote', [VoteController::class, 'toggleVote']);
     });
 
@@ -34,7 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // CRUD Categories khusus Admin (Update & Delete)
         Route::prefix("/categories")->group(function () {
-            // Route::post('/', [CategoryController::class, 'store']); // Hapus dari sini
             Route::put('/{id}', [CategoryController::class, 'update']);
             Route::delete('/{id}', [CategoryController::class, 'destroy']);
         });

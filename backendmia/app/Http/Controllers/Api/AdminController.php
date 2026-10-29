@@ -37,19 +37,24 @@ class AdminController extends Controller
         ], 200);
     }
 
-    // Mengubah status submission oleh admin
     public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,process,completed,invalid'
-        ]);
+{
+    $request->validate([
+        'status'   => 'required|in:pending,process,invalid,completed',
+        'feedback' => 'nullable|string', // Menyimpan catatan/alasan dari admin
+    ]);
 
-        $submission = Submission::findOrFail($id);
-        $submission->update(['status' => $request->status]);
+    $submission = Submission::findOrFail($id);
+    
+    $submission->update([
+        'status'   => $request->status,
+        'feedback' => $request->feedback,
+    ]);
 
-        return response()->json([
-            'message' => 'Status submission berhasil diperbarui!',
-            'data'    => $submission
-        ]);
-    }
+    return response()->json([
+        'status'  => 'success',
+        'message' => 'Status dan feedback laporan berhasil diperbarui',
+        'data'    => $submission
+    ], 200);
+}
 }

@@ -37,24 +37,35 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function updateStatus(Request $request, $id)
+   public function updateStatus(Request $request, $id)
 {
     $request->validate([
-        'status'   => 'required|in:pending,process,invalid,completed',
-        'feedback' => 'nullable|string', // Menyimpan catatan/alasan dari admin
+        'status'         => 'required|in:pending,process,invalid,completed',
+        'feedback'       => 'nullable|string', 
+        'pdf_attachment' => 'nullable|file|mimes:pdf|max:10240', // Maksimal 10MB
     ]);
 
     $submission = Submission::findOrFail($id);
     
-    $submission->update([
+    $updateData = [
         'status'   => $request->status,
         'feedback' => $request->feedback,
-    ]);
+    ];
+
+    if ($request->hasFile('pdf_attachment')) {
+        if ($submission->pdf_attachment) {
+            \Storage::disk('public')->delete($submission->pdf_attachment);
+        }
+        $path = $request->file('pdf_attachment')->store('pdf_proyek', 'public');
+        $updateData['pdf_attachment'] = $path;
+    }
+
+    $submission->update($updateData);
 
     return response()->json([
         'status'  => 'success',
-        'message' => 'Status dan feedback laporan berhasil diperbarui',
-        'data'    => $submission
+        'message' => 'Status dan dokumen berhasil diperbarui',
+        'data'    => $submission->load(['category', 'images', 'user'])
     ], 200);
 }
 }

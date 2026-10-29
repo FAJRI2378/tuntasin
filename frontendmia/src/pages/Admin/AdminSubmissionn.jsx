@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../js/api.js";
-import { Flame, MapPin, Tag, Clock, MessageSquare, Edit3, Trash2 } from "lucide-react";
+import { Flame, MapPin, Tag, Clock, MessageSquare, Edit3, Trash2, FileText } from "lucide-react";
 
 export default function AdminSubmissions() {
   const [submissions, setSubmissions] = useState([]);
@@ -14,10 +14,11 @@ export default function AdminSubmissions() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; 
 
-  // --- STATE UNTUK MODAL FEEDBACK ---
+  // --- STATE UNTUK MODAL FEEDBACK & PDF ---
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedSubmissionId, setSelectedSubmissionId] = useState(null);
   const [feedbackText, setFeedbackText] = useState("");
+  const [pdfFile, setPdfFile] = useState(null); // State untuk menyimpan file PDF proyek
 
   useEffect(() => {
     fetchSubmissions();
@@ -50,12 +51,13 @@ export default function AdminSubmissions() {
     }
   };
 
-  // --- FUNGSI LANGSUNG UBAH STATUS TANPA MODAL ---
+
   const handleDirectStatusChange = async (id, newStatus, currentFeedback) => {
     try {
-      const response = await api.put(`admin/submissions/${id}/status`, {
+      // Ubah dari api.put menjadi api.post agar sesuai dengan rute Laravel
+      const response = await api.post(`admin/submissions/${id}/status`, {
         status: newStatus,
-        feedback: currentFeedback || "" // Pertahankan feedback yang sudah ada
+        feedback: currentFeedback || "" 
       });
 
       if (response.status === 200) {
@@ -70,39 +72,41 @@ export default function AdminSubmissions() {
       alert(error.response?.data?.message || "Gagal memperbarui status laporan.");
     }
   };
-
   // --- MEMBUKA MODAL KHUSUS UNTUK EDIT/ISI FEEDBACK ---
   const handleOpenFeedbackModal = (id, currentFeedback) => {
     setSelectedSubmissionId(id);
     setFeedbackText(currentFeedback || ""); 
+    setPdfFile(null); // Reset file pilihan
     setShowFeedbackModal(true);
   };
 
-  // --- FUNGSI KIRIM FEEDBACK BARU KE SERVER ---
+  // --- FUNGSI KIRIM FEEDBACK & PDF KE SERVER ---
   const handleSaveFeedbackOnly = async () => {
     try {
-      // Cari status saat ini dari submission yang dipilih agar tidak berubah
       const currentItem = submissions.find(item => item.id === selectedSubmissionId);
 
-      const response = await api.put(`admin/submissions/${selectedSubmissionId}/status`, {
-        status: currentItem ? currentItem.status : "pending",
-        feedback: feedbackText
+      const formData = new FormData();
+      formData.append("status", currentItem ? currentItem.status : "pending");
+      formData.append("feedback", feedbackText);
+      if (pdfFile) {
+        formData.append("pdf_attachment", pdfFile);
+      }
+
+      const response = await api.post(`admin/submissions/${selectedSubmissionId}/status`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
       });
 
       if (response.status === 200) {
-        setSubmissions((prev) =>
-          prev.map((item) => 
-            item.id === selectedSubmissionId 
-              ? { ...item, feedback: feedbackText } 
-              : item
-          )
-        );
+        fetchSubmissions(); 
         setShowFeedbackModal(false);
-        alert("Catatan feedback berhasil diperbarui!");
+        setPdfFile(null);
+        alert("Catatan feedback dan dokumen proyek berhasil diperbarui!");
       }
     } catch (error) {
       console.error("Gagal menyimpan feedback:", error.response);
-      alert("Gagal memperbarui catatan feedback.");
+      alert(error.response?.data?.message || "Gagal memperbarui catatan feedback.");
     }
   };
 
@@ -286,21 +290,51 @@ export default function AdminSubmissions() {
                   </div>
                 </div>
 
-                {/* Foto Laporan */}
-                <div style={{ height: "150px", backgroundColor: "#0f172a", overflow: "hidden" }}>
+                {/* Foto Laporan (Responsif: Elegan untuk 1 atau banyak foto) */}
+                <div style={{ backgroundColor: "#0f172a", padding: "8px" }}>
                   {item.images && item.images.length > 0 ? (
-                    <img
-                      src={`http://localhost:8000/storage/${item.images[0].url}`}
-                      alt="Laporan"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
+                    item.images.length === 1 ? (
+                      // Jika hanya ada 1 foto, tampilkan memenuhi kotak dengan proporsional
+                      <a 
+                        href={`http://localhost:8000/storage/${item.images[0].url}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        title="Klik untuk memperbesar foto"
+                        style={{ display: "block", height: "160px", borderRadius: "6px", overflow: "hidden", border: "1px solid #334155" }}
+                      >
+                        <img
+                          src={`http://localhost:8000/storage/${item.images[0].url}`}
+                          alt="Lampiran Laporan"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      </a>
+                    ) : (
+                      // Jika ada lebih dari 1 foto, tampilkan sebagai galeri horizontal yang rapi
+                      <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px", maxHeight: "160px" }}>
+                        {item.images.map((img, index) => (
+                          <a 
+                            key={index} 
+                            href={`http://localhost:8000/storage/${img.url}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            title={`Lampiran ${index + 1} (Klik untuk memperbesar)`}
+                            style={{ minWidth: "130px", height: "150px", borderRadius: "6px", overflow: "hidden", display: "block", border: "1px solid #334155", flexShrink: 0 }}
+                          >
+                            <img
+                              src={`http://localhost:8000/storage/${img.url}`}
+                              alt={`Lampiran ${index + 1}`}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                          </a>
+                        ))}
+                      </div>
+                    )
                   ) : (
-                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", fontSize: "0.85rem" }}>
+                    <div style={{ width: "100%", height: "120px", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", fontSize: "0.85rem" }}>
                       Tidak ada foto
                     </div>
                   )}
                 </div>
-
                 <div style={{ padding: "15px", flex: 1, display: "flex", flexDirection: "column" }}>
                   
                   {/* Info Pelapor */}
@@ -348,7 +382,7 @@ export default function AdminSubmissions() {
                       </span>
                     </div>
 
-                    {/* Kotak Menampilkan Catatan Feedback */}
+                    {/* Kotak Menampilkan Catatan Feedback & Tombol Unduh PDF */}
                     <div style={{ 
                       backgroundColor: "#0f172a", 
                       padding: "8px", 
@@ -359,9 +393,31 @@ export default function AdminSubmissions() {
                       <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginBottom: "2px", display: "flex", alignItems: "center", gap: "4px" }}>
                         <MessageSquare size={12} color="#3b82f6" /> Catatan Feedback untuk Warga:
                       </div>
-                      <div style={{ fontSize: "0.8rem", color: item.feedback ? "#e2e8f0" : "#64748b", fontStyle: item.feedback ? "normal" : "italic" }}>
+                      <div style={{ fontSize: "0.8rem", color: item.feedback ? "#e2e8f0" : "#64748b", fontStyle: item.feedback ? "normal" : "italic", marginBottom: "6px" }}>
                         {item.feedback ? item.feedback : "Belum ada catatan feedback."}
                       </div>
+
+                      {item.pdf_attachment && (
+                        <a
+                          href={`http://localhost:8000/storage/${item.pdf_attachment}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            padding: "4px 8px",
+                            backgroundColor: "#2563eb",
+                            color: "#fff",
+                            borderRadius: "4px",
+                            textDecoration: "none",
+                            fontSize: "0.75rem",
+                            fontWeight: "bold"
+                          }}
+                        >
+                          <FileText size={12} /> Unduh Dokumen Proyek (PDF)
+                        </a>
+                      )}
                     </div>
 
                     {/* Bagian Kontrol Admin: Ubah Status Langsung, Edit Feedback, & Hapus */}
@@ -390,7 +446,7 @@ export default function AdminSubmissions() {
 
                       <button
                         onClick={() => handleOpenFeedbackModal(item.id, item.feedback)}
-                        title="Edit Catatan Feedback"
+                        title="Edit Catatan Feedback & Lampiran"
                         style={{
                           padding: "8px 10px",
                           backgroundColor: "#334155",
@@ -440,7 +496,7 @@ export default function AdminSubmissions() {
         )}
       </div>
 
-      {/* --- MODAL POPUP INPUT FEEDBACK ADMIN --- */}
+      {/* --- MODAL POPUP INPUT FEEDBACK & UPLOAD PDF ADMIN --- */}
       {showFeedbackModal && (
         <div style={{
           position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
@@ -452,22 +508,43 @@ export default function AdminSubmissions() {
             width: "450px", border: "1px solid #334155", boxShadow: "0 10px 25px rgba(0,0,0,0.5)"
           }}>
             <h3 style={{ marginBottom: "15px", fontSize: "1.2rem", display: "flex", alignItems: "center", gap: "8px", color: "#fff" }}>
-              <MessageSquare size={20} color="#3b82f6" /> Berikan Catatan / Feedback Admin
+              <MessageSquare size={20} color="#3b82f6" /> Catatan Feedback & Dokumen Proyek
             </h3>
             <p style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "15px" }}>
-              Tuliskan alasan perubahan status atau progress penanganan laporan agar dapat dibaca langsung oleh pelapor di halaman mereka.
+              Tuliskan catatan progress penanganan dan lampirkan dokumen PDF resmi (RAB/Proposal) untuk transparansi publik.
             </p>
             
             <textarea
-              rows="4"
-              placeholder="Contoh: Foto lokasi kurang jelas, atau tim sedang menuju ke lokasi..."
+              rows="3"
+              placeholder="Contoh: Tim sedang menuju ke lokasi perbaikan..."
               value={feedbackText}
               onChange={(e) => setFeedbackText(e.target.value)}
               style={{
                 width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #475569",
-                backgroundColor: "#0f172a", color: "#fff", resize: "vertical", outline: "none", marginBottom: "20px"
+                backgroundColor: "#0f172a", color: "#fff", resize: "vertical", outline: "none", marginBottom: "15px"
               }}
             />
+
+            {/* Input File PDF */}
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ fontSize: "0.85rem", color: "#94a3b8", display: "block", marginBottom: "6px" }}>
+                📄 Lampirkan File PDF Proyek / RAB (Opsional):
+              </label>
+              <input 
+                type="file" 
+                accept="application/pdf"
+                onChange={(e) => setPdfFile(e.target.files[0])}
+                style={{
+                  width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #475569",
+                  backgroundColor: "#0f172a", color: "#fff", fontSize: "0.85rem"
+                }}
+              />
+              {pdfFile && (
+                <span style={{ fontSize: "0.75rem", color: "#38bdf8", marginTop: "4px", display: "block" }}>
+                  Terpilih: {pdfFile.name}
+                </span>
+              )}
+            </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
               <button
@@ -486,7 +563,7 @@ export default function AdminSubmissions() {
                   border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold"
                 }}
               >
-                Simpan Feedback
+                Simpan & Unggah
               </button>
             </div>
           </div>

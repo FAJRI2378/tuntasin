@@ -17,6 +17,7 @@ class Submission extends Model
         'location',
         'status',
         'feedback',
+        'pdf_attachment',
     ];
     protected $appends = ['priority_score'];
 

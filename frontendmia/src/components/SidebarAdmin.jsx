@@ -1,15 +1,16 @@
 import styles from "../css/components/SidebarAdmin.module.css";
 import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
-import { EllipsisVertical, PanelLeftClose, PanelLeftOpen, Pen, Plus, LogIn, LogOut, User, LayoutDashboard, FolderKanban, File } from "lucide-react";
+import { EllipsisVertical, PanelLeftClose, PanelLeftOpen, Pen, Plus, LogIn, LogOut, User, LayoutDashboard, FolderKanban, File, Flame } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
-import { Link, useNavigate } from "react-router-dom";
-import api from "../js/api"; // Pastikan path import api sudah benar
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import api from "../js/api";
 
 export default function SidebarAdmin() {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [submissions, setSubmissions] = useState([]);
   const [user, setUser] = useState(null);
@@ -53,7 +54,6 @@ export default function SidebarAdmin() {
     navigate("/login");
   };
   
-
   const navLink = [
     {
       label: "Dashboard",
@@ -73,9 +73,9 @@ export default function SidebarAdmin() {
     {
       label: "Peta Prioritas",
       icon: Flame,
-      path: "/admin/heatmap" // Menu baru untuk admin
+      path: "/admin/heatmap"
     },
-  ]
+  ];
 
   return (
     <div className={clsx(styles.container, !open ? styles.close : "")}>
@@ -96,11 +96,18 @@ export default function SidebarAdmin() {
 
         <nav className={styles.navMenu}>
           {
-            navLink.map((item) => {
-              return <div className={clsx(styles.navItem, item.path === location.pathname && styles.navItemActive)} onClick={() => navigate(item.path)}>
-                <item.icon size={20} />
-                {item.label}
-              </div>
+            navLink.map((item, index) => {
+              return (
+                <div 
+                  key={index}
+                  className={clsx(styles.navItem, item.path === location.pathname && styles.navItemActive)} 
+                  onClick={() => navigate(item.path)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <item.icon size={20} />
+                  <span>{item.label}</span>
+                </div>
+              );
             })
           }
         </nav>

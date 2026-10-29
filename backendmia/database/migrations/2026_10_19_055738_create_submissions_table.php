@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('label');
             $table->text('description');
             $table->string('location');
+        
+            $table->string('pdf_attachment')->nullable();
           $table->enum('status', ['pending', 'process', 'invalid', 'completed'])->default('pending');
             $table->text('feedback')->nullable();
             $table->timestamps();

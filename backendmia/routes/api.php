@@ -28,13 +28,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Pindahkan POST kategori ke sini agar warga/user biasa bisa menambah kategori baru saat laporan
     Route::post('/categories', [CategoryController::class, 'store']);
 
-    Route::middleware('admin')->group(function () {
+  Route::middleware('admin')->group(function () {
         
-        // Admin Routes
-        Route::prefix("/admin")->group(function () {
-            Route::get('/stats', [AdminController::class, 'stats']);
-            Route::put('/submissions/{id}/status', [AdminController::class, 'updateStatus']);
-        });
+    // Admin Routes
+    Route::prefix("/admin")->group(function () {
+        Route::get('/stats', [AdminController::class, 'stats']);
+        Route::post('/submissions/{id}/status', [AdminController::class, 'updateStatus']); // UBAH PUT MENJADI POST
+    });
 
         // CRUD Categories khusus Admin (Update & Delete)
         Route::prefix("/categories")->group(function () {

@@ -205,11 +205,13 @@ pointer-events: auto;
   flex: 1;
   position: relative;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
 }
 
 .reportsItem {
   padding-right: 1rem;
-  padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: .3rem;

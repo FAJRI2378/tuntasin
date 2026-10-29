@@ -1,0 +1,31 @@
+.label {
+  font-size: 1.2rem;
+  color: #f8fafc;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.location {
+  background-color: #ef4444;
+  padding: .3rem;
+  border-radius: .3rem;
+  cursor: pointer;
+}
+
+.voteBtn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  background-color: #f0f0f0;
+  color: #ff5656;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}

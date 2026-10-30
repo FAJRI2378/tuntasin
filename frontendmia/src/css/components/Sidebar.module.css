@@ -142,7 +142,7 @@ pointer-events: auto;
 }
 
 .sideButtons a {
-  background-color: var(--electric);
+  background-color: #333;
   display: flex;
   align-items: center;
   gap: .3rem;
@@ -156,14 +156,24 @@ pointer-events: auto;
   transition: all 0.3s ease;
 }
 .navBtnActive a {
+  background-color: var(--electric);
   margin-right: 0;
   border-radius: 5rem 0 0 5rem;
 }
 .sideButtons a > * {
   color: white;
 }
-.close .sideButtons a {
+.close .sideButtons > div:not(.navBtnActive) a {
+  margin-right: .5rem;
+  padding-inline: .3rem;
+  background-color: transparent;
+}
+.close .sideButtons > div:not(.navBtnActive) a svg {
+  color: var(--electric);
+}
+.close .navBtnActive .sideButtons a {
   padding-inline: .8rem;
+
 }
 .sideButtons a > svg {
   height: 16px;

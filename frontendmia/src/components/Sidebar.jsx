@@ -104,7 +104,7 @@ export default function SideBar() {
       
       // Hapus item dari state sidebar
       setSubmissions((prev) => prev.filter((item) => item.id !== id));
-      setActionMenuId(null);
+    setActionMenuId(null);
 
       // --- TAMBAHKAN BARIS INI ---
       // Memicu event agar komponen lain (seperti Home) ikut memperbarui data

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../js/api";
 import { Flame, MapPin, Tag, Clock, ChevronLeft, ChevronRight, FileText, Search, Share2, X, ZoomIn, MessageSquare } from "lucide-react";
+import LocationModalButton from "../components/MapButton";
 
 export default function Home() {
   const [submissions, setSubmissions] = useState([]);
@@ -338,21 +339,7 @@ export default function Home() {
                   </p>
 
                   {/* Peta Lokasi */}
-                  <div style={{ marginBottom: "12px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "4px", marginBottom: "4px", fontSize: "0.8rem", color: "#cbd5e1" }}>
-                       <MapPin size={14} color="#ef4444" /> {item.location}
-                    </div>
-                    <iframe
-                      title="Peta Lokasi"
-                      width="100%"
-                      height="75"
-                      frameBorder="0"
-                      style={{ border: 0, borderRadius: "6px", opacity: 0.8 }}
-                      src={`https://maps.google.com/maps?q=${encodeURIComponent(item.location)}&output=embed`}
-                      allowFullScreen
-                      loading="lazy"
-                    ></iframe>
-                  </div>
+                  <LocationModalButton data={item} />
 
                   {/* Kategori & Tanggal di bagian bawah sebelum feedback */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.8rem", color: "#94a3b8", marginBottom: "12px", borderBottom: "1px solid #334155", paddingBottom: "8px" }}>

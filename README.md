@@ -13,7 +13,7 @@ Karena project ini terdiri dari Frontend dan Backend, ikuti langkah berikut untu
 
 **1. Clone Repository**
 ```bash
-git clone https://github.com/USERNAME_GITHUB/tuntasin.git
+git clone https://github.com/FAJRI2378/tuntasin.git
 cd tuntasin
 ```
 

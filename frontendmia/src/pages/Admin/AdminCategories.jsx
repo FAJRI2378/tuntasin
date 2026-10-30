@@ -14,7 +14,8 @@ export default function AdminCategories() {
   async function fetchCategories() {
     try {
       const response = await api.get("categories");
-      setCategories(response.data);
+      // Ambil bagian array di dalam respons .data.data
+      setCategories(response.data.data || response.data || []);
     } catch (error) {
       console.error("Gagal memuat kategori:", error);
     }

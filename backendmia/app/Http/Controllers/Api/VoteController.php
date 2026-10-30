@@ -11,13 +11,19 @@ class VoteController extends Controller
 {
     public function togglevote($id)
     {
-        $userId = auth()->id();
+        // Pastikan pakai guard sanctum jika ini API
+        $userId = auth('sanctum')->id(); 
         
         if (!$userId) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         $submission = Submission::findOrFail($id);
+
+        // --- Perbaikan: Gunakan '==' agar tipe datanya fleksibel
+        if ($submission->user_id == $userId) {
+            return response()->json(['message' => 'Anda tidak bisa mendukung laporan Anda sendiri.'], 403);
+        }
 
         // Cek apakah user sudah pernah vote laporan ini
         $existingVote = Vote::where('user_id', $userId)

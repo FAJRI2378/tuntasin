@@ -1,9 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import AdminLayout from "./layouts/AdminLayouts"; 
+import AdminLayout from "./layouts/AdminLayouts";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Auth from "./pages/Auth";
+import EditSubmission from "./pages/EditSubmission";
+import PriorityHeatmap from "./pages/PriorityHeatmap";
 
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminCategories from "./pages/Admin/AdminCategories";
@@ -21,6 +23,14 @@ export const routes = createBrowserRouter([
       {
         path: "/create",
         element: <Create />,
+      },
+      {
+        path: "/edit/:id",
+        element: <EditSubmission />,
+      },
+      {
+        path: "/heatmap", // Rute Peta Panas untuk User
+        element: <PriorityHeatmap />,
       },
     ],
   },
@@ -43,12 +53,16 @@ export const routes = createBrowserRouter([
       },
 
       {
-        path: "categories",
+        path: "Categories",
         element: <AdminCategories />,
       },
       {
         path: "Submission",
         element: <AdminSubmissions />,
+      },
+      {
+        path: "heatmap",
+        element: <PriorityHeatmap />,
       },
     ],
   },

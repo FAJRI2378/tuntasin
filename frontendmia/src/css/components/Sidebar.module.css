@@ -337,9 +337,62 @@ pointer-events: auto;
 }
 
 .logoutBtn:hover {
-  background-color: #fee2e2; /* Hover merah tipis */
+  background-color: #fee2e2; 
+}
+.reportsWrapper {
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: visible; 
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
 }
 
+.reportsItem {
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  overflow: visible !important; 
+}
+
+.reportsItem>* {
+  padding: .2rem .5rem;
+  font-size: .8em;
+  border-radius: 3rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  justify-content: space-between;
+  overflow: visible !important; 
+}
+
+.report {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+}
+
+.reportName {
+  flex: 1;          
+  min-width: 0;     
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+
+.reportEdit {
+  flex-shrink: 0;   
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 @keyframes slideUp {
   from {
     opacity: 0;

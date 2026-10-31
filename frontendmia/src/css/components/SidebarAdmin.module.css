@@ -1,5 +1,6 @@
 .container {
   height: 100vh;
+  height: 100dvh;
 }
 
 .content {
@@ -10,6 +11,7 @@
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   transition: all 0.3s ease;
 }
 
@@ -49,7 +51,6 @@
   width: 0%;
 }
 
-
 .logoIcon {
   display: flex;
   align-items: center;
@@ -64,7 +65,7 @@
 }
 .close .logoIcon:hover {
   opacity: 1;
-pointer-events: auto;
+  pointer-events: auto;
 }
 .logoIcon > * {
   stroke-width: 2px;
@@ -73,11 +74,11 @@ pointer-events: auto;
 .navMenu {
   flex: 1;
   margin-top: 2rem;
-  /* min */
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding-left: 1rem;
+  overflow-y: auto;
 }
 .navItem {
   background-color: #ddd;
@@ -85,10 +86,11 @@ pointer-events: auto;
   display: flex;
   gap: 1rem;
   align-items: center;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 2rem;
   cursor: pointer;
   margin-right: 1rem;
+  white-space: nowrap;
   transition: all 0.3s ease;
 }
 .navItemActive {
@@ -98,7 +100,37 @@ pointer-events: auto;
   margin-right: 0;
 }
 
+/* ---------- Keadaan tertutup (50px): hanya ikon ---------- */
+.close .navMenu {
+  padding-left: 5px;
+}
+.close .navItem {
+  justify-content: center;
+  padding: 0.5rem;
+  margin-right: 5px;
+}
+.close .navItemActive {
+  margin-right: 0;
+}
+.close .navItem span,
+.close .accLeft,
+.close .loginBtn span {
+  display: none;
+}
+.close .account {
+  padding: 1rem 0.25rem;
+}
+.close .accContent {
+  justify-content: center;
+}
+.close .loginBtn {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+/* ---------- Akun ---------- */
 .account {
+  position: relative;
   padding: 1rem;
   border-top: 1px solid #999;
 }
@@ -107,14 +139,22 @@ pointer-events: auto;
   display: flex;
   color: black;
   justify-content: space-between;
+  align-items: center;
 }
 .accLeft {
   display: flex;
   align-items: center;
+  min-width: 0;
+}
+.accName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .accRight {
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .loginBtn {
@@ -122,8 +162,9 @@ pointer-events: auto;
   align-items: center;
   gap: 12px;
   width: 100%;
+  box-sizing: border-box;
   padding: 12px 16px;
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
   color: #1f2937;
   border-radius: 50px;
   text-decoration: none;
@@ -137,16 +178,10 @@ pointer-events: auto;
   background-color: #ddd;
 }
 
-/* Pastikan div .account menggunakan relative agar pop-up absolute bisa diposisikan */
-.account {
-  position: relative;
-  /* (Pertahankan properti account kamu yang sudah ada) */
-}
-
-/* Popup Dropdown Logout */
+/* Popup dropdown logout */
 .dropdownMenu {
   position: absolute;
-  bottom: 110%; /* Muncul tepat di atas profil */
+  bottom: 110%; /* muncul tepat di atas profil */
   right: 10px;
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
@@ -157,8 +192,12 @@ pointer-events: auto;
   z-index: 50;
   animation: slideUp 0.2s ease-out;
 }
+/* Saat sidebar 50px, buka popup ke arah kanan agar tidak keluar layar */
+.close .dropdownMenu {
+  right: auto;
+  left: 8px;
+}
 
-/* Tombol di dalam Dropdown */
 .logoutBtn {
   display: flex;
   align-items: center;
@@ -168,7 +207,7 @@ pointer-events: auto;
   background: none;
   border: none;
   border-radius: 6px;
-  color: #ef4444; /* Merah untuk logout */
+  color: #ef4444; /* merah untuk logout */
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -177,7 +216,7 @@ pointer-events: auto;
 }
 
 .logoutBtn:hover {
-  background-color: #fee2e2; /* Hover merah tipis */
+  background-color: #fee2e2;
 }
 
 @keyframes slideUp {
@@ -188,5 +227,53 @@ pointer-events: auto;
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ---------- Backdrop (hanya HP) ---------- */
+.backdrop {
+  display: none;
+}
+
+/* ---------- Responsif: HP & tablet kecil (<= 800px) ---------- */
+@media screen and (max-width: 800px) {
+  /* Sidebar melayang di atas konten; konten cukup menyisakan 50px di kiri */
+  .container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  }
+
+  .content {
+    width: min(250px, 80vw);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+  }
+  .close .content {
+    width: 50px;
+    box-shadow: none;
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+
+  /* Di layar sentuh tidak ada hover: tombol buka harus selalu terlihat */
+  .close .topWrapper {
+    padding-inline: 0.5rem;
+    justify-content: center;
+    border-right: none;
+  }
+  .close .logoWrapper {
+    display: none;
+  }
+  .close .logoIcon {
+    position: static;
+    opacity: 1;
+    background: none;
   }
 }

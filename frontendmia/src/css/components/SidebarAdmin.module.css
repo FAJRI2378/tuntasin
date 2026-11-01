@@ -1,6 +1,11 @@
+.backdrop {
+  z-index: 9999999 !important;
+}
+
 .container {
   height: 100vh;
   height: 100dvh;
+  z-index: 9999999;
 }
 
 .content {
@@ -31,22 +36,28 @@
 .topWrapper img {
   height: 20px;
 }
+
 .logoWrapper {
   display: flex;
   align-items: center;
 }
-.logoWrapper > * {
+
+.logoWrapper>* {
   transition: all 0.3s ease;
 }
+
 .icon {
   width: 0%;
 }
+
 .logo {
   width: 90%;
 }
+
 .close .icon {
   width: 120%;
 }
+
 .close .logo {
   width: 0%;
 }
@@ -57,17 +68,20 @@
   color: var(--electric);
   cursor: pointer;
 }
+
 .close .logoIcon {
   position: absolute;
   opacity: 0;
   background-color: #f0f0f0;
   transition: all 0.3s ease;
 }
+
 .close .logoIcon:hover {
   opacity: 1;
   pointer-events: auto;
 }
-.logoIcon > * {
+
+.logoIcon>* {
   stroke-width: 2px;
 }
 
@@ -80,6 +94,7 @@
   padding-left: 1rem;
   overflow-y: auto;
 }
+
 .navItem {
   background-color: #ddd;
   color: var(--electric);
@@ -93,6 +108,7 @@
   white-space: nowrap;
   transition: all 0.3s ease;
 }
+
 .navItemActive {
   background-color: var(--electric);
   color: white;
@@ -104,25 +120,31 @@
 .close .navMenu {
   padding-left: 5px;
 }
+
 .close .navItem {
   justify-content: center;
   padding: 0.5rem;
   margin-right: 5px;
 }
+
 .close .navItemActive {
   margin-right: 0;
 }
+
 .close .navItem span,
 .close .accLeft,
 .close .loginBtn span {
   display: none;
 }
+
 .close .account {
   padding: 1rem 0.25rem;
 }
+
 .close .accContent {
   justify-content: center;
 }
+
 .close .loginBtn {
   justify-content: center;
   padding: 12px 0;
@@ -141,11 +163,13 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .accLeft {
   display: flex;
   align-items: center;
   min-width: 0;
 }
+
 .accName {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -181,7 +205,8 @@
 /* Popup dropdown logout */
 .dropdownMenu {
   position: absolute;
-  bottom: 110%; /* muncul tepat di atas profil */
+  bottom: 110%;
+  /* muncul tepat di atas profil */
   right: 10px;
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
@@ -192,6 +217,7 @@
   z-index: 50;
   animation: slideUp 0.2s ease-out;
 }
+
 /* Saat sidebar 50px, buka popup ke arah kanan agar tidak keluar layar */
 .close .dropdownMenu {
   right: auto;
@@ -207,7 +233,8 @@
   background: none;
   border: none;
   border-radius: 6px;
-  color: #ef4444; /* merah untuk logout */
+  color: #ef4444;
+  /* merah untuk logout */
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -224,6 +251,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -237,6 +265,7 @@
 
 /* ---------- Responsif: HP & tablet kecil (<= 800px) ---------- */
 @media screen and (max-width: 800px) {
+
   /* Sidebar melayang di atas konten; konten cukup menyisakan 50px di kiri */
   .container {
     position: fixed;
@@ -249,6 +278,7 @@
     width: min(250px, 80vw);
     box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
   }
+
   .close .content {
     width: 50px;
     box-shadow: none;
@@ -268,9 +298,11 @@
     justify-content: center;
     border-right: none;
   }
+
   .close .logoWrapper {
     display: none;
   }
+
   .close .logoIcon {
     position: static;
     opacity: 1;

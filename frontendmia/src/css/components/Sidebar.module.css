@@ -1,6 +1,11 @@
+.backdrop {
+  z-index: 9999999 !important;
+}
+
 .container {
   height: 100vh;
   height: 100dvh;
+  z-index: 9999999;
 }
 
 .content {

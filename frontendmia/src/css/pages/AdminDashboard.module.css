@@ -294,6 +294,11 @@
   flex-wrap: wrap;
   gap: 6px 12px;
 }
+.adVotedFoot span {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
 
 .adEmpty {
   color: #64748b;
@@ -310,6 +315,7 @@
 }
 
 @media screen and (max-width: 800px) {
+
   .adWrap {
     padding: 10px;
     margin-left: 50px;
@@ -332,7 +338,7 @@
 }
 
 @media screen and (max-width: 480px) {
-  .adStats.adStats {
+  .adStats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
@@ -344,5 +350,11 @@
   }
   .adChart {
     height: 200px;
+  }
+  .statCard {
+    padding: 1rem;
+  }
+  .statValue {
+    font-size: 2em;
   }
 }

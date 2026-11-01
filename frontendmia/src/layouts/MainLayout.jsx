@@ -21,15 +21,11 @@ export default function MainLayout() {
         const response = await api.get("/check");
         const data = response.data;
 
-        if (data.is_admin) {
-          if (!data.valid) {
-            navigate("/login");
-          } else {
-            navigate("/admin");
-          }
+        if (data.is_admin && data.valid) {
+          navigate("/admin");
         }
       } catch (error) {
-        navigate("/login");
+        // navigate("/login");
       } finally {
         setIsLoading(false);
       }

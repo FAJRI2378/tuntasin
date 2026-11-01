@@ -22,14 +22,10 @@ export default function AdminLayout() {
         const data = response.data;
 
         if (!data.is_admin) {
-          if (!data.valid) {
-            navigate("/login");
-          } else {
-            navigate("/");
-          }
+          navigate("/");
         }
       } catch (error) {
-        navigate("/login");
+        navigate("/");
       } finally {
         setIsLoading(false);
       }

@@ -29,9 +29,13 @@ export default function LocationModalButton({ data }) {
           attribution: "&copy; OpenStreetMap contributors",
         }).addTo(map);
 
-        // Contoh menambahkan marker berdasarkan lokasi (jika item memiliki koordinat lat/lng)
-        console.log(data.location);
-        L.marker([-6.2088, 106.8456])
+        const parts = data.location.split(", ");
+        const coorObject = [
+          parseFloat(parts[0].trim()),
+          parseFloat(parts[1].trim()),
+        ];
+
+        L.marker(coorObject)
           .addTo(map)
           .bindPopup(data.location)
           .openPopup();

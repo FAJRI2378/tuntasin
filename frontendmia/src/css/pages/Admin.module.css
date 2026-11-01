@@ -21,7 +21,7 @@
 
 .logoWrapper {
   display: flex;
-  alignItems: center;
+  align-items: center;
   gap: 0.8rem;
   margin-bottom: 3rem;
 }

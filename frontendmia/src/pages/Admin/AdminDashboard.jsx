@@ -10,7 +10,7 @@ import {
   BarChart3,
   XCircle,
 } from "lucide-react";
-import styles from "../../css/pages/Admin.module.css";
+import styles from "../../css/pages/AdminDashboard.module.css";
 import {
   BarChart,
   Bar,

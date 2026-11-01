@@ -454,7 +454,7 @@ export default function Home() {
                   </div>
 
                   {/* --- FEEDBACK & PDF --- */}
-                  <div
+                  {/* <div
                     style={{
                       marginTop: "auto",
                       marginBottom: "12px",
@@ -511,7 +511,7 @@ export default function Home() {
                         <FileText size={12} /> Unduh Dokumen Proyek (PDF)
                       </a>
                     )}
-                  </div>
+                  </div> */}
 
                   {/* Tombol Vote */}
                   <button

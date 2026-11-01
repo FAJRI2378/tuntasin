@@ -17,7 +17,6 @@ export default function AdminLayout() {
           setIsLoading(false);
           return;
         }
-        console.log("l");
 
         const response = await api.get("/check");
         const data = response.data;
@@ -40,7 +39,7 @@ export default function AdminLayout() {
   }, []);
 
   if (isLoading) {
-    return <div style={{ textAlign: "center", marginTop: "50px" }}>O</div>;
+    return;
   }
 
   return (

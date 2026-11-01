@@ -266,14 +266,14 @@ export default function Home() {
 
                 {/* --- BAGIAN GALERI FOTO --- */}
                 <div 
-                  onClick={() => images.length > 0 && setModalImage(`http://localhost:8000/storage/${images[currentImgIdx].url}`)}
+                  onClick={() => images.length > 0 && setModalImage(`https://tuntasin.epistura.web.id/storage/${images[currentImgIdx].url}`)}
                   style={{ height: "160px", backgroundColor: "#0f172a", position: "relative", overflow: "hidden", cursor: images.length > 0 ? "zoom-in" : "default", flexShrink: 0 }}
                   title={images.length > 0 ? "Klik untuk memperbesar foto" : ""}
                 >
                   {images.length > 0 ? (
                     <>
                       <img
-                        src={`http://localhost:8000/storage/${images[currentImgIdx].url}`}
+                        src={`https://tuntasin.epistura.web.id/storage/${images[currentImgIdx].url}`}
                         alt={`Lampiran ${currentImgIdx + 1}`}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
@@ -373,7 +373,7 @@ export default function Home() {
                     {/* Tombol Download PDF jika ada lampiran */}
                     {item.pdf_attachment && (
                       <a
-                        href={`http://localhost:8000/storage/${item.pdf_attachment}`}
+                        href={`https://tuntasin.epistura.web.id/storage/${item.pdf_attachment}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{

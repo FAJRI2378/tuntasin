@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import styles from "../css/pages/Auth.module.css";
 import icon from "../assets/iconSimple.svg";
 import logo from "../assets/icon.svg";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import api from "../js/api";
@@ -13,6 +13,7 @@ export default function Auth({ type }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State toggle mata
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -41,8 +42,6 @@ export default function Auth({ type }) {
 
     verify();
   }, []);
-
-  
 
   const isLogin = type == "login";
 
@@ -150,8 +149,9 @@ export default function Auth({ type }) {
       Swal.fire({
         icon: "error",
         title: "Confirm your password",
-        text: "Password and Confirm Password doesn't match",
+        text: "Password dan Confirm Password tidak sama",
       });
+      return; // Hentikan eksekusi jika password tidak cocok
     }
 
     setIsLoading(true);
@@ -177,14 +177,12 @@ export default function Auth({ type }) {
           ? Object.values(error.response.data.errors)[0][0]
           : null) ||
         "Gagal melakukan registrasi!";
-      if (password != confirmPassword) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: errorMessage,
-        });
-        return; 
-      }
+      
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -220,16 +218,49 @@ export default function Auth({ type }) {
           <div className={styles.form}>
             <div className={styles.formInput}>
               {inputs[type].map((item) => {
+                const isPasswordInput = item.id === "password" || item.id === "confirmPassword";
+
                 return (
-                  <div className={styles[item.id]}>
+                  <div key={item.id} className={styles[item.id]}>
                     <label htmlFor={item.id}>{item.label}</label>
-                    <input
-                      type={item.type}
-                      id={item.id}
-                      placeholder={item.placeholder}
-                      value={item.value}
-                      onChange={(e) => item.setValue(e.target.value)}
-                    />
+                    
+                    {/* Jika input adalah password, bungkus dengan container khusus */}
+                    {isPasswordInput ? (
+                      <div className={styles.passwordInputContainer}>
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          id={item.id}
+                          placeholder={item.placeholder}
+                          value={item.value}
+                          onChange={(e) => item.setValue(e.target.value)}
+                          style={{ paddingRight: "40px" }} // Sisakan ruang untuk ikon mata
+                        />
+                        <span
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: "absolute",
+                            right: "12px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            color: "white",
+                            opacity: 0.7
+                          }}
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </span>
+                      </div>
+                    ) : (
+                      // Jika bukan input password, render input biasa
+                      <input
+                        type={item.type}
+                        id={item.id}
+                        placeholder={item.placeholder}
+                        value={item.value}
+                        onChange={(e) => item.setValue(e.target.value)}
+                      />
+                    )}
+
                   </div>
                 );
               })}

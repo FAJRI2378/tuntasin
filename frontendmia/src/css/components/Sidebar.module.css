@@ -1,5 +1,6 @@
 .container {
   height: 100vh;
+  height: 100dvh;
 }
 
 .content {
@@ -10,6 +11,7 @@
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   transition: all 0.3s ease;
 }
 
@@ -64,7 +66,7 @@
 }
 .close .logoIcon:hover {
   opacity: 1;
-pointer-events: auto;
+  pointer-events: auto;
 }
 .logoIcon > * {
   stroke-width: 2px;
@@ -266,15 +268,24 @@ pointer-events: auto;
 .accContent {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .accLeft {
   display: flex;
   align-items: center;
+  min-width: 0;
+}
+
+.accName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .accRight {
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .loginBtn {
@@ -282,6 +293,7 @@ pointer-events: auto;
   align-items: center;
   gap: 12px;
   width: 100%;
+  box-sizing: border-box;
   padding: 12px 16px;
   background-color: #f0f0f0; 
   color: #1f2937;
@@ -300,7 +312,6 @@ pointer-events: auto;
 /* Pastikan div .account menggunakan relative agar pop-up absolute bisa diposisikan */
 .account {
   position: relative;
-  /* (Pertahankan properti account kamu yang sudah ada) */
 }
 
 /* Popup Dropdown Logout */
@@ -401,5 +412,90 @@ pointer-events: auto;
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ---------- Backdrop (hanya HP) ---------- */
+.backdrop {
+  display: none;
+}
+
+/* =====================================================================
+   RESPONSIF: HP & tablet kecil (<= 800px)
+   .container tetap ada di alur layout dengan lebar 50px (jadi konten tidak
+   perlu offset tambahan), sedangkan .content melayang di atas halaman saat
+   sidebar dibuka.
+   ===================================================================== */
+@media screen and (max-width: 800px) {
+  .container {
+    position: relative;
+    width: 50px;
+    min-width: 50px;
+    flex-shrink: 0;
+  }
+
+  .content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: min(250px, 80vw);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+  }
+  .close .content {
+    width: 50px;
+    box-shadow: none;
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+
+  /* Layar sentuh tidak punya hover: tombol buka harus selalu terlihat */
+  .close .topWrapper {
+    padding-inline: 0.5rem;
+    justify-content: center;
+    border-right: none;
+  }
+  .close .logoWrapper {
+    display: none;
+  }
+  .close .logoIcon {
+    position: static;
+    opacity: 1;
+    background: none;
+  }
+
+  /* Keadaan tertutup (50px): hanya ikon */
+  .close .sideButtons a > div,
+  .close .reports > *,
+  .close .accLeft,
+  .close .loginBtn span {
+    display: none;
+  }
+  .close .account {
+    padding: 1rem 0.25rem;
+  }
+  .close .accContent {
+    justify-content: center;
+  }
+  .close .loginBtn {
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  /* Popup logout dibuka ke kanan saat sidebar 50px agar tidak keluar layar */
+  .close .dropdownMenu {
+    right: auto;
+    left: 8px;
+  }
+
+  /* Daftar submission selalu menampilkan tombol titik tiga (tanpa hover) */
+  .reportEdit {
+    display: flex;
   }
 }

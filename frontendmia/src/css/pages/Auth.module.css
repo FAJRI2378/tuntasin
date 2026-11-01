@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
+  box-sizing: border-box;
 }
 
 .panel {
@@ -88,18 +88,19 @@
   text-transform: capitalize;
   color: white;
 }
-.formInput > * > input {
+.formInput input {
   background-color: transparent;
   border: 1px solid white;
   border-radius: .3rem;
   padding: .5rem .8rem;
   color: white;
+  width: 100%;
 }
-.formInput > * > input::placeholder {
+.formInput input::placeholder {
   color: white;
   opacity: .5;
 }
-.formInput > * > input:focus {
+.formInput input:focus {
   outline: none;
 }
 
@@ -137,4 +138,55 @@
 }
 .addition span:hover {
   color: var(--b-lime);
+}
+
+/* --- TAMBAHAN UNTUK CONTAINER INPUT PASSWORD --- */
+.passwordInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+/* --- RESPONSIVE LAYOUT (UNTUK HP & TABLET) --- */
+@media screen and (max-width: 800px) {
+  .container {
+    padding: 1.5rem;      /* Kurangi jarak luar agar tidak memakan tempat di HP */
+    height: auto;         /* Ubah height agar bisa scroll jika form terlalu panjang */
+    min-height: 100vh;
+  }
+  
+  .panel {
+    flex-direction: column; /* Ubah tata letak menjadi atas-bawah (vertikal) */
+    height: auto;
+    border-radius: 1.5rem;
+  }
+
+  .panel > * {
+    padding: 2rem 1.5rem;   /* Sesuaikan padding di dalam panel */
+  }
+
+  .abtTitle {
+    font-size: 2rem;        /* Perkecil ukuran teks judul kiri */
+  }
+
+  .abtDescription {
+    font-size: 0.9rem;      /* Sesuaikan teks deskripsi */
+  }
+
+  .title {
+    font-size: 1.5rem;      /* Perkecil judul form (Create an Account) */
+    text-align: center;     /* Bawa ke tengah agar lebih manis di HP */
+  }
+
+  .logo {
+    height: 20px;           /* Sesuaikan ukuran logo di layar kecil */
+  }
+  
+  .icon {
+    height: 24px;
+  }
+
+  .submitBtn {
+    margin-top: 1rem;       /* Kurangi jarak atas tombol submit */
+  }
 }

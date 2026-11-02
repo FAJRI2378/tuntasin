@@ -1,70 +1,266 @@
+/* ============ PAGE ============ */
 .container {
-  height: 100vh;
+  position: relative;
+  min-height: 100vh;
   width: 100vw;
-  background-color: var(--b-electric);
-  padding: 4rem;
+  background-color: var(--b-electric, #c0cbff);
+  padding: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  overflow: hidden;
+  font-family: Poppins, system-ui, sans-serif;
 }
 
+.blobA,
+.blobB {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+.blobA {
+  width: 460px;
+  height: 460px;
+  top: -140px;
+  left: -120px;
+  background: rgba(255, 255, 255, 0.55);
+}
+.blobB {
+  width: 420px;
+  height: 420px;
+  bottom: -140px;
+  right: -100px;
+  background: rgba(31, 196, 104, 0.28);
+}
+
+/* ============ PANEL ============ */
 .panel {
+  position: relative;
+  z-index: 1;
   background-color: white;
   flex: 1;
-  max-width: 900px;
-  height: 100%;
+  max-width: 980px;
+  min-height: 640px;
   border-radius: 2rem;
   overflow: hidden;
-  display: flex; 
+  display: flex;
+  box-shadow: 0 30px 80px rgba(19, 55, 106, 0.25);
+  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .panel > * {
   flex: 1;
-  padding: 2rem;
+  padding: 2.5rem;
   min-width: 0;
 }
 
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============ LEFT ============ */
 .panelLeft {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.abtTitle {
-  font-family: Poppins;
-  font-weight: bold;
-  font-size: 3em;
+  gap: 1.5rem;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(192, 203, 255, 0.55), transparent 55%),
+    radial-gradient(circle at 0% 100%, rgba(31, 196, 104, 0.12), transparent 50%),
+    white;
 }
 
 .logoWrapper {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.8rem;
 }
 .logoWrapper > * {
   display: flex;
 }
-
 .logo {
   height: 25px;
 }
 .icon {
   height: 30px;
 }
+.logo img,
+.icon img {
+  height: 100%;
+}
 
-.panelRight {
-  background-color: var(--electric);
-  color: white;
+.about {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 1rem;
 }
 
+.badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--electric, #13376a);
+  background: rgba(192, 203, 255, 0.45);
+  border: 1px solid rgba(19, 55, 106, 0.1);
+}
+.badgeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--b-lime, #1fc468);
+  box-shadow: 0 0 0 0 rgba(31, 196, 104, 0.6);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  70% {
+    box-shadow: 0 0 0 8px rgba(31, 196, 104, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(31, 196, 104, 0);
+  }
+}
+
+.abtTitle {
+  font-family: Poppins, sans-serif;
+  font-weight: 800;
+  font-size: 2.8em;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--electric, #13376a);
+}
+.abtTitle span {
+  position: relative;
+  color: var(--b-lime, #1fc468);
+}
+.abtTitle span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 6px;
+  border-radius: 6px;
+  background: currentColor;
+  opacity: 0.25;
+}
+
+.abtDescription {
+  color: #4a5877;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.features {
+  list-style: none;
+  margin: 0;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.features li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--electric, #13376a);
+}
+.featureIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(31, 196, 104, 0.14);
+  color: var(--b-lime, #1fc468);
+  flex-shrink: 0;
+}
+
+/* ============ PANEL ============ */
+.panel {
+  position: relative;
+  z-index: 1;
+  background-color: white;
+  flex: 1;
+  max-width: 980px;
+  width: 100%;
+  max-height: 88vh; /* Batasi tinggi panel agar tidak melebihi layar */
+  border-radius: 2rem;
+  overflow: hidden; /* Mencegah keluar container */
+  display: flex;
+  box-shadow: 0 30px 80px rgba(19, 55, 106, 0.25);
+  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.panel > * {
+  flex: 1;
+  padding: 2.2rem;
+  min-width: 0;
+}
+
+/* ============ RIGHT ============ */
+.panelRight {
+  position: relative;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.14), transparent 45%),
+    var(--electric, #13376a);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  /* DIUBAH DARI flex-start MENJADI center AGAR KONTENNYA BERADA DI TENGAH SECARA VERTIKAL */
+  justify-content: center; 
+  gap: 1.2rem;
+  
+  max-height: 100%; 
+  overflow-y: auto; 
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+/* Kustomisasi tampilan scrollbar untuk Chrome, Edge, dan Safari */
+.panelRight::-webkit-scrollbar {
+  width: 6px;
+}
+.panelRight::-webkit-scrollbar-track {
+  background: transparent;
+}
+.panelRight::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+.panelRight::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.headWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
 .title {
   color: white;
   font-size: 2em;
-  font-weight: bold;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.subtitle {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.9rem;
 }
 
 .form {
@@ -74,119 +270,220 @@
 }
 
 .formInput {
-  padding-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.9rem;
 }
-.formInput > * {
+
+.field {
   display: flex;
   flex-direction: column;
-  gap: .2rem;
+  gap: 0.35rem;
 }
-.formInput > * > label {
+.field label {
   text-transform: capitalize;
-  color: white;
-}
-.formInput input {
-  background-color: transparent;
-  border: 1px solid white;
-  border-radius: .3rem;
-  padding: .5rem .8rem;
-  color: white;
-  width: 100%;
-}
-.formInput input::placeholder {
-  color: white;
-  opacity: .5;
-}
-.formInput input:focus {
-  outline: none;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
-.submitBtn {
-  display: flex;
-  justify-content: center;
-  padding-block: .5rem ;
-  border-radius: 100px;
-  background-color: var(--b-lime);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 2rem;
-  gap: .3rem;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-.submitBtn:hover {
-  background-color: var(--b-lime-50);
-}
-
-.addition {
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  gap: .2rem;
-}
-
-.addition span {
-  font-weight: bold;
-  transition: all 0.3s ease;
-  color: var(--ll-electric);
-}
-.addition span:hover {
-  color: var(--b-lime);
-}
-
-/* --- TAMBAHAN UNTUK CONTAINER INPUT PASSWORD --- */
-.passwordInputContainer {
+.inputWrap {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
 }
-/* --- RESPONSIVE LAYOUT (UNTUK HP & TABLET) --- */
+
+.leftIcon {
+  position: absolute;
+  left: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.inputWrap input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0.8rem;
+  padding: 0.75rem 1rem 0.75rem 2.6rem;
+  color: white;
+  font-family: inherit;
+  font-size: 0.92rem;
+  transition: all 0.25s ease;
+}
+.inputWrap input.hasRight {
+  padding-right: 2.8rem;
+}
+.inputWrap input::placeholder {
+  color: white;
+  opacity: 0.45;
+}
+.inputWrap input:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.inputWrap input:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--b-lime, #1fc468);
+  box-shadow: 0 0 0 4px rgba(31, 196, 104, 0.22);
+}
+.inputWrap:focus-within .leftIcon {
+  color: var(--b-lime, #1fc468);
+}
+
+/* hilangkan warna kuning autofill browser */
+.inputWrap input:-webkit-autofill {
+  -webkit-text-fill-color: white;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: white;
+  opacity: 0.65;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.eyeBtn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ============ BUTTON ============ */
+.submitBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.85rem 1rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 100px;
+  background-color: var(--b-lime, #1fc468);
+  color: white;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(31, 196, 104, 0.35);
+  transition: all 0.3s ease;
+}
+.submitBtn:hover:not(:disabled) {
+  background-color: var(--b-lime-50, #4fd88a);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(31, 196, 104, 0.5);
+}
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============ SWITCH LINK ============ */
+.addition {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 0.2rem;
+}
+.addition span {
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  color: var(--ll-electric, #c0cbff);
+}
+.addition span:hover {
+  color: var(--b-lime, #1fc468);
+}
+
+/* ============ TABLET ============ */
+@media screen and (max-width: 900px) {
+  .abtTitle {
+    font-size: 2.2em;
+  }
+}
+
+/* ============ MOBILE ============ */
 @media screen and (max-width: 800px) {
   .container {
-    padding: 1.5rem;      /* Kurangi jarak luar agar tidak memakan tempat di HP */
-    height: auto;         /* Ubah height agar bisa scroll jika form terlalu panjang */
-    min-height: 100vh;
+    padding: 1.2rem;
+    align-items: flex-start;
   }
-  
+
   .panel {
-    flex-direction: column; /* Ubah tata letak menjadi atas-bawah (vertikal) */
-    height: auto;
+    flex-direction: column;
+    min-height: 0;
     border-radius: 1.5rem;
   }
 
   .panel > * {
-    padding: 2rem 1.5rem;   /* Sesuaikan padding di dalam panel */
+    padding: 2rem 1.5rem;
+  }
+
+  .panelLeft {
+    gap: 1.2rem;
   }
 
   .abtTitle {
-    font-size: 2rem;        /* Perkecil ukuran teks judul kiri */
+    font-size: 1.8rem;
   }
 
   .abtDescription {
-    font-size: 0.9rem;      /* Sesuaikan teks deskripsi */
+    font-size: 0.88rem;
+  }
+
+  .features {
+    display: none;
   }
 
   .title {
-    font-size: 1.5rem;      /* Perkecil judul form (Create an Account) */
-    text-align: center;     /* Bawa ke tengah agar lebih manis di HP */
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .subtitle {
+    text-align: center;
   }
 
   .logo {
-    height: 20px;           /* Sesuaikan ukuran logo di layar kecil */
+    height: 20px;
   }
-  
   .icon {
     height: 24px;
   }
 
   .submitBtn {
-    margin-top: 1rem;       /* Kurangi jarak atas tombol submit */
+    margin-top: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .badgeDot,
+  .spin {
+    animation: none;
   }
 }

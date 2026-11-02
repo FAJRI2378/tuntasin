@@ -7,13 +7,18 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\VoteController;
 use Illuminate\Support\Facades\Route;
 
-// Public
+// ==========================================
+// PUBLIC ROUTES (Bisa diakses tanpa login)
+// ==========================================
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/submissions', [SubmissionController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/landing-stats', [SubmissionController::class, 'landingStats']); // <-- TAMBAHAN BARU
 
-// Protected Auth Routes
+// ==========================================
+// PROTECTED ROUTES (Hanya untuk user yang login)
+// ==========================================
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/check', [AuthController::class, 'checkUser']);
 
@@ -28,13 +33,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // Pindahkan POST kategori ke sini agar warga/user biasa bisa menambah kategori baru saat laporan
     Route::post('/categories', [CategoryController::class, 'store']);
 
-  Route::middleware('admin')->group(function () {
+    // ==========================================
+    // ADMIN ROUTES (Hanya untuk Admin)
+    // ==========================================
+    Route::middleware('admin')->group(function () {
         
-    // Admin Routes
-    Route::prefix("/admin")->group(function () {
-        Route::get('/stats', [AdminController::class, 'stats']);
-        Route::post('/submissions/{id}/status', [AdminController::class, 'updateStatus']); // UBAH PUT MENJADI POST
-    });
+        // Admin Stats & Status
+        Route::prefix("/admin")->group(function () {
+            Route::get('/stats', [AdminController::class, 'stats']);
+            Route::post('/submissions/{id}/status', [AdminController::class, 'updateStatus']);
+        });
 
         // CRUD Categories khusus Admin (Update & Delete)
         Route::prefix("/categories")->group(function () {

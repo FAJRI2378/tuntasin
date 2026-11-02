@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Submission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; // Tambahkan untuk mempermudah hapus gambar
 
 class SubmissionController extends Controller
 {
-        public function index()
+    // ==========================================
+    // MENGAMBIL SEMUA LAPORAN
+    // ==========================================
+    public function index()
     {
         // Ambil ID user yang sedang login via token
         $userId = auth('sanctum')->id();
@@ -31,6 +35,9 @@ class SubmissionController extends Controller
         ], 200);
     }
 
+    // ==========================================
+    // MEMBUAT LAPORAN BARU
+    // ==========================================
     public function store(Request $request)
     {
         // 1. Validasi Request (Ubah validasi dari string menjadi category_id)
@@ -60,8 +67,6 @@ class SubmissionController extends Controller
             'status'      => 'pending',
         ]);
 
-        // 3. Blok kode if($request->filled('categories')) DIHAPUS SEPENUHNYA
-
         // 4. Simpan Gambar ke Storage
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
@@ -77,7 +82,10 @@ class SubmissionController extends Controller
             'data'    => $submission->load(['category', 'images', 'user'])
         ], 201);
     }
-    // Menampilkan detail satu submission (digunakan untuk form Edit)
+
+    // ==========================================
+    // MENAMPILKAN DETAIL LAPORAN (UNTUK EDIT)
+    // ==========================================
     public function show($id)
     {
         $submission = Submission::with(['category', 'images', 'user'])->findOrFail($id);
@@ -88,7 +96,9 @@ class SubmissionController extends Controller
         ], 200);
     }
 
-    // Mengupdate data submission
+    // ==========================================
+    // MENGUPDATE DATA LAPORAN
+    // ==========================================
     public function update(Request $request, $id)
     {
         $submission = Submission::findOrFail($id);
@@ -121,7 +131,9 @@ class SubmissionController extends Controller
         ], 200);
     }
 
-    // Menghapus submission
+    // ==========================================
+    // MENGHAPUS LAPORAN
+    // ==========================================
     public function destroy($id)
     {
         $submission = Submission::findOrFail($id);
@@ -137,7 +149,7 @@ class SubmissionController extends Controller
         // Hapus gambar terkait dari storage jika perlu, lalu hapus submission
         foreach ($submission->images as $image) {
             // Hapus file fisik jika disimpan di public disk
-            \Storage::disk('public')->delete($image->url);
+            Storage::disk('public')->delete($image->url);
             $image->delete();
         }
 
@@ -148,4 +160,31 @@ class SubmissionController extends Controller
             'message' => 'Laporan berhasil dihapus!'
         ], 200);
     }
+
+    // ==========================================
+    // API STATISTIK UNTUK LANDING PAGE
+    // ==========================================
+   public function landingStats()
+{
+    // Fungsi helper untuk menyingkat angka (misal: 1500 -> 1.5K)
+    $formatNumber = function($num) {
+        if($num >= 1000) return round($num/1000, 1) . 'K';
+        return (string) $num;
+    };
+
+    // Hitung total dari database
+    $totalLaporan = Submission::count();
+
+    // Ubah 'selesai' menjadi 'completed' (atau sesuaikan dengan isi database Anda)
+    $laporanSelesai = Submission::where('status', 'completed')->count(); 
+
+    $totalDukungan = \App\Models\Vote::count(); 
+
+    return response()->json([
+        'total_laporan' => $formatNumber($totalLaporan),
+        'laporan_selesai' => $formatNumber($laporanSelesai),
+        'total_dukungan' => $formatNumber($totalDukungan),
+        'rata_rata_respons' => '1-3 hari'
+    ]);
+}
 }

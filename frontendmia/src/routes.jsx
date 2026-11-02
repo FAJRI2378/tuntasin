@@ -7,17 +7,25 @@ import Auth from "./pages/Auth";
 import EditSubmission from "./pages/EditSubmission";
 import PriorityHeatmap from "./pages/PriorityHeatmap";
 
+import LandingPage from "./pages/LandingPage";
+
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminCategories from "./pages/Admin/AdminCategories";
 import AdminSubmissions from "./pages/Admin/AdminSubmissionn";
 
 export const routes = createBrowserRouter([
+
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
+  
   {
     path: "/",
     element: <MainLayout />,
     children: [
       {
-        index: true,
+        path: "/home",
         element: <Home />,
       },
       {
@@ -29,7 +37,7 @@ export const routes = createBrowserRouter([
         element: <EditSubmission />,
       },
       {
-        path: "/heatmap", // Rute Peta Panas untuk User
+        path: "/heatmap", 
         element: <PriorityHeatmap />,
       },
     ],

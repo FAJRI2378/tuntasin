@@ -6,10 +6,6 @@ export default function SplashIntro({ onFinish }) {
 
   const handleVideoEnd = () => {
     setIsExiting(true);
-    // Jalankan callback setelah durasi animasi slide selesai (600ms)
-    setTimeout(() => {
-      onFinish();
-    }, 600);
   };
 
   return (

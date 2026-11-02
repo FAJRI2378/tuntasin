@@ -8,9 +8,9 @@ import { routes } from "./routes";
 import SubmissionProvider from "./contexts/SubmissionContext";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  // <StrictMode>
     <SubmissionProvider>
       <RouterProvider router={routes} />
     </SubmissionProvider>
-  </StrictMode>,
+  // </StrictMode>,
 );

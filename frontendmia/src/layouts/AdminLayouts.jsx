@@ -17,20 +17,15 @@ export default function AdminLayout() {
           setIsLoading(false);
           return;
         }
-        console.log("l");
 
         const response = await api.get("/check");
         const data = response.data;
 
         if (!data.is_admin) {
-          if (!data.valid) {
-            navigate("/login");
-          } else {
-            navigate("/");
-          }
+          navigate("/");
         }
       } catch (error) {
-        navigate("/login");
+        navigate("/");
       } finally {
         setIsLoading(false);
       }
@@ -40,7 +35,7 @@ export default function AdminLayout() {
   }, []);
 
   if (isLoading) {
-    return <div style={{ textAlign: "center", marginTop: "50px" }}>O</div>;
+    return;
   }
 
   return (

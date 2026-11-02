@@ -29,3 +29,171 @@
   gap: 8px;
   transition: all 0.3s ease;
 }
+
+@keyframes skeleton-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton-card {
+  background-color: #1e293b;
+  border-radius: 12px;
+  height: 420px;
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
+  border: 1px solid #334155;
+}
+
+.hmWrap {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #fff;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Header */
+.hmHeader {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 15px;
+}
+
+.hmTitle {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
+.hmSubtitle {
+  color: #94a3b8;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Filter */
+.hmFilter {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  background-color: #1e293b;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  box-sizing: border-box;
+}
+
+.hmFilterTop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.hmSearch {
+  position: relative;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.hmSearch input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px 8px 36px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: #fff;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.hmSort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hmSort select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.hmFilterBottom {
+  display: flex;
+  align-items: center;
+  gap: 10px 15px;
+  flex-wrap: wrap;
+  border-top: 1px solid #334155;
+  padding-top: 12px;
+}
+
+.hmTotal {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* Grid kartu: min() mencegah overflow di layar < 300px */
+.hmGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.hmGrid>* {
+  min-width: 0;
+}
+
+/* Lightbox */
+.hmLightbox {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999999;
+  padding: 56px 15px 15px;
+  box-sizing: border-box;
+}
+
+.hmLightboxClose {
+  position: fixed;
+  top: 12px;
+  right: 15px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  z-index: 10000;
+}
+
+.hmLightbox img {
+  max-width: 100%;
+  max-height: calc(100dvh - 90px);
+  border-radius: 8px;
+  object-fit: contain;
+  border: 1px solid #334155;
+}
+  

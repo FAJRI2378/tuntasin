@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import api from "../js/api";    
+import api from "../js/api";
 import {
   ArrowRight,
-  Map,
+  Map as MapIcon,
   Activity,
   Megaphone,
   ShieldCheck,
   FileText,
-  MapPin,
-  ThumbsUp,
   CheckCircle2,
   Clock,
   Camera,
-  Users,
+  ThumbsUp,
 } from "lucide-react";
 
-// --- TAMBAHAN IMPORT UNTUK PETA ---
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useSubmission } from "../contexts/SubmissionContext"; 
-// ----------------------------------
+import { useSubmission } from "../contexts/SubmissionContext";
 import SplashIntro from "../components/SplashIntro";
+
 /* Palet diambil dari logo Tuntasin */
 const C = {
   bg: "#C0CBFF", // periwinkle
@@ -55,6 +52,66 @@ function Logo({ size = "text-2xl" }) {
   );
 }
 
+/* Warna marker berdasarkan status atau jumlah vote */
+const getHeatColor = (status, votes) => {
+  if (status === "pending") return "#f59e0b"; // Kuning/Orange
+  if (status === "process") return "#3b82f6"; // Biru
+  if (status === "invalid") return "#ef4444"; // Merah
+  if (votes > 5) return "#dc2626"; // Merah Tua (Prioritas Tinggi)
+  return "#10b981"; // Hijau (Selesai/Normal)
+};
+
+/* Marker peta, dipakai di hero dan di kartu fitur */
+function HeatMarkers({ items, popupDetail = false }) {
+  return items.map((item) => {
+    const parts = (item.location || "").split(", ");
+    if (parts.length < 2 || isNaN(parseFloat(parts[0]))) return null;
+
+    const center = [parseFloat(parts[0].trim()), parseFloat(parts[1].trim())];
+    const votes = item.votes_count || 0;
+    const color = getHeatColor(item.status, votes);
+
+    return (
+      <CircleMarker
+        key={item.id}
+        center={center}
+        radius={Math.min(10 + votes * 4, 35)}
+        pathOptions={{ color, fillColor: color, fillOpacity: 0.6, weight: 2 }}
+      >
+        <Popup>
+          <div
+            style={{
+              color: "#0f172a",
+              minWidth: popupDetail ? "180px" : "160px",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <strong style={{ fontSize: "1rem", display: "block", marginBottom: "4px" }}>
+              {item.label}
+            </strong>
+            {popupDetail && (
+              <p style={{ fontSize: "0.8rem", margin: "0 0 6px 0", color: "#334155" }}>
+                {item.description}
+              </p>
+            )}
+            <div style={{ fontSize: "0.75rem", display: "flex", flexDirection: "column", gap: "2px" }}>
+              {popupDetail && <span>📍 {item.location}</span>}
+              <span style={{ color: "#ef4444", fontWeight: "bold" }}>
+                🔥 {votes} Dukungan (Vote)
+              </span>
+              {popupDetail && (
+                <span style={{ textTransform: "uppercase", fontWeight: "bold", color: "#2563eb" }}>
+                  Status: {item.status}
+                </span>
+              )}
+            </div>
+          </div>
+        </Popup>
+      </CircleMarker>
+    );
+  });
+}
+
 const steps = [
   {
     icon: Camera,
@@ -73,6 +130,13 @@ const steps = [
   },
 ];
 
+const legend = [
+  { color: "#f59e0b", label: "Menunggu" },
+  { color: "#3b82f6", label: "Diproses" },
+  { color: "#dc2626", label: "Prioritas tinggi" },
+  { color: "#10b981", label: "Normal" },
+];
+
 export default function LandingPage() {
   const [stats, setStats] = useState([
     { value: "...", label: "Laporan masuk" },
@@ -81,12 +145,12 @@ export default function LandingPage() {
     { value: "...", label: "Rata-rata respons" },
   ]);
 
-  // Mengambil state peta dari context
   const { submission, setSubmission } = useSubmission();
 
   useEffect(() => {
     // 1. Memuat Statistik
-    api.get("landing-stats")
+    api
+      .get("landing-stats")
       .then((res) => {
         const data = res.data;
         setStats([
@@ -106,9 +170,10 @@ export default function LandingPage() {
         ]);
       });
 
-    // 2. Memuat Data Peta (Jika belum ada di context)
+    // 2. Memuat Data Peta (jika belum ada di context)
     if (submission.length === 0) {
-      api.get("submissions")
+      api
+        .get("submissions")
         .then((res) => {
           setSubmission(res.data.data || []);
         })
@@ -117,15 +182,6 @@ export default function LandingPage() {
         });
     }
   }, []);
-
-  // Fungsi warna berdasarkan status atau jumlah vote
-  const getHeatColor = (status, votes) => {
-    if (status === "pending") return "#f59e0b"; // Kuning/Orange
-    if (status === "process") return "#3b82f6"; // Biru
-    if (status === "invalid") return "#ef4444"; // Merah
-    if (votes > 5) return "#dc2626"; // Merah Tua (Prioritas Tinggi)
-    return "#10b981"; // Hijau (Selesai/Normal)
-  };
 
   return (
     <div
@@ -168,8 +224,8 @@ export default function LandingPage() {
             </a>
           </div>
           <div className="flex items-center gap-4">
-            <Link 
-              to="/register" 
+            <Link
+              to="/register"
               className="hidden sm:block text-sm font-semibold opacity-80 transition hover:opacity-100"
             >
               Daftar
@@ -227,23 +283,22 @@ export default function LandingPage() {
               className="transition-transform group-hover:translate-x-1"
             />
           </Link>
-          <Link 
+          <Link
             to="/heatmap"
             className="flex items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white/60 px-8 py-4 text-base font-bold backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white/90"
           >
-             Eksplorasi Peta
+            Eksplorasi Peta
           </Link>
         </div>
 
         {/* --- HERO PREVIEW CARD (PETA ASLI) --- */}
         <div className="relative mt-16 w-full max-w-4xl z-0">
           <div className="rounded-[2rem] border border-white/70 bg-white/55 p-3 shadow-[0_30px_80px_rgba(19,55,106,0.18)] backdrop-blur-xl">
-            <div className="relative h-[350px] w-full overflow-hidden rounded-3xl md:h-[450px]">
-              
+            <div className="relative isolate h-[350px] w-full overflow-hidden rounded-3xl md:h-[450px]">
               <MapContainer
                 center={[-2.548926, 118.0148634]}
                 zoom={5}
-                style={{ height: "100%", width: "100%", zIndex: 10 }}
+                style={{ height: "100%", width: "100%" }}
                 maxBounds={[
                   [6.0, 95.0],
                   [-11.0, 141.0],
@@ -254,57 +309,8 @@ export default function LandingPage() {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution="&copy; OpenStreetMap contributors"
                 />
-
-                {submission.length > 0 &&
-                  submission.map((item) => {
-                    const parts = item.location.split(", ");
-                    // Safety check jika format koordinat tidak valid
-                    if (parts.length < 2 || isNaN(parseFloat(parts[0]))) return null; 
-
-                    const coorObject = [
-                      parseFloat(parts[0].trim()),
-                      parseFloat(parts[1].trim()),
-                    ];
-
-                    const votes = item.votes_count || 0;
-                    const radiusSize = Math.min(10 + votes * 4, 35);
-
-                    return (
-                      <CircleMarker
-                        key={item.id}
-                        center={coorObject}
-                        radius={radiusSize}
-                        pathOptions={{
-                          color: getHeatColor(item.status, votes),
-                          fillColor: getHeatColor(item.status, votes),
-                          fillOpacity: 0.6,
-                          weight: 2,
-                        }}
-                      >
-                        <Popup>
-                          <div style={{ color: "#0f172a", minWidth: "180px", fontFamily: "Poppins, sans-serif" }}>
-                            <strong style={{ fontSize: "1rem", display: "block", marginBottom: "4px" }}>
-                              {item.label}
-                            </strong>
-                            <p style={{ fontSize: "0.8rem", margin: "0 0 6px 0", color: "#334155" }}>
-                              {item.description}
-                            </p>
-                            <div style={{ fontSize: "0.75rem", display: "flex", flexDirection: "column", gap: "2px" }}>
-                              <span>📍 {item.location}</span>
-                              <span style={{ color: "#ef4444", fontWeight: "bold" }}>
-                                🔥 {votes} Dukungan (Vote)
-                              </span>
-                              <span style={{ textTransform: "uppercase", fontWeight: "bold", color: "#2563eb" }}>
-                                Status: {item.status}
-                              </span>
-                            </div>
-                          </div>
-                        </Popup>
-                      </CircleMarker>
-                    );
-                  })}
+                <HeatMarkers items={submission} popupDetail />
               </MapContainer>
-
             </div>
           </div>
         </div>
@@ -323,7 +329,7 @@ export default function LandingPage() {
       </section>
 
       {/* --- BENTO FEATURES --- */}
-      <section id="fitur" className="relative z-10 mx-auto max-w-6xl px-6 py-20">
+      <section id="fitur" className="relative z-10 mx-auto max-w-6xl px-6 py-16 md:py-20">
         <div className="mb-12 text-center">
           <p
             className="mb-2 text-sm font-bold uppercase tracking-widest"
@@ -336,23 +342,11 @@ export default function LandingPage() {
           </h2>
         </div>
 
-        <div className="grid auto-rows-[280px] grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
-          {/* Card 1: Heatmap */}
-          <div className="group relative flex flex-col justify-end overflow-hidden rounded-3xl border border-white/70 bg-white/55 p-8 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_20px_50px_rgba(19,55,106,0.15)] md:col-span-2">
-            <div className="absolute right-6 top-6 grid grid-cols-6 gap-2 opacity-70 transition-transform duration-500 group-hover:scale-105">
-              {Array.from({ length: 24 }).map((_, i) => {
-                const levels = [0.12, 0.25, 0.45, 0.7, 1];
-                const l = levels[(i * 7 + (i % 5)) % 5];
-                return (
-                  <span
-                    key={i}
-                    className="h-6 w-6 rounded-md"
-                    style={{ background: C.navy, opacity: l }}
-                  />
-                );
-              })}
-            </div>
-            <div className="relative z-10">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 md:auto-rows-[minmax(280px,auto)]">
+          {/* Card 1: Heatmap (teks + peta) */}
+          <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(19,55,106,0.15)] md:col-span-2 md:flex-row">
+            {/* Teks */}
+            <div className="order-2 flex flex-col justify-end p-6 md:order-1 md:w-1/2 md:p-8">
               <div
                 className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border"
                 style={{
@@ -360,18 +354,55 @@ export default function LandingPage() {
                   borderColor: "rgba(19,55,106,0.15)",
                 }}
               >
+                <MapIcon size={24} color={C.navy} />
               </div>
-              <h3 className="mb-2 text-2xl font-bold">Pemetaan Prioritas Heatmap</h3>
-              <p className="max-w-md opacity-70">
-                Visualisasi titik kerusakan infrastruktur secara real-time. Area
-                dengan warna tergelap menandakan urgensi tertinggi berdasarkan jumlah
-                laporan dan dukungan warga.
+              <h3 className="mb-2 text-xl font-bold md:text-2xl">
+                Pemetaan Prioritas Heatmap
+              </h3>
+              <p className="text-sm opacity-70">
+                Visualisasi titik kerusakan infrastruktur secara real-time. Warna
+                dan ukuran titik menandakan urgensi berdasarkan status dan dukungan
+                warga.
               </p>
+
+              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold">
+                {legend.map((l) => (
+                  <span key={l.label} className="flex items-center gap-1.5">
+                    <span
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{ background: l.color }}
+                    />
+                    {l.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Peta */}
+            <div className="relative isolate order-1 h-56 md:order-2 md:h-auto md:min-h-[280px] md:w-1/2">
+              <MapContainer
+                center={[-2.548926, 118.0148634]}
+                zoom={4}
+                minZoom={4}
+                scrollWheelZoom={false}
+                zoomControl={false}
+                maxBounds={[
+                  [6.0, 95.0],
+                  [-11.0, 141.0],
+                ]}
+                style={{ position: "absolute", inset: 0, height: "100%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="&copy; OpenStreetMap contributors"
+                />
+                <HeatMarkers items={submission} />
+              </MapContainer>
             </div>
           </div>
 
           {/* Card 2: Voting */}
-          <div className="group relative flex flex-col justify-end overflow-hidden rounded-3xl border border-white/70 bg-white/55 p-8 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_20px_50px_rgba(19,55,106,0.15)]">
+          <div className="group relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-3xl border border-white/70 bg-white/55 p-6 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_20px_50px_rgba(19,55,106,0.15)] md:p-8">
             <div className="relative z-10">
               <div
                 className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border"
@@ -391,7 +422,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 3: Transparansi */}
-          <div className="group relative flex flex-col justify-end overflow-hidden rounded-3xl border border-white/70 bg-white/55 p-8 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_20px_50px_rgba(19,55,106,0.15)]">
+          <div className="group relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-3xl border border-white/70 bg-white/55 p-6 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_20px_50px_rgba(19,55,106,0.15)] md:p-8">
             <div className="relative z-10">
               <div
                 className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border"
@@ -412,10 +443,10 @@ export default function LandingPage() {
 
           {/* Card 4: Live tracking */}
           <div
-            className="group relative flex flex-col justify-end overflow-hidden rounded-3xl border border-white/10 p-8 text-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(19,55,106,0.45)] md:col-span-2"
+            className="group relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-3xl border border-white/10 p-6 text-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(19,55,106,0.45)] md:col-span-2 md:p-8"
             style={{ background: C.navy }}
           >
-            <div className="absolute right-8 top-8 flex flex-col gap-3 opacity-90">
+            <div className="mb-6 flex flex-wrap gap-2 opacity-90 md:absolute md:right-8 md:top-8 md:mb-0 md:flex-col md:gap-3">
               {[
                 { icon: Clock, t: "Menunggu Verifikasi", done: true },
                 { icon: FileText, t: "Dalam Pengerjaan", done: true },
@@ -423,7 +454,7 @@ export default function LandingPage() {
               ].map((s, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-2 text-xs font-semibold backdrop-blur"
+                  className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs font-semibold backdrop-blur sm:gap-3 sm:px-4"
                 >
                   <s.icon
                     size={16}
@@ -433,12 +464,13 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-            <div className="relative z-10">
+
+            <div className="relative z-10 mt-auto">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/10">
                 <Activity size={24} color={C.green} />
               </div>
-              <h3 className="mb-2 text-2xl font-bold">Pantau Progres Real-Time</h3>
-              <p className="max-w-md text-white/75">
+              <h3 className="mb-2 text-xl font-bold md:text-2xl">Pantau Progres Real-Time</h3>
+              <p className="max-w-md text-sm text-white/75 md:text-base md:pr-48">
                 Tidak ada lagi laporan yang menggantung. Lacak setiap perubahan status
                 laporanmu dari "Menunggu Verifikasi" hingga "Selesai" langsung dari
                 dashboard.
@@ -482,7 +514,7 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
-    
+
       {/* --- FOOTER --- */}
       <footer className="relative z-10 border-t border-[#13376A]/10 px-6 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-sm opacity-70 sm:flex-row">

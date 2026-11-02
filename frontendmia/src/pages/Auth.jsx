@@ -51,7 +51,8 @@ export default function Auth({ type }) {
         const data = response.data;
 
         if (data.valid) {
-          navigate(data.is_admin ? "/admin" : "/");
+          // JIKA SUDAH LOGIN: Arahkan admin ke /admin, user biasa ke /home
+          navigate(data.is_admin ? "/admin" : "/home");
         }
       } catch (error) {
         // belum login, tetap di halaman ini
@@ -152,7 +153,8 @@ export default function Auth({ type }) {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate(user.role === "admin" ? "/admin" : "/");
+      // SETELAH KLIK LOGIN: Arahkan admin ke /admin, user biasa ke /home
+      navigate(user.role === "admin" ? "/admin" : "/home");
     } catch (error) {
       console.error("Login Error:", error.response);
       const errorMessage =
@@ -191,7 +193,8 @@ export default function Auth({ type }) {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/");
+      // SETELAH REGISTER: Arahkan langsung ke halaman /home
+      navigate("/home");
     } catch (error) {
       console.error("Register Error:", error.response);
       const errorMessage =

@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosRetry from "axios-retry"
+import axiosRetry from "axios-retry";
 
 const api = axios.create({
   // baseURL: "http://10.14.95.78:8000/api/",
@@ -18,7 +18,7 @@ axiosRetry(api, {
     console.warn(
       `[Axios-Retry] Gagal koneksi. Mencoba kembali percobaan ke-${retryCount}...`,
     );
-    return retryCount * 1000; 
+    return retryCount * 1000;
   },
   retryCondition: (error) => {
     return axiosRetry.isNetworkOrIdempotentRequestError(error);

@@ -16,6 +16,12 @@ import {
   Users,
 } from "lucide-react";
 
+// --- TAMBAHAN IMPORT UNTUK PETA ---
+import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { useSubmission } from "../contexts/SubmissionContext"; 
+// ----------------------------------
+
 /* Palet diambil dari logo Tuntasin */
 const C = {
   bg: "#C0CBFF", // periwinkle
@@ -75,8 +81,11 @@ export default function LandingPage() {
     { value: "...", label: "Rata-rata respons" },
   ]);
 
+  // Mengambil state peta dari context
+  const { submission, setSubmission } = useSubmission();
+
   useEffect(() => {
-    // Memanggil endpoint menggunakan instance api yang sudah terkonfigurasi
+    // 1. Memuat Statistik
     api.get("landing-stats")
       .then((res) => {
         const data = res.data;
@@ -96,7 +105,27 @@ export default function LandingPage() {
           { value: "1-3 hari", label: "Rata-rata respons" },
         ]);
       });
+
+    // 2. Memuat Data Peta (Jika belum ada di context)
+    if (submission.length === 0) {
+      api.get("submissions")
+        .then((res) => {
+          setSubmission(res.data.data || []);
+        })
+        .catch((err) => {
+          console.error("Gagal memuat data peta:", err);
+        });
+    }
   }, []);
+
+  // Fungsi warna berdasarkan status atau jumlah vote
+  const getHeatColor = (status, votes) => {
+    if (status === "pending") return "#f59e0b"; // Kuning/Orange
+    if (status === "process") return "#3b82f6"; // Biru
+    if (status === "invalid") return "#ef4444"; // Merah
+    if (votes > 5) return "#dc2626"; // Merah Tua (Prioritas Tinggi)
+    return "#10b981"; // Hijau (Selesai/Normal)
+  };
 
   return (
     <div
@@ -138,14 +167,12 @@ export default function LandingPage() {
             </a>
           </div>
           <div className="flex items-center gap-4">
-            {/* ROUTING: Tombol Daftar ke /register */}
             <Link 
               to="/register" 
               className="hidden sm:block text-sm font-semibold opacity-80 transition hover:opacity-100"
             >
               Daftar
             </Link>
-            {/* ROUTING: Tombol Masuk ke /login */}
             <Link
               to="/login"
               className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(19,55,106,0.35)]"
@@ -188,7 +215,6 @@ export default function LandingPage() {
         </p>
 
         <div className="flex w-full flex-col justify-center gap-4 sm:flex-row">
-          {/* ROUTING: Tombol Buat Laporan ke /create */}
           <Link
             to="/create"
             className="group flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-base font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(19,55,106,0.35)]"
@@ -200,7 +226,6 @@ export default function LandingPage() {
               className="transition-transform group-hover:translate-x-1"
             />
           </Link>
-          {/* ROUTING: Tombol Eksplorasi ke /heatmap */}
           <Link 
             to="/heatmap"
             className="flex items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white/60 px-8 py-4 text-base font-bold backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white/90"
@@ -209,84 +234,76 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        {/* --- HERO PREVIEW CARD --- */}
-        <div className="relative mt-16 w-full max-w-4xl">
+        {/* --- HERO PREVIEW CARD (PETA ASLI) --- */}
+        <div className="relative mt-16 w-full max-w-4xl z-0">
           <div className="rounded-[2rem] border border-white/70 bg-white/55 p-3 shadow-[0_30px_80px_rgba(19,55,106,0.18)] backdrop-blur-xl">
-            <div className="relative h-[300px] overflow-hidden rounded-3xl bg-gradient-to-br from-[#E6EBFF] to-[#CDD6FF] md:h-[360px]">
-              {/* grid peta */}
-              <div
-                className="absolute inset-0 opacity-50"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(19,55,106,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(19,55,106,0.10) 1px, transparent 1px)",
-                  backgroundSize: "44px 44px",
-                }}
-              />
-              {/* jalan */}
-              <svg
-                className="absolute inset-0 h-full w-full"
-                viewBox="0 0 800 360"
-                preserveAspectRatio="none"
-                fill="none"
+            <div className="relative h-[350px] w-full overflow-hidden rounded-3xl md:h-[450px]">
+              
+              <MapContainer
+                center={[-2.548926, 118.0148634]}
+                zoom={5}
+                style={{ height: "100%", width: "100%", zIndex: 10 }}
+                maxBounds={[
+                  [6.0, 95.0],
+                  [-11.0, 141.0],
+                ]}
+                minZoom={4}
               >
-                <path
-                  d="M-10 250 C 150 200, 250 300, 420 220 S 700 120, 820 170"
-                  stroke="white"
-                  strokeWidth="14"
-                  strokeLinecap="round"
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="&copy; OpenStreetMap contributors"
                 />
-                <path
-                  d="M180 -10 C 220 100, 300 140, 340 380"
-                  stroke="white"
-                  strokeWidth="10"
-                  strokeLinecap="round"
-                />
-              </svg>
-              {/* heat blobs */}
-              <div className="absolute left-[18%] top-[48%] h-40 w-40 rounded-full bg-[#13376A]/50 blur-3xl" />
-              <div className="absolute left-[52%] top-[28%] h-32 w-32 rounded-full bg-[#13376A]/35 blur-3xl" />
-              <div className="absolute left-[72%] top-[58%] h-28 w-28 rounded-full bg-[#1FC468]/40 blur-3xl" />
 
-              {/* pins */}
-              <div className="floaty absolute left-[22%] top-[40%]">
-                <MapPin size={34} fill={C.navy} color="white" />
-              </div>
-              <div
-                className="floaty absolute left-[55%] top-[22%]"
-                style={{ animationDelay: "1s" }}
-              >
-                <MapPin size={30} fill={C.navy} color="white" />
-              </div>
-              <div
-                className="floaty absolute left-[75%] top-[52%]"
-                style={{ animationDelay: "2s" }}
-              >
-                <MapPin size={30} fill={C.green} color="white" />
-              </div>
+                {submission.length > 0 &&
+                  submission.map((item) => {
+                    const parts = item.location.split(", ");
+                    // Safety check jika format koordinat tidak valid
+                    if (parts.length < 2 || isNaN(parseFloat(parts[0]))) return null; 
 
-              {/* kartu laporan */}
-              <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-3 sm:left-auto sm:w-72">
-                <div className="rounded-2xl border border-white/80 bg-white/90 p-4 text-left shadow-lg backdrop-blur">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs font-bold">Jalan Berlubang · Depok</span>
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
-                      style={{ background: C.green }}
-                    >
-                      Diproses
-                    </span>
-                  </div>
-                  <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-[#C0CBFF]/60">
-                    <div
-                      className="h-full w-2/3 rounded-full"
-                      style={{ background: C.green }}
-                    />
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs opacity-70">
-                    <ThumbsUp size={12} /> 248 dukungan warga
-                  </div>
-                </div>
-              </div>
+                    const coorObject = [
+                      parseFloat(parts[0].trim()),
+                      parseFloat(parts[1].trim()),
+                    ];
+
+                    const votes = item.votes_count || 0;
+                    const radiusSize = Math.min(10 + votes * 4, 35);
+
+                    return (
+                      <CircleMarker
+                        key={item.id}
+                        center={coorObject}
+                        radius={radiusSize}
+                        pathOptions={{
+                          color: getHeatColor(item.status, votes),
+                          fillColor: getHeatColor(item.status, votes),
+                          fillOpacity: 0.6,
+                          weight: 2,
+                        }}
+                      >
+                        <Popup>
+                          <div style={{ color: "#0f172a", minWidth: "180px", fontFamily: "Poppins, sans-serif" }}>
+                            <strong style={{ fontSize: "1rem", display: "block", marginBottom: "4px" }}>
+                              {item.label}
+                            </strong>
+                            <p style={{ fontSize: "0.8rem", margin: "0 0 6px 0", color: "#334155" }}>
+                              {item.description}
+                            </p>
+                            <div style={{ fontSize: "0.75rem", display: "flex", flexDirection: "column", gap: "2px" }}>
+                              <span>📍 {item.location}</span>
+                              <span style={{ color: "#ef4444", fontWeight: "bold" }}>
+                                🔥 {votes} Dukungan (Vote)
+                              </span>
+                              <span style={{ textTransform: "uppercase", fontWeight: "bold", color: "#2563eb" }}>
+                                Status: {item.status}
+                              </span>
+                            </div>
+                          </div>
+                        </Popup>
+                      </CircleMarker>
+                    );
+                  })}
+              </MapContainer>
+
             </div>
           </div>
         </div>

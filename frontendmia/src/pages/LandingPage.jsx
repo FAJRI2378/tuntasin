@@ -21,7 +21,7 @@ import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useSubmission } from "../contexts/SubmissionContext"; 
 // ----------------------------------
-
+import SplashIntro from "../components/SplashIntro";
 /* Palet diambil dari logo Tuntasin */
 const C = {
   bg: "#C0CBFF", // periwinkle
@@ -136,6 +136,7 @@ export default function LandingPage() {
         fontFamily: "'Poppins', system-ui, sans-serif",
       }}
     >
+      <SplashIntro />
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
         @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         .floaty { animation: floaty 5s ease-in-out infinite; }

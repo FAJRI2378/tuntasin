@@ -140,7 +140,7 @@ export default function SideBar() {
   };
 
   const navBtn = [
-    { path: "/", icon: Home, label: "Home", class: "home" },
+    { path: "/home", icon: Home, label: "Home", class: "home" },
     {
       path: "/create",
       icon: Plus,

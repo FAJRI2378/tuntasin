@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import SideBar from "../components/Sidebar";
-import SplashIntro from "../components/SplashIntro";
 import styles from "../css/layouts/MainLayout.module.css";
 import { Outlet, useNavigate } from "react-router-dom";
 import api from "../js/api";
@@ -41,7 +40,6 @@ export default function MainLayout() {
 
   return (
     <div className={styles.container}>
-      <SplashIntro />
       <SideBar />
       <div className={styles.content}>
         <Outlet />

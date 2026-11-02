@@ -18,10 +18,12 @@ import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../js/api";
+import { useSubmission } from "../contexts/SubmissionContext";
 
 const MOBILE_QUERY = "(max-width: 800px)";
 
 export default function SideBar() {
+  const { submission, setSubmission } = useSubmission();
   const isMobileNow = () => window.matchMedia(MOBILE_QUERY).matches;
 
   const [isMobile, setIsMobile] = useState(isMobileNow);
@@ -29,9 +31,9 @@ export default function SideBar() {
   const [open, setOpen] = useState(() => !isMobileNow());
   const navigate = useNavigate();
   const location = useLocation();
+  const [mySubmissions, setMySubmissions] = useState([]);
 
   // State untuk data submissions dan user
-  const [submissions, setSubmissions] = useState([]);
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -70,10 +72,12 @@ export default function SideBar() {
         const currentUserId = parsedUser.id || parsedUser.user?.id;
 
         if (currentUserId) {
-          const mySubmissions = allData.filter((item) => item.user_id == currentUserId);
-          setSubmissions(mySubmissions);
+          const mySubmissions = allData.filter(
+            (item) => item.user_id == currentUserId,
+          );
+          setMySubmissions(mySubmissions);
         } else {
-          setSubmissions([]);
+          setMySubmissions([]);
         }
       } catch (error) {
         console.error("Gagal memuat submissions:", error);
@@ -116,13 +120,15 @@ export default function SideBar() {
 
   // --- FUNGSI HAPUS SUBMISSION ---
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Apakah Anda yakin ingin menghapus laporan ini?");
+    const confirmDelete = window.confirm(
+      "Apakah Anda yakin ingin menghapus laporan ini?",
+    );
     if (!confirmDelete) return;
 
     try {
       await api.delete(`submissions/${id}`);
 
-      setSubmissions((prev) => prev.filter((item) => item.id !== id));
+      setSubmission((prev) => prev.filter((item) => item.id !== id));
       setActionMenuId(null);
 
       // Memicu event agar komponen lain (seperti Home) ikut memperbarui data
@@ -135,7 +141,12 @@ export default function SideBar() {
 
   const navBtn = [
     { path: "/", icon: Home, label: "Home", class: "home" },
-    { path: "/create", icon: Plus, label: "Create Submission", class: "create" },
+    {
+      path: "/create",
+      icon: Plus,
+      label: "Create Submission",
+      class: "create",
+    },
     { path: "/heatmap", icon: Map, label: "Peta Prioritas", class: "heatmap" },
   ];
 
@@ -143,7 +154,11 @@ export default function SideBar() {
     <>
       {/* Backdrop: hanya tampil di HP saat sidebar terbuka (diatur lewat CSS) */}
       {open && isMobile && (
-        <div className={styles.backdrop} onClick={() => setOpen(false)} aria-hidden="true" />
+        <div
+          className={styles.backdrop}
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
       )}
 
       <div className={clsx(styles.container, !open ? styles.close : "")}>
@@ -166,7 +181,13 @@ export default function SideBar() {
 
           <nav className={styles.sideButtons}>
             {navBtn.map((item) => (
-              <div key={item.path} className={clsx(styles[item.class], item.path === location.pathname && styles.navBtnActive)}>
+              <div
+                key={item.path}
+                className={clsx(
+                  styles[item.class],
+                  item.path === location.pathname && styles.navBtnActive,
+                )}
+              >
                 <div className={styles.sideBtnTop}></div>
                 <Link
                   to={item.path}
@@ -186,8 +207,8 @@ export default function SideBar() {
           <div className={styles.reports}>
             <div className={styles.reportsLabel}>Recent Submissions</div>
             <div className={styles.reportsWrapper}>
-              {submissions.length > 0 ? (
-                submissions.map((item) => (
+              {mySubmissions.length > 0 ? (
+                mySubmissions.map((item) => (
                   <div key={item.id} className={styles.reportsItem}>
                     <div className={styles.report}>
                       <div className={styles.reportName} title={item.label}>
@@ -195,13 +216,18 @@ export default function SideBar() {
                       </div>
 
                       {/* MENU TITIK 3 (ACTION) */}
-                      <div className="action-menu" style={{ position: "relative" }}>
+                      <div
+                        className="action-menu"
+                        style={{ position: "relative" }}
+                      >
                         <div
                           className={styles.reportEdit}
                           style={{ cursor: "pointer", padding: "4px" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setActionMenuId(actionMenuId === item.id ? null : item.id);
+                            setActionMenuId(
+                              actionMenuId === item.id ? null : item.id,
+                            );
                           }}
                         >
                           <EllipsisVertical size={14} />
@@ -232,9 +258,26 @@ export default function SideBar() {
                                 setActionMenuId(null);
                                 closeOnMobile();
                               }}
-                              style={{ display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "#fff", border: "none", padding: "6px", cursor: "pointer", fontSize: "12px", borderRadius: "4px" }}
-                              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#334155")}
-                              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                background: "transparent",
+                                color: "#fff",
+                                border: "none",
+                                padding: "6px",
+                                cursor: "pointer",
+                                fontSize: "12px",
+                                borderRadius: "4px",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#334155")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "transparent")
+                              }
                             >
                               <Pen size={12} /> Edit
                             </button>
@@ -243,9 +286,26 @@ export default function SideBar() {
                                 handleDelete(item.id);
                                 setActionMenuId(null);
                               }}
-                              style={{ display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "#ef4444", border: "none", padding: "6px", cursor: "pointer", fontSize: "12px", borderRadius: "4px" }}
-                              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#334155")}
-                              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                background: "transparent",
+                                color: "#ef4444",
+                                border: "none",
+                                padding: "6px",
+                                cursor: "pointer",
+                                fontSize: "12px",
+                                borderRadius: "4px",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#334155")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "transparent")
+                              }
                             >
                               <Trash2 size={12} /> Delete
                             </button>
@@ -256,7 +316,15 @@ export default function SideBar() {
                   </div>
                 ))
               ) : (
-                <div style={{ padding: "8px 12px", fontSize: "12px", opacity: 0.6 }}>Belum ada submission.</div>
+                <div
+                  style={{
+                    padding: "8px 12px",
+                    fontSize: "12px",
+                    opacity: 0.6,
+                  }}
+                >
+                  Belum ada submission.
+                </div>
               )}
             </div>
           </div>
@@ -266,13 +334,22 @@ export default function SideBar() {
             {user ? (
               <div className={styles.accContent}>
                 <div className={styles.accLeft}>
-                  <User size={18} style={{ marginRight: "8px", opacity: 0.7, flexShrink: 0 }} />
-                  <div className={styles.accName}>{user.name || user.username || "User"}</div>
+                  <User
+                    size={18}
+                    style={{ marginRight: "8px", opacity: 0.7, flexShrink: 0 }}
+                  />
+                  <div className={styles.accName}>
+                    {user.name || user.username || "User"}
+                  </div>
                 </div>
                 <div
                   className={styles.accRight}
                   onClick={() => setShowDropdown(!showDropdown)}
-                  style={{ cursor: "pointer", padding: "4px", borderRadius: "4px" }}
+                  style={{
+                    cursor: "pointer",
+                    padding: "4px",
+                    borderRadius: "4px",
+                  }}
                 >
                   <EllipsisVertical size={16} />
                 </div>
@@ -285,8 +362,14 @@ export default function SideBar() {
                 )}
               </div>
             ) : (
-              <Link to="/login" className={styles.loginBtn} title="Log in" onClick={closeOnMobile}>
-                <LogIn size={18} style={{ flexShrink: 0 }} /> <span>Log in</span>
+              <Link
+                to="/login"
+                className={styles.loginBtn}
+                title="Log in"
+                onClick={closeOnMobile}
+              >
+                <LogIn size={18} style={{ flexShrink: 0 }} />{" "}
+                <span>Log in</span>
               </Link>
             )}
           </div>

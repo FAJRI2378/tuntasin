@@ -32,3 +32,7 @@ body {
 a:focus {
   outline: none;
 }
+
+.swal2-container {
+  z-index: 999999999;
+}

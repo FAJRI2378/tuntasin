@@ -3,6 +3,7 @@ import SideBar from "../components/Sidebar";
 import SplashIntro from "../components/SplashIntro";
 import styles from "../css/layouts/MainLayout.module.css";
 import { Outlet, useNavigate } from "react-router-dom";
+import api from "../js/api";
 
 export default function MainLayout() {
   const navigate = useNavigate();
@@ -12,15 +13,15 @@ export default function MainLayout() {
     const verifyAdmin = async () => {
       try {
         const token = localStorage.getItem("token");
-
+        
         if (!token) {
           setIsLoading(false);
           return;
         }
-
+        
         const response = await api.get("/check");
         const data = response.data;
-
+        console.log(data)
         if (data.is_admin && data.valid) {
           navigate("/admin");
         }

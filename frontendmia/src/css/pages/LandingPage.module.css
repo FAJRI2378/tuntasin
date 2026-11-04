@@ -3,10 +3,14 @@ a {
   text-decoration: none;
 }
 
-.landingContainer {
-  min-height: 100vh;
-  overflow-x: hidden;
+
+
+
+.container {
+  height: 100vh;
+  overflow-y: scroll;
 }
+
 
 .logoDefaultSize {
   font-size: 1.5rem;
@@ -107,6 +111,10 @@ a {
   gap: 2rem;
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+.navLinks > div {
+  cursor: pointer;
 }
 
 @media (min-width: 768px) {
@@ -765,4 +773,16 @@ a {
   .footerInner {
     flex-direction: row;
   }
+}
+
+.acc {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.accName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

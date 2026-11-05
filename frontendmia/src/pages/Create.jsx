@@ -24,6 +24,29 @@ export default function Create() {
 
   // Mengambil daftar kategori dari database Admin saat komponen dimuat
   useEffect(() => {
+        const verifyAuth = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await api.get("/check");
+        const data = response.data;
+
+        if (!data.valid) {
+          navigate("/login");
+        }
+      } catch (error) {
+        navigate("/");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    verifyAuth();
     fetchCategories();
   }, []);
 

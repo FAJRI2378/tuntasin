@@ -212,7 +212,7 @@ export default function AdminSubmissions() {
     if (!confirmDelete) return;
 
     try {
-      await api.delete(`submissions/${id}`);
+     await api.delete(`admin/submissions/${id}`);
       setSubmissions((prev) => prev.filter((item) => item.id !== id));
       alert("Laporan berhasil dihapus oleh admin.");
     } catch (error) {
@@ -331,6 +331,15 @@ export default function AdminSubmissions() {
     { value: "completed", label: "Selesai", color: "#10b981" },
   ];
 
+  // --- HELPER URL UNTUK GAMBAR DAN PDF (MENGATASI BROKEN LINK) ---
+  const getFileUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http")) return path;
+    // Membersihkan awalan public/ atau storage/ jika ada
+    const cleanPath = path.replace(/^(public|storage)\//, "");
+    return `http://localhost:8000/storage/${cleanPath}`;
+  };
+
   return (
     <div className="as-wrap">
       <style>{responsiveCss}</style>
@@ -401,19 +410,19 @@ export default function AdminSubmissions() {
                   </div>
                 </div>
 
-                {/* Foto Laporan */}
+                {/* Foto Laporan - MENGGUNAKAN HELPER getFileUrl */}
                 <div style={{ backgroundColor: "#0f172a", padding: "8px" }}>
                   {item.images && item.images.length > 0 ? (
                     item.images.length === 1 ? (
                       <a
-                        href={`http://localhost:8000/storage/${item.images[0].url}`}
+                        href={getFileUrl(item.images[0].url)}
                         target="_blank"
                         rel="noopener noreferrer"
                         title="Klik untuk memperbesar foto"
                         style={{ display: "block", height: "160px", borderRadius: "6px", overflow: "hidden", border: "1px solid #334155" }}
                       >
                         <img
-                          src={`http://localhost:8000/storage/${item.images[0].url}`}
+                          src={getFileUrl(item.images[0].url)}
                           alt="Lampiran Laporan"
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
@@ -423,14 +432,14 @@ export default function AdminSubmissions() {
                         {item.images.map((img, index) => (
                           <a
                             key={index}
-                            href={`http://localhost:8000/storage/${img.url}`}
+                            href={getFileUrl(img.url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             title={`Lampiran ${index + 1} (Klik untuk memperbesar)`}
                             style={{ minWidth: "130px", height: "150px", borderRadius: "6px", overflow: "hidden", display: "block", border: "1px solid #334155", flexShrink: 0 }}
                           >
                             <img
-                              src={`http://localhost:8000/storage/${img.url}`}
+                              src={getFileUrl(img.url)}
                               alt={`Lampiran ${index + 1}`}
                               style={{ width: "100%", height: "100%", objectFit: "cover" }}
                             />
@@ -487,7 +496,7 @@ export default function AdminSubmissions() {
                       </span>
                     </div>
 
-                    {/* Feedback & PDF */}
+                    {/* Feedback & PDF - MENGGUNAKAN HELPER getFileUrl */}
                     <div style={{ backgroundColor: "#0f172a", padding: "8px", borderRadius: "6px", border: "1px dashed #475569", marginTop: "4px" }}>
                       <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginBottom: "2px", display: "flex", alignItems: "center", gap: "4px" }}>
                         <MessageSquare size={12} color="#3b82f6" /> Catatan Feedback untuk Warga:
@@ -501,7 +510,7 @@ export default function AdminSubmissions() {
 
                       {item.pdf_attachment && (
                         <a
-                          href={`http://localhost:8000/storage/${item.pdf_attachment}`}
+                          href={getFileUrl(item.pdf_attachment)}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{ display: "inline-flex", alignItems: "center", gap: "4px", padding: "4px 8px", backgroundColor: "#2563eb", color: "#fff", borderRadius: "4px", textDecoration: "none", fontSize: "0.75rem", fontWeight: "bold" }}

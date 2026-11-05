@@ -9,7 +9,7 @@ export default function MainLayout() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const verifyAdmin = async () => {
+    const verifyUserRole = async () => {
       try {
         const token = localStorage.getItem("token");
         
@@ -20,22 +20,28 @@ export default function MainLayout() {
         
         const response = await api.get("/check");
         const data = response.data;
-        console.log(data)
+        console.log(data);
+
+        // Jika user yang login adalah Admin
         if (data.is_admin && data.valid) {
-          navigate("/admin");
+          // Admin sama sekali tidak boleh mengakses MainLayout (halaman warga)
+          // Lempar paksa kembali ke halaman admin
+          navigate("/admin", { replace: true });
+          return;
         }
       } catch (error) {
-        // navigate("/login");
+        // Jika token invalid atau error saat pengecekan
+        // Biarkan atau arahkan ke login jika diperlukan
       } finally {
         setIsLoading(false);
       }
     };
 
-    verifyAdmin();
-  }, []);
+    verifyUserRole();
+  }, [navigate]);
 
   if (isLoading) {
-    return;
+    return null;
   }
 
   return (

@@ -286,14 +286,37 @@ export default function LandingPage() {
                   Cara Kerja
                 </div>
               </div>
-              {user ? (
-                <div className={styles.acc}>
-                  <User
-                    size={18}
-                    style={{ marginRight: "8px", opacity: 0.7, flexShrink: 0 }}
-                  />
-                  <div className={styles.accName}>
-                    {user.name || user.username || "User"}
+             {user ? (
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  {/* TOMBOL PINTASAN KE DASHBOARD BERDASARKAN ROLE */}
+                  <Link
+                    to={user.role === "admin" || user.is_admin ? "/admin" : "/create"}
+                    className={styles.loginBtn}
+                    style={{
+                      background: C.navy,
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      color: "#fff",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      fontSize: "0.9rem",
+                      fontWeight: "500"
+                    }}
+                  >
+                    <span>Dashboard</span>
+                    <ArrowRight size={16} />
+                  </Link>
+
+                  <div className={styles.acc} style={{ display: "flex", alignItems: "center" }}>
+                    <User
+                      size={18}
+                      style={{ marginRight: "6px", opacity: 0.7, flexShrink: 0 }}
+                    />
+                    <div className={styles.accName}>
+                      {user.name || user.username || "User"}
+                    </div>
                   </div>
                 </div>
               ) : (

@@ -68,4 +68,21 @@ class AdminController extends Controller
         'data'    => $submission->load(['category', 'images', 'user'])
     ], 200);
 }
+public function destroy($id)
+    {
+        $submission = Submission::findOrFail($id);
+        
+        // Hapus file fisik PDF jika ada
+        if ($submission->pdf_attachment) {
+            \Storage::disk('public')->delete($submission->pdf_attachment);
+        }
+
+        // Hapus data dari database (otomatis menghapus relasi jika ada cascade constraint)
+        $submission->delete();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Laporan berhasil dihapus oleh Admin'
+        ], 200);
+    }
 }

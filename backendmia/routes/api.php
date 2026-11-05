@@ -14,7 +14,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/submissions', [SubmissionController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/landing-stats', [SubmissionController::class, 'landingStats']); // <-- TAMBAHAN BARU
+Route::get('/landing-stats', [SubmissionController::class, 'landingStats']); 
 
 // ==========================================
 // PROTECTED ROUTES (Hanya untuk user yang login)
@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [SubmissionController::class, 'store']);
         Route::get('/{id}', [SubmissionController::class, 'show']);     // Ambil detail data untuk edit
         Route::put('/{id}', [SubmissionController::class, 'update']);    // Simpan perubahan edit
-        Route::delete('/{id}', [SubmissionController::class, 'destroy']);// Hapus laporan
+        Route::delete('/{id}', [SubmissionController::class, 'destroy']);// Hapus laporan oleh User
         Route::post('/{id}/vote', [VoteController::class, 'toggleVote']);
     });
 
@@ -38,10 +38,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // ==========================================
     Route::middleware('admin')->group(function () {
         
-        // Admin Stats & Status
+        // Admin Stats & Status & Hapus Paksa
         Route::prefix("/admin")->group(function () {
             Route::get('/stats', [AdminController::class, 'stats']);
             Route::post('/submissions/{id}/status', [AdminController::class, 'updateStatus']);
+            
+            // --- TAMBAHAN BARU: Route untuk Admin Hapus Laporan ---
+            Route::delete('/submissions/{id}', [AdminController::class, 'destroy']);
         });
 
         // CRUD Categories khusus Admin (Update & Delete)

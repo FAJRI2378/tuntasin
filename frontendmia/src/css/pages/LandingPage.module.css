@@ -8,7 +8,6 @@ a {
 
 .container {
   height: 100vh;
-  overflow-y: scroll;
 }
 
 
@@ -35,7 +34,6 @@ a {
 
 /* Background Soft Glow */
 .bgGlowContainer {
-  pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 0;

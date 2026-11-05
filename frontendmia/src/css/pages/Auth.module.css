@@ -432,7 +432,7 @@
   .container {
     padding: 1.2rem;
     align-items: flex-start;
-  }
+}
 
   .panel {
     flex-direction: column;

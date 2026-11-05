@@ -95,7 +95,7 @@ export default function Home() {
   const statusOptions = [
     { value: "pending", label: "Pending", color: "#f59e0b" },
     { value: "process", label: "Diproses", color: "#3b82f6" },
-    { value: "invalid", label: "Invalid", color: "#ef4444" },
+    // { value: "invalid", label: "Invalid", color: "#ef4444" },
     { value: "completed", label: "Selesai", color: "#10b981" },
   ];
 

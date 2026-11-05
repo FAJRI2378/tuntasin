@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import api from "../js/api.js";
 import { Flame, MapPin, Tag } from "lucide-react";
 import { useSubmission } from "../contexts/SubmissionContext.jsx";
+import styles from "../css/pages/PriorityHeatmap.module.css"
 
 export default function PriorityHeatmap() {
   const { submission, setSubmission } = useSubmission();
@@ -34,30 +35,23 @@ export default function PriorityHeatmap() {
 
   return (
     <div
-      style={{
-        color: "#fff",
-        padding: "20px",
-        maxWidth: "1200px",
-        margin: "0 auto",
-      }}
+      className={styles.container}
     >
+      <div className={styles.contentTop}>
+
       <h2
         style={{ fontSize: "24px", marginBottom: "10px", fontWeight: "bold" }}
-      >
-        🔥 Peta Panas & Prioritas Infrastruktur Indonesia (Priority Heatmap)
+        >
+        <Flame fill="#ffb937" color="#ef644e" /> Peta Panas & Prioritas Infrastruktur Indonesia (Priority Heatmap)
       </h2>
       <p style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "20px" }}>
         Visualisasi sebaran laporan infrastruktur di wilayah Indonesia
-        berdasarkan tingkat urgensi dan akumulasi dukungan suara (*vote*).
+        berdasarkan tingkat urgensi dan akumulasi dukungan suara (vote).
       </p>
+      </div>
 
       <div
-        style={{
-          backgroundColor: "#1e293b",
-          padding: "15px",
-          borderRadius: "10px",
-          border: "1px solid #334155",
-        }}
+        className={styles.contentBottom}
       >
         <div
           style={{ height: "500px", borderRadius: "8px", overflow: "hidden" }}

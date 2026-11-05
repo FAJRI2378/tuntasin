@@ -337,7 +337,7 @@ export default function AdminSubmissions() {
     if (path.startsWith("http")) return path;
     // Membersihkan awalan public/ atau storage/ jika ada
     const cleanPath = path.replace(/^(public|storage)\//, "");
-    return `http://localhost:8000/storage/${cleanPath}`;
+    return `http://tuntasin-web.epistura.web.id/storage/${cleanPath}`;
   };
 
   return (

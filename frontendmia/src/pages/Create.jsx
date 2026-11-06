@@ -346,7 +346,7 @@ export default function Create() {
                 {isLoading ? "Submitting..." : "Submit Laporan"}
               </button>
             </div>
-          </div>ad
+          </div>
 
           <div className={styles.formRight}>
             {/* Deskripsi */}

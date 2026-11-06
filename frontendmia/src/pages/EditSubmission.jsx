@@ -57,7 +57,7 @@ export default function EditSubmission() {
       window.dispatchEvent(new Event("submissionUpdated"));
       
       alert("Laporan berhasil diperbarui!");
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.error("Gagal memperbarui:", error);
       alert("Gagal memperbarui laporan.");

@@ -137,7 +137,7 @@ export default function Create() {
           title: "Error",
           text: "Submission berhasil dibuat!",
         });
-        navigate("/");
+        navigate("/home");
       }
     } catch (error) {
       console.error("Detail Error:", error.response);

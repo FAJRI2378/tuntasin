@@ -13,6 +13,7 @@ import {
   Camera,
   ThumbsUp,
   User,
+  Check,
 } from "lucide-react";
 import { ReactLenis } from "lenis/react";
 import "lenis/dist/lenis.css";
@@ -29,6 +30,26 @@ const C = {
   navy: "#13376A",
   green: "#1FC468",
 };
+
+const MAP_CENTER = [-2.548926, 118.0148634];
+const MAP_BOUNDS = [
+  [6.0, 95.0],
+  [-11.0, 141.0],
+];
+
+const FALLBACK_STATS = [
+  { value: "0", label: "Laporan masuk" },
+  { value: "0", label: "Terselesaikan" },
+  { value: "0", label: "Dukungan warga" },
+  { value: "1-3 hari", label: "Rata-rata respons" },
+];
+
+const INITIAL_STATS = [
+  { value: "...", label: "Laporan masuk" },
+  { value: "...", label: "Terselesaikan" },
+  { value: "...", label: "Dukungan warga" },
+  { value: "...", label: "Rata-rata respons" },
+];
 
 function Logo({ size = styles.logoDefaultSize }) {
   return (
@@ -58,11 +79,11 @@ function Logo({ size = styles.logoDefaultSize }) {
 
 /* Warna marker berdasarkan status atau jumlah vote */
 const getHeatColor = (status, votes) => {
-  if (status === "pending") return "#f59e0b"; // Kuning/Orange
-  if (status === "process") return "#3b82f6"; // Biru
-  if (status === "invalid") return "#ef4444"; // Merah
-  if (votes > 5) return "#dc2626"; // Merah Tua (Prioritas Tinggi)
-  return "#10b981"; // Hijau (Selesai/Normal)
+  if (status === "pending") return "#f59e0b";
+  if (status === "process") return "#3b82f6";
+  if (status === "invalid") return "#ef4444";
+  if (votes > 5) return "#dc2626";
+  return "#10b981";
 };
 
 /* Marker peta, dipakai di hero dan di kartu fitur */
@@ -91,21 +112,13 @@ function HeatMarkers({ items, popupDetail = false }) {
             }}
           >
             <strong
-              style={{
-                fontSize: "1rem",
-                display: "block",
-                marginBottom: "4px",
-              }}
+              style={{ fontSize: "1rem", display: "block", marginBottom: "4px" }}
             >
               {item.label}
             </strong>
             {popupDetail && (
               <p
-                style={{
-                  fontSize: "0.8rem",
-                  margin: "0 0 6px 0",
-                  color: "#334155",
-                }}
+                style={{ fontSize: "0.8rem", margin: "0 0 6px 0", color: "#334155" }}
               >
                 {item.description}
               </p>
@@ -166,13 +179,20 @@ const legend = [
   { color: "#10b981", label: "Normal" },
 ];
 
+const heroChecks = [
+  "Pelacakan status real-time",
+  "Prioritas berbasis dukungan warga",
+  "Dokumen perbaikan yang terbuka",
+];
+
+const badges = [
+  { icon: Clock, t: "Menunggu Verifikasi", done: true },
+  { icon: FileText, t: "Dalam Pengerjaan", done: true },
+  { icon: CheckCircle2, t: "Selesai", done: false },
+];
+
 export default function LandingPage() {
-  const [stats, setStats] = useState([
-    { value: "...", label: "Laporan masuk" },
-    { value: "...", label: "Terselesaikan" },
-    { value: "...", label: "Dukungan warga" },
-    { value: "...", label: "Rata-rata respons" },
-  ]);
+  const [stats, setStats] = useState(INITIAL_STATS);
 
   const dampakRef = useRef(null);
   const fiturRef = useRef(null);
@@ -181,8 +201,11 @@ export default function LandingPage() {
   const { submission, setSubmission } = useSubmission();
   const [user, setUser] = useState();
 
+  const scrollTo = (ref) =>
+    ref.current && ref.current.scrollIntoView({ behavior: "smooth" });
+
   useEffect(() => {
-    // 1. Memuat Statistik
+    // 1. Memuat statistik
     api
       .get("landing-stats")
       .then((res) => {
@@ -199,30 +222,19 @@ export default function LandingPage() {
       })
       .catch((err) => {
         console.error("Gagal memuat statistik landing page:", err);
-        setStats([
-          { value: "0", label: "Laporan masuk" },
-          { value: "0", label: "Terselesaikan" },
-          { value: "0", label: "Dukungan warga" },
-          { value: "1-3 hari", label: "Rata-rata respons" },
-        ]);
+        setStats(FALLBACK_STATS);
       });
 
-    // 2. Memuat Data Peta (jika belum ada di context)
+    // 2. Memuat data peta (jika belum ada di context)
     if (submission.length === 0) {
       api
         .get("submissions")
-        .then((res) => {
-          setSubmission(res.data.data || []);
-        })
-        .catch((err) => {
-          console.error("Gagal memuat data peta:", err);
-        });
+        .then((res) => setSubmission(res.data.data || []))
+        .catch((err) => console.error("Gagal memuat data peta:", err));
     }
 
     const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
   return (
@@ -237,83 +249,57 @@ export default function LandingPage() {
       >
         <SplashIntro />
 
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-        @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        .floaty { animation: floaty 5s ease-in-out infinite; }
-      `}</style>
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');`}</style>
 
         <div className={styles.content}>
-          {/* --- BACKGROUND SOFT GLOW --- */}
+          {/* Background glow */}
           <div className={styles.bgGlowContainer}>
             <div className={styles.glowTopLeft} />
-            <div
-              className={styles.glowTopRight}
-              style={{ background: "rgba(31,196,104,0.18)" }}
-            />
+            <div className={styles.glowTopRight} />
             <div className={styles.glowBottomLeft} />
           </div>
 
-          {/* --- NAVBAR --- */}
+          {/* NAVBAR */}
           <nav className={styles.navbar}>
             <div className={styles.navInner}>
               <Logo />
+
               <div className={styles.navLinks}>
-                <div
-                  onClick={() =>
-                    dampakRef.current &&
-                    dampakRef.current.scrollIntoView({ behavior: "smooth" })
-                  }
+                <button
+                  type="button"
                   className={styles.navLinkItem}
+                  onClick={() => scrollTo(dampakRef)}
                 >
                   Dampak
-                </div>
-                <div
-                  onClick={() =>
-                    fiturRef.current &&
-                    fiturRef.current.scrollIntoView({ behavior: "smooth" })
-                  }
+                </button>
+                <button
+                  type="button"
                   className={styles.navLinkItem}
+                  onClick={() => scrollTo(fiturRef)}
                 >
                   Fitur
-                </div>
-                <div
-                  onClick={() =>
-                    carakerjaRef.current &&
-                    carakerjaRef.current.scrollIntoView({ behavior: "smooth" })
-                  }
+                </button>
+                <button
+                  type="button"
                   className={styles.navLinkItem}
+                  onClick={() => scrollTo(carakerjaRef)}
                 >
                   Cara Kerja
-                </div>
+                </button>
               </div>
-             {user ? (
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  {/* TOMBOL PINTASAN KE DASHBOARD BERDASARKAN ROLE */}
+
+              {user ? (
+                <div className={styles.navActions}>
                   <Link
                     to={user.role === "admin" || user.is_admin ? "/admin" : "/create"}
                     className={styles.loginBtn}
-                    style={{
-                      background: C.navy,
-                      textDecoration: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      color: "#fff",
-                      padding: "8px 16px",
-                      borderRadius: "8px",
-                      fontSize: "0.9rem",
-                      fontWeight: "500"
-                    }}
+                    style={{ background: C.navy }}
                   >
                     <span>Dashboard</span>
                     <ArrowRight size={16} />
                   </Link>
-
-                  <div className={styles.acc} style={{ display: "flex", alignItems: "center" }}>
-                    <User
-                      size={18}
-                      style={{ marginRight: "6px", opacity: 0.7, flexShrink: 0 }}
-                    />
+                  <div className={styles.acc}>
+                    <User size={18} className={styles.accIcon} />
                     <div className={styles.accName}>
                       {user.name || user.username || "User"}
                     </div>
@@ -336,76 +322,111 @@ export default function LandingPage() {
             </div>
           </nav>
 
-          {/* --- HERO --- */}
-          <main className={styles.heroMain}>
-            <h1 className={styles.heroTitle}>
-              Wujudkan Infrastruktur
-              <br />
-              <span className={styles.heroHighlightWrapper}>
-                Lebih Baik, Bersama
-                <span style={{ color: C.green }}>.</span>
-                <svg
-                  className={styles.heroSvgLine}
-                  viewBox="0 0 300 12"
-                  fill="none"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M2 8 C 70 0, 150 12, 298 3"
-                    stroke={C.green}
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>
-            </h1>
+          {/* HERO */}
+          <main className={styles.heroSection}>
+            <div className={styles.heroGrid}>
+              <div className={styles.heroContent}>
+               
 
-            <p className={styles.heroDesc}>
-              Platform kolaboratif yang menghubungkan masyarakat dan pemerintah
-              secara transparan. Laporkan kerusakan, tentukan prioritas bersama
-              lewat voting, dan pantau progres perbaikannya secara real-time.
-            </p>
+                <h1 className={styles.heroTitle}>
+                  Wujudkan Infrastruktur
+                  <br />
+                  <span className={styles.heroHighlightWrapper}>
+                    Lebih Baik, Bersama
+                    <span style={{ color: C.green }}>.</span>
+                    <svg
+                      className={styles.heroSvgLine}
+                      viewBox="0 0 300 12"
+                      fill="none"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M2 8 C 70 0, 150 12, 298 3"
+                        stroke={C.green}
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
+                </h1>
 
-            <div className={styles.heroCtaGroup}>
-              <Link
-                to="/create"
-                className={styles.primaryCta}
-                style={{ background: C.navy }}
-              >
-                Mulai Buat Laporan
-                <ArrowRight size={18} className={styles.arrowIcon} />
-              </Link>
-              <Link to="/heatmap" className={styles.secondaryCta}>
-                Eksplorasi Peta
-              </Link>
-            </div>
+              <p className={styles.heroDesc}>
+  Platform yang menghubungkan masyarakat dan pemerintah untuk mewujudkan responsibility. Sampaikan laporan layanan publik dan kerusakan infrastruktur, tentukan prioritas bersama lewat voting, serta pantau progres penanganannya secara real-time.
+</p>
 
-            {/* --- HERO PREVIEW CARD (PETA ASLI) --- */}
-            <div className={styles.heroMapWrapper}>
-              <div className={styles.heroMapInner}>
-                <div className={styles.mapContainerBox}>
-                  <MapContainer
-                    center={[-2.548926, 118.0148634]}
-                    zoom={5}
-                    style={{ height: "100%", width: "100%" }}
-                    maxBounds={[
-                      [6.0, 95.0],
-                      [-11.0, 141.0],
-                    ]}
-                    minZoom={4}
+                <div className={styles.heroCtaGroup}>
+                  <Link
+                    to="/create"
+                    className={styles.primaryCta}
+                    style={{ background: C.navy }}
                   >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution="&copy; OpenStreetMap contributors"
-                    />
-                    <HeatMarkers items={submission} popupDetail />
-                  </MapContainer>
+                    Mulai Buat Laporan
+                    <ArrowRight size={18} className={styles.arrowIcon} />
+                  </Link>
+                  <Link to="/heatmap" className={styles.secondaryCta}>
+                    Eksplorasi Peta
+                  </Link>
+                </div>
+
+                <ul className={styles.heroChecks}>
+                  {heroChecks.map((c) => (
+                    <li key={c} className={styles.checkItem}>
+                      <span
+                        className={styles.checkIcon}
+                        style={{ background: C.green }}
+                      >
+                        <Check size={12} strokeWidth={3} color="#fff" />
+                      </span>
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Hero visual: kartu peta */}
+              <div className={styles.heroVisual}>
+                <div className={styles.heroMapCard}>
+                  <div className={styles.mapContainerBox}>
+                    <MapContainer
+                      center={MAP_CENTER}
+                      zoom={5}
+                      scrollWheelZoom={false}
+                      style={{ height: "100%", width: "100%" }}
+                      maxBounds={MAP_BOUNDS}
+                      minZoom={4}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; OpenStreetMap contributors"
+                      />
+                      <HeatMarkers items={submission} popupDetail />
+                    </MapContainer>
+                  </div>
+                </div>
+
+                <div className={`${styles.floatCard} ${styles.floatCardTop}`}>
+                  <span
+                    className={styles.floatDot}
+                    style={{ background: C.green }}
+                  />
+                  <div>
+                    <div className={styles.floatValue}>{stats[0].value}</div>
+                    <div className={styles.floatLabel}>Laporan masuk</div>
+                  </div>
+                </div>
+
+                <div className={`${styles.floatCard} ${styles.floatCardBottom}`}>
+                  <CheckCircle2 size={18} color={C.green} />
+                  <div>
+                    <div className={styles.floatValue}>{stats[1].value}</div>
+                    <div className={styles.floatLabel}>Terselesaikan</div>
+                  </div>
                 </div>
               </div>
             </div>
           </main>
 
-          {/* --- STATS --- */}
+          {/* STATS */}
           <section ref={dampakRef} id="dampak" className={styles.statsSection}>
             <div className={styles.statsGrid}>
               {stats.map((s) => (
@@ -417,38 +438,40 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* --- BENTO FEATURES --- */}
+          {/* FITUR */}
           <section ref={fiturRef} id="fitur" className={styles.featuresSection}>
             <div className={styles.sectionHeader}>
-              <p className={styles.sectionSubtitle} style={{ color: C.green }}>
-                Fitur Unggulan
+              <div>
+                <span className={styles.eyebrow}>
+                  <span
+                    className={styles.eyebrowDot}
+                    style={{ background: C.green }}
+                  />
+                  Fitur Unggulan
+                </span>
+                <h2 className={styles.sectionTitle}>
+                  Semua yang kamu butuhkan
+                </h2>
+              </div>
+              <p className={styles.sectionDesc}>
+                Dari pelaporan hingga penyelesaian, setiap tahap dibuat
+                transparan untuk warga dan pemerintah.
               </p>
-              <h2 className={styles.sectionTitle}>Semua yang kamu butuhkan</h2>
             </div>
 
             <div className={styles.bentoGrid}>
-              {/* Card 1: Heatmap (teks + peta) */}
+              {/* Card 1: Heatmap */}
               <div className={styles.bentoCard1}>
-                {/* Teks */}
                 <div className={styles.bentoCard1Text}>
-                  <div
-                    className={styles.iconBox}
-                    style={{
-                      background: "rgba(19,55,106,0.08)",
-                      borderColor: "rgba(19,55,106,0.15)",
-                    }}
-                  >
-                    <MapIcon size={24} color={C.navy} />
+                  <div className={styles.iconBox} data-tone="navy">
+                    <MapIcon size={22} color={C.navy} />
                   </div>
-                  <h3 className={styles.cardTitle}>
-                    Pemetaan Prioritas Heatmap
-                  </h3>
+                  <h3 className={styles.cardTitle}>Pemetaan Prioritas Heatmap</h3>
                   <p className={styles.cardDesc}>
                     Visualisasi titik kerusakan infrastruktur secara real-time.
                     Warna dan ukuran titik menandakan urgensi berdasarkan status
                     dan dukungan warga.
                   </p>
-
                   <div className={styles.legendContainer}>
                     {legend.map((l) => (
                       <span key={l.label} className={styles.legendItem}>
@@ -462,24 +485,15 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Peta */}
                 <div className={styles.bentoCard1Map}>
                   <MapContainer
-                    center={[-2.548926, 118.0148634]}
+                    center={MAP_CENTER}
                     zoom={4}
                     minZoom={4}
                     scrollWheelZoom={false}
                     zoomControl={false}
-                    maxBounds={[
-                      [6.0, 95.0],
-                      [-11.0, 141.0],
-                    ]}
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      height: "100%",
-                      width: "100%",
-                    }}
+                    maxBounds={MAP_BOUNDS}
+                    style={{ position: "absolute", inset: 0, height: "100%", width: "100%" }}
                   >
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -492,65 +506,33 @@ export default function LandingPage() {
 
               {/* Card 2: Voting */}
               <div className={styles.bentoCard2}>
-                <div className={styles.cardInnerContent}>
-                  <div
-                    className={styles.iconBox}
-                    style={{
-                      background: "rgba(31,196,104,0.12)",
-                      borderColor: "rgba(31,196,104,0.3)",
-                    }}
-                  >
-                    <Megaphone size={24} color={C.green} />
-                  </div>
-                  <h3 className={styles.cardTitle}>Sistem Voting Warga</h3>
-                  <p className={styles.cardDesc}>
-                    Berikan suaramu pada laporan paling krusial agar segera
-                    ditindaklanjuti oleh pihak berwenang.
-                  </p>
+                <div className={styles.iconBox} data-tone="green">
+                  <Megaphone size={22} color={C.green} />
                 </div>
+                <h3 className={styles.cardTitle}>Sistem Voting Warga</h3>
+                <p className={styles.cardDesc}>
+                  Berikan suaramu pada laporan paling krusial agar segera
+                  ditindaklanjuti oleh pihak berwenang.
+                </p>
               </div>
 
               {/* Card 3: Transparansi */}
               <div className={styles.bentoCard3}>
-                <div className={styles.cardInnerContent}>
-                  <div
-                    className={styles.iconBox}
-                    style={{
-                      background: "rgba(19,55,106,0.08)",
-                      borderColor: "rgba(19,55,106,0.15)",
-                    }}
-                  >
-                    <ShieldCheck size={24} color={C.navy} />
-                  </div>
-                  <h3 className={styles.cardTitle}>Transparansi Penuh</h3>
-                  <p className={styles.cardDesc}>
-                    Akses terbuka terhadap dokumen perbaikan (PDF) dan catatan
-                    resmi dari tim lapangan.
-                  </p>
+                <div className={styles.iconBox} data-tone="navy">
+                  <ShieldCheck size={22} color={C.navy} />
                 </div>
+                <h3 className={styles.cardTitle}>Transparansi Penuh</h3>
+                <p className={styles.cardDesc}>
+                  Akses terbuka terhadap dokumen perbaikan (PDF) dan catatan
+                  resmi dari tim lapangan.
+                </p>
               </div>
 
               {/* Card 4: Live tracking */}
-              <div className={styles.bentoCard4} style={{ background: C.navy }}>
-                <div className={styles.bentoCard4Badges}>
-                  {[
-                    { icon: Clock, t: "Menunggu Verifikasi", done: true },
-                    { icon: FileText, t: "Dalam Pengerjaan", done: true },
-                    { icon: CheckCircle2, t: "Selesai", done: false },
-                  ].map((s, i) => (
-                    <div key={i} className={styles.badgeItem}>
-                      <s.icon
-                        size={16}
-                        color={s.done ? C.green : "rgba(255,255,255,0.5)"}
-                      />
-                      {s.t}
-                    </div>
-                  ))}
-                </div>
-
+              <div className={styles.bentoCard4}>
                 <div className={styles.bentoCard4Content}>
                   <div className={styles.bentoCard4Icon}>
-                    <Activity size={24} color={C.green} />
+                    <Activity size={22} color={C.green} />
                   </div>
                   <h3 className={styles.bentoCard4Title}>
                     Pantau Progres Real-Time
@@ -561,52 +543,78 @@ export default function LandingPage() {
                     "Selesai" langsung dari dashboard.
                   </p>
                 </div>
+
+                <div className={styles.bentoCard4Badges}>
+                  {badges.map((b) => (
+                    <div key={b.t} className={styles.badgeItem}>
+                      <b.icon
+                        size={16}
+                        color={b.done ? C.green : "rgba(255,255,255,0.5)"}
+                      />
+                      {b.t}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
 
-          {/* --- CARA KERJA --- */}
+          {/* CARA KERJA */}
           <section
             ref={carakerjaRef}
             id="cara-kerja"
-            className={styles.howItWorksSection}
+            className={styles.howSection}
           >
             <div className={styles.sectionHeader}>
-              <p className={styles.sectionSubtitle} style={{ color: C.green }}>
-                Cara Kerja
+              <div>
+                <span className={styles.eyebrow}>
+                  <span
+                    className={styles.eyebrowDot}
+                    style={{ background: C.green }}
+                  />
+                  Cara Kerja
+                </span>
+                <h2 className={styles.sectionTitle}>Tiga langkah menuju tuntas</h2>
+              </div>
+              <p className={styles.sectionDesc}>
+                Proses sederhana yang menghubungkan laporan warga dengan tindakan
+                nyata dari pemerintah.
               </p>
-              <h2 className={styles.sectionTitle}>
-                Tiga langkah menuju tuntas
-              </h2>
             </div>
+
             <div className={styles.stepsGrid}>
-              {steps.map((s, i) => (
-                <div key={s.title} className={styles.stepCard}>
-                  <span className={styles.stepNumber}>{i + 1}</span>
-                  <div
-                    className={styles.stepIconBox}
-                    style={{ background: i === 2 ? C.green : C.navy }}
-                  >
-                    <s.icon size={22} />
+              {steps.map((s, i) => {
+                const isLast = i === steps.length - 1;
+                return (
+                  <div key={s.title} className={styles.stepCard}>
+                    <div className={styles.stepHead}>
+                      <div
+                        className={styles.stepIconBox}
+                        style={{ background: isLast ? C.green : C.navy }}
+                      >
+                        <s.icon size={22} />
+                      </div>
+                      <span className={styles.stepNumber}>
+                        0{i + 1}
+                      </span>
+                    </div>
+                    <h3 className={styles.stepTitle}>{s.title}</h3>
+                    <p className={styles.stepDesc}>{s.desc}</p>
                   </div>
-                  <h3 className={styles.stepTitle}>{s.title}</h3>
-                  <p className={styles.stepDesc}>{s.desc}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
 
-          {/* --- FOOTER --- */}
+          {/* FOOTER */}
           <footer className={styles.footer}>
             <div className={styles.footerInner}>
               <Logo size="text-xl" />
-              <span>
-                © {new Date().getFullYear()} Tuntasin. Dibuat untuk warga.
-              </span>
+              <span>© {new Date().getFullYear()} Tuntasin. Dibuat untuk warga.</span>
             </div>
           </footer>
         </div>
       </div>
-    </ReactLenis>
+    </ReactLenis> 
   );
 }

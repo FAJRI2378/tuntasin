@@ -29,12 +29,12 @@ export default function MapLocation({ onLocationSelect, currentCord }) {
   const [loading, setLoading] = useState(false);
 
   function LocationMarker({ onLocationSelect }) {
-    const [position, setPosition] = useState(userPosition);
+    // const [position, setPosition] = useState(userPosition);
 
     // Event handler peta
     useMapEvents({
       click(e) {
-        setPosition(e.latlng);
+        setUserPosition(e.latlng);
 
         if (onLocationSelect) {
           onLocationSelect(`${e.latlng.lat}, ${e.latlng.lng}`);
@@ -42,7 +42,7 @@ export default function MapLocation({ onLocationSelect, currentCord }) {
       },
     });
 
-    return position === null ? null : <Marker position={position}></Marker>;
+    return userPosition === null ? null : <Marker position={userPosition}></Marker>;
   }
 
   useEffect(() => {

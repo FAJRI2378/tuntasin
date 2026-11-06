@@ -16,10 +16,15 @@ export default function LocationModalButton({ data }) {
           [-11.0, 95.0],
           [6.0, 141.0],
         ];
-
+        
+        const parts = data.location.split(", ");
+        const coorObject = [
+          parseFloat(parts[0].trim()),
+          parseFloat(parts[1].trim()),
+        ];
         const map = L.map("modal-map", {
-          center: [-0.7893, 113.9213], // Titik tengah Indonesia
-          zoom: 5,
+          center: coorObject, // Titik tengah Indonesia
+          zoom: 9,
           minZoom: 4,
           maxBounds: indonesiaBounds,
           maxBoundsViscosity: 1.0,
@@ -29,11 +34,6 @@ export default function LocationModalButton({ data }) {
           attribution: "&copy; OpenStreetMap contributors",
         }).addTo(map);
 
-        const parts = data.location.split(", ");
-        const coorObject = [
-          parseFloat(parts[0].trim()),
-          parseFloat(parts[1].trim()),
-        ];
 
         L.marker(coorObject)
           .addTo(map)

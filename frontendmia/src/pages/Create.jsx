@@ -1,10 +1,11 @@
-import { Camera, X } from "lucide-react";
+import { Camera, MapPin, Target, X } from "lucide-react";
 import styles from "../css/pages/Create.module.css";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 import api from "../js/api";
 import Swal from "sweetalert2";
 import MapLocation from "../components/Map";
+import clsx from "clsx";
 
 export default function Create() {
   const imageRef = useRef(null);
@@ -14,6 +15,7 @@ export default function Create() {
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [userPosition, setUserPosition] = useState([-6.1753924, 106.8271528]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,10 +24,61 @@ export default function Create() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [customCategory, setCustomCategory] = useState("");
 
-  // Mengambil daftar kategori dari database Admin saat komponen dimuat
   useEffect(() => {
+    const verifyAuth = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await api.get("/check");
+        const data = response.data;
+
+        if (!data.valid) {
+          navigate("/login");
+        }
+      } catch (error) {
+        navigate("/");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    verifyAuth();
     fetchCategories();
   }, []);
+
+  function getCurrentLocation() {
+    if (!navigator.geolocation) {
+      Swal.fire({
+        icon: "error",
+        title: "Upss",
+        text: "Browser kamu tidak mendukung Geolocation.",
+      });
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        console.log([lat, lng]);
+        setUserPosition([lat, lng]);
+      },
+      (error) => {
+        console.error(error);
+        Swal.fire({
+          icon: "error",
+          title: "Upss",
+          text: "Gagal mendapatkan lokasi. Pastikan GPS diizinkan di browser yaa!",
+        });
+      },
+      { enableHighAccuracy: true },
+    );
+  }
 
   async function fetchCategories() {
     try {
@@ -87,14 +140,11 @@ export default function Create() {
         const existingCat = adminCategories.find(
           (cat) => cat.name.toLowerCase() === inputCategoryName.toLowerCase(),
         );
+        console.log(existingCat);
 
         if (existingCat) {
-          
-          alert(
-            `Kategori "${existingCat.name}" sudah disediakan oleh Admin! Silakan batalkan opsi "Lainnya" dan pilih langsung dari menu Dropdown.`,
-          );
-          setIsLoading(false);
-          return; // Hentikan proses submit
+          categoryIdToSubmit = existingCat.id;
+          setSelectedCategory(existingCat.id);
         }
 
         // 2. Jika benar-benar baru, buat kategorinya ke database dulu via API
@@ -134,7 +184,7 @@ export default function Create() {
       if (response.status === 200 || response.status === 201) {
         Swal.fire({
           icon: "success",
-          title: "Error",
+          title: "Berhasil",
           text: "Submission berhasil dibuat!",
         });
         navigate("/home");
@@ -169,6 +219,18 @@ export default function Create() {
                   onChange={(e) => setLabel(e.target.value)}
                   required
                 />
+              </div>
+
+              <div
+                className={clsx(styles.description, styles.descriptionMobile)}
+              >
+                <div className={styles.descriptionLabel}>Input Description</div>
+                <textarea
+                  placeholder="Ceritakan detail kronologi atau kondisi di lapangan..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                ></textarea>
               </div>
 
               {/* Kategori Berbasis Admin Data */}
@@ -256,19 +318,21 @@ export default function Create() {
 
               {/* Lokasi Peta */}
               <div className={styles.location}>
-                <MapLocation
-                  onLocationSelect={(coords) => setLocation(coords)}
-                />
+                <div
+                  className={styles.locationHead}
+                  onClick={getCurrentLocation}
+                >
+                  <Target size={20} /> Gunakan Lokasi Saat ini
+                </div>
+                <div className={styles.locationMaps}>
+                  <MapLocation
+                    onLocationSelect={(coords) => setLocation(coords)}
+                    currentCord={userPosition}
+                  />
+                </div>
                 {location && (
-                  <div
-                    style={{
-                      marginTop: "10px",
-                      fontSize: "13px",
-                      color: "#3b82f6",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    📍 Titik GPS / Lokasi Terpilih: {location}
+                  <div className={styles.locationFoot}>
+                    <MapPin size={14} /> Lokasi Terpilih: {location}
                   </div>
                 )}
               </div>

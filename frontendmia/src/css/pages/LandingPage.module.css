@@ -17,8 +17,8 @@ a {
 }
 
 .container {
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow-y: scroll;
 }
 
 .content {
@@ -49,7 +49,6 @@ a {
 
 /* Background glow */
 .bgGlowContainer {
-  pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 0;

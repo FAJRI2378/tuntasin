@@ -3,6 +3,7 @@ import {
   TileLayer,
   Marker,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -17,54 +18,36 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-function LocationMarker({ onLocationSelect }) {
-  const [position, setPosition] = useState(null);
-
-  // Event handler peta
-  useMapEvents({
-    click(e) {
-      console.log(e.latlng);
-      setPosition(e.latlng); // Mengambil koordinat tempat yang diklik
-      
-      // Mengirim data koordinat ke komponen Create
-      if (onLocationSelect) {
-        onLocationSelect(`${e.latlng.lat}, ${e.latlng.lng}`);
-      }
-    },
-  });
-
-  return position === null ? null : <Marker position={position}></Marker>;
+function ChangeMapCenter({ center }) {
+  const map = useMap(); 
+  map.panTo(center, map.getZoom());
+  return null;
 }
 
-export default function MapLocation({ onLocationSelect }) {
-  const [userPosition, setUserPosition] = useState([-6.1753924, 106.8271528]);
+export default function MapLocation({ onLocationSelect, currentCord }) {
+  const [userPosition, setUserPosition] = useState(currentCord);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      alert("Browser kamu tidak mendukung Geolocation.");
-      return;
-    }
+  function LocationMarker({ onLocationSelect }) {
+    // const [position, setPosition] = useState(userPosition);
 
-    setLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        console.log([lat, lng]);
-        setUserPosition([lat, lng]);
-        setLoading(false);
+    // Event handler peta
+    useMapEvents({
+      click(e) {
+        setUserPosition(e.latlng);
+
+        if (onLocationSelect) {
+          onLocationSelect(`${e.latlng.lat}, ${e.latlng.lng}`);
+        }
       },
-      (error) => {
-        console.error(error);
-        alert(
-          "Gagal mendapatkan lokasi. Pastikan izin GPS diizinkan di browser!",
-        );
-        setLoading(false);
-      },
-      { enableHighAccuracy: true },
-    );
-  }, []);
+    });
+
+    return userPosition === null ? null : <Marker position={userPosition}></Marker>;
+  }
+
+  useEffect(() => {
+    setUserPosition(currentCord);
+  }, [currentCord]);
 
   return (
     <MapContainer
@@ -80,6 +63,8 @@ export default function MapLocation({ onLocationSelect }) {
 
       {/* Teruskan props ke LocationMarker */}
       <LocationMarker onLocationSelect={onLocationSelect} />
+
+      <ChangeMapCenter center={userPosition} />
     </MapContainer>
   );
 }

@@ -12,21 +12,27 @@ class VoteController extends Controller
     public function togglevote($id)
     {
         // Pastikan pakai guard sanctum jika ini API
-        $userId = auth('sanctum')->id(); 
+        // Ambil data user secara utuh (bukan hanya ID) agar bisa mengecek role
+        $user = auth('sanctum')->user(); 
         
-        if (!$userId) {
+        if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        // --- BLOKIR ADMIN ---
+        // Cek apakah user adalah admin (sesuaikan dengan nama kolom di database Anda, misal: 'role' atau 'is_admin')
+        if ($user->role === 'admin' || $user->is_admin == true) {
+            return response()->json(['message' => 'Admin tidak diperbolehkan memberikan vote.'], 403);
         }
 
         $submission = Submission::findOrFail($id);
 
-        // --- Perbaikan: Gunakan '==' agar tipe datanya fleksibel
-        if ($submission->user_id == $userId) {
+        if ($submission->user_id == $user->id) {
             return response()->json(['message' => 'Anda tidak bisa mendukung laporan Anda sendiri.'], 403);
         }
 
         // Cek apakah user sudah pernah vote laporan ini
-        $existingVote = Vote::where('user_id', $userId)
+        $existingVote = Vote::where('user_id', $user->id)
                             ->where('submission_id', $id)
                             ->first();
 
@@ -37,7 +43,7 @@ class VoteController extends Controller
         } else {
             // Jika belum, tambahkan vote baru
             Vote::create([
-                'user_id' => $userId,
+                'user_id' => $user->id,
                 'submission_id' => $id
             ]);
             return response()->json(['message' => 'Berhasil memberikan Vote!'], 201);

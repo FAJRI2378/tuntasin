@@ -64,7 +64,7 @@ export default function SubmissionCard({
     });
   };
 
-  // --- FUNGSI KLIK VOTE ---
+ // --- FUNGSI KLIK VOTE ---
   async function handleVote(submissionId, isOwnData) {
     if (isOwnData) {
       alert("Anda tidak bisa mendukung laporan Anda sendiri.");
@@ -72,8 +72,13 @@ export default function SubmissionCard({
     }
 
     try {
-      await api.post(`submissions/${submissionId}/vote`);
-      fetchSubmissions();
+      const response = await api.post(`submissions/${submissionId}/vote`);
+      
+      // Terima status 200 (batal vote) atau 201 (berhasil vote)
+      if (response.status === 200 || response.status === 201) {
+        // Beritahu komponen Home untuk memuat ulang data submission
+        window.dispatchEvent(new Event("submissionUpdated"));
+      }
     } catch (error) {
       if (error.response?.status === 401) {
         Swal.fire({

@@ -14,6 +14,9 @@ import {
   ThumbsUp,
   User,
   Check,
+  Sparkles,
+   Menu,
+  X,
 } from "lucide-react";
 import { ReactLenis } from "lenis/react";
 import "lenis/dist/lenis.css";
@@ -26,7 +29,7 @@ import styles from "../css/pages/LandingPage.module.css";
 
 /* Palet diambil dari logo Tuntasin */
 const C = {
-  bg: "#C0CBFF", // periwinkle
+  bg: "#F8F9FF", // Latar belakang yang lebih terang agar terlihat bersih
   navy: "#13376A",
   green: "#1FC468",
 };
@@ -86,7 +89,7 @@ const getHeatColor = (status, votes) => {
   return "#10b981";
 };
 
-/* Marker peta, dipakai di hero dan di kartu fitur */
+/* Marker peta, dipakai di kartu fitur */
 function HeatMarkers({ items, popupDetail = false }) {
   return items.map((item) => {
     const parts = (item.location || "").split(", ");
@@ -179,12 +182,6 @@ const legend = [
   { color: "#10b981", label: "Normal" },
 ];
 
-const heroChecks = [
-  "Pelacakan status real-time",
-  "Prioritas berbasis dukungan warga",
-  "Dokumen perbaikan yang terbuka",
-];
-
 const badges = [
   { icon: Clock, t: "Menunggu Verifikasi", done: true },
   { icon: FileText, t: "Dalam Pengerjaan", done: true },
@@ -203,7 +200,12 @@ export default function LandingPage() {
 
   const scrollTo = (ref) =>
     ref.current && ref.current.scrollIntoView({ behavior: "smooth" });
+const [menuOpen, setMenuOpen] = useState(false);
 
+const goTo = (ref) => {
+  setMenuOpen(false);
+  scrollTo(ref);
+};
   useEffect(() => {
     // 1. Memuat statistik
     api
@@ -259,100 +261,99 @@ export default function LandingPage() {
             <div className={styles.glowBottomLeft} />
           </div>
 
-          {/* NAVBAR */}
-          <nav className={styles.navbar}>
-            <div className={styles.navInner}>
-              <Logo />
+         {/* NAVBAR */}
+<nav className={styles.navbar}>
+  <div className={styles.navInner}>
+    <Logo />
 
-              <div className={styles.navLinks}>
-                <button
-                  type="button"
-                  className={styles.navLinkItem}
-                  onClick={() => scrollTo(dampakRef)}
-                >
-                  Dampak
-                </button>
-                <button
-                  type="button"
-                  className={styles.navLinkItem}
-                  onClick={() => scrollTo(fiturRef)}
-                >
-                  Fitur
-                </button>
-                <button
-                  type="button"
-                  className={styles.navLinkItem}
-                  onClick={() => scrollTo(carakerjaRef)}
-                >
-                  Cara Kerja
-                </button>
-              </div>
+    <div className={styles.navLinks}>
+      <button type="button" className={styles.navLinkItem} onClick={() => goTo(dampakRef)}>
+        Dampak
+      </button>
+      <button type="button" className={styles.navLinkItem} onClick={() => goTo(fiturRef)}>
+        Fitur
+      </button>
+      <button type="button" className={styles.navLinkItem} onClick={() => goTo(carakerjaRef)}>
+        Cara Kerja
+      </button>
+    </div>
 
-              {user ? (
-                <div className={styles.navActions}>
-                  <Link
-                    to={user.role === "admin" || user.is_admin ? "/admin" : "/create"}
-                    className={styles.loginBtn}
-                    style={{ background: C.navy }}
-                  >
-                    <span>Dashboard</span>
-                    <ArrowRight size={16} />
-                  </Link>
-                  <div className={styles.acc}>
-                    <User size={18} className={styles.accIcon} />
-                    <div className={styles.accName}>
-                      {user.name || user.username || "User"}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.navActions}>
-                  <Link to="/register" className={styles.registerLink}>
-                    Daftar
-                  </Link>
-                  <Link
-                    to="/login"
-                    className={styles.loginBtn}
-                    style={{ background: C.navy }}
-                  >
-                    Masuk
-                  </Link>
-                </div>
-              )}
+    <div className={styles.navRight}>
+      {user ? (
+        <div className={styles.navActions}>
+          <Link
+            to={user.role === "admin" || user.is_admin ? "/admin" : "/create"}
+            className={styles.loginBtn}
+            style={{ background: C.navy }}
+          >
+            <span>Dashboard</span>
+            <ArrowRight size={16} />
+          </Link>
+          <div className={styles.acc}>
+            <User size={18} className={styles.accIcon} />
+            <div className={styles.accName}>
+              {user.name || user.username || "User"}
             </div>
-          </nav>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.navActions}>
+          <Link to="/register" className={styles.registerLink}>
+            Daftar
+          </Link>
+          <Link to="/login" className={styles.loginBtn} style={{ background: C.navy }}>
+            Masuk
+          </Link>
+        </div>
+      )}
+
+      <button
+        type="button"
+        className={styles.menuToggle}
+        onClick={() => setMenuOpen((o) => !o)}
+        aria-expanded={menuOpen}
+        aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+      >
+        {menuOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
+    </div>
+  </div>
+
+  {/* Menu dropdown untuk mobile */}
+  {menuOpen && (
+    <div className={styles.mobileMenu}>
+      {[
+        { label: "Dampak", ref: dampakRef },
+        { label: "Fitur", ref: fiturRef },
+        { label: "Cara Kerja", ref: carakerjaRef },
+      ].map((item) => (
+        <button
+          key={item.label}
+          type="button"
+          className={styles.mobileMenuItem}
+          onClick={() => goTo(item.ref)}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  )}
+</nav>
 
           {/* HERO */}
           <main className={styles.heroSection}>
             <div className={styles.heroGrid}>
+              
+              {/* Sisi Kiri - Teks & CTA */}
               <div className={styles.heroContent}>
-               
 
                 <h1 className={styles.heroTitle}>
-                  Wujudkan Infrastruktur
-                  <br />
-                  <span className={styles.heroHighlightWrapper}>
-                    Lebih Baik, Bersama
-                    <span style={{ color: C.green }}>.</span>
-                    <svg
-                      className={styles.heroSvgLine}
-                      viewBox="0 0 300 12"
-                      fill="none"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M2 8 C 70 0, 150 12, 298 3"
-                        stroke={C.green}
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
+                  Wujudkan Infrastruktur<br /> Lebih Baik, Bersama.
                 </h1>
 
-              <p className={styles.heroDesc}>
-  Platform yang menghubungkan masyarakat dan pemerintah untuk mewujudkan responsibility. Sampaikan laporan layanan publik dan kerusakan infrastruktur, tentukan prioritas bersama lewat voting, serta pantau progres penanganannya secara real-time.
-</p>
+                <p className={styles.heroDesc}>
+                  Platform yang menghubungkan masyarakat dan pemerintah untuk mewujudkan responsibility. Sampaikan laporan layanan publik dan kerusakan infrastruktur, tentukan prioritas bersama lewat voting, serta pantau progres penanganannya secara real-time.
+                </p>
 
                 <div className={styles.heroCtaGroup}>
                   <Link
@@ -363,66 +364,20 @@ export default function LandingPage() {
                     Mulai Buat Laporan
                     <ArrowRight size={18} className={styles.arrowIcon} />
                   </Link>
-                  <Link to="/heatmap" className={styles.secondaryCta}>
-                    Eksplorasi Peta
+                  <Link to="/heatmap" className={styles.textCta}>
+                    Eksplorasi Peta &rarr;
                   </Link>
                 </div>
-
-                <ul className={styles.heroChecks}>
-                  {heroChecks.map((c) => (
-                    <li key={c} className={styles.checkItem}>
-                      <span
-                        className={styles.checkIcon}
-                        style={{ background: C.green }}
-                      >
-                        <Check size={12} strokeWidth={3} color="#fff" />
-                      </span>
-                      {c}
-                    </li>
-                  ))}
-                </ul>
               </div>
 
-              {/* Hero visual: kartu peta */}
+              {/* Sisi Kanan - Visual dengan hasil.png */}
               <div className={styles.heroVisual}>
-                <div className={styles.heroMapCard}>
-                  <div className={styles.mapContainerBox}>
-                    <MapContainer
-                      center={MAP_CENTER}
-                      zoom={5}
-                      scrollWheelZoom={false}
-                      style={{ height: "100%", width: "100%" }}
-                      maxBounds={MAP_BOUNDS}
-                      minZoom={4}
-                    >
-                      <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="&copy; OpenStreetMap contributors"
-                      />
-                      <HeatMarkers items={submission} popupDetail />
-                    </MapContainer>
-                  </div>
-                </div>
-
-                <div className={`${styles.floatCard} ${styles.floatCardTop}`}>
-                  <span
-                    className={styles.floatDot}
-                    style={{ background: C.green }}
-                  />
-                  <div>
-                    <div className={styles.floatValue}>{stats[0].value}</div>
-                    <div className={styles.floatLabel}>Laporan masuk</div>
-                  </div>
-                </div>
-
-                <div className={`${styles.floatCard} ${styles.floatCardBottom}`}>
-                  <CheckCircle2 size={18} color={C.green} />
-                  <div>
-                    <div className={styles.floatValue}>{stats[1].value}</div>
-                    <div className={styles.floatLabel}>Terselesaikan</div>
-                  </div>
+                <div className={styles.heroImageWrapper}>
+                  <img src="/hasil.png" alt="Infrastruktur dan Pelayanan Publik" className={styles.heroImageMain} />
+                
                 </div>
               </div>
+
             </div>
           </main>
 
@@ -592,7 +547,7 @@ export default function LandingPage() {
                         className={styles.stepIconBox}
                         style={{ background: isLast ? C.green : C.navy }}
                       >
-                        <s.icon size={22} />
+                        <s.icon size={22} color="#fff" />
                       </div>
                       <span className={styles.stepNumber}>
                         0{i + 1}
@@ -609,12 +564,12 @@ export default function LandingPage() {
           {/* FOOTER */}
           <footer className={styles.footer}>
             <div className={styles.footerInner}>
-              <Logo size="text-xl" />
+              <Logo size={styles.logoSmSize} />
               <span>© {new Date().getFullYear()} Tuntasin. Dibuat untuk warga.</span>
             </div>
           </footer>
         </div>
       </div>
-    </ReactLenis> 
+    </ReactLenis>
   );
 }

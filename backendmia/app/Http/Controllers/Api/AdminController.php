@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Submission;
 use App\Models\Vote;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
@@ -84,5 +85,17 @@ public function destroy($id)
             'status'  => 'success',
             'message' => 'Laporan berhasil dihapus oleh Admin'
         ], 200);
+    }
+    public function exportPdf()
+    {
+        // Ambil semua data laporan, urutkan dari yang terbaru
+        $submissions = Submission::with(['category', 'user'])->latest()->get();
+
+        // Buat view sederhana untuk PDF (kita buat view-nya di langkah 3)
+        $pdf = Pdf::loadView('exports.submissions', ['submissions' => $submissions])
+                  ->setPaper('a4', 'landscape'); // Format lanskap agar tabel luas
+
+        // Langsung unduh/download file PDF-nya
+        return $pdf->download('Laporan_Infrastruktur_Tuntasin.pdf');
     }
 }

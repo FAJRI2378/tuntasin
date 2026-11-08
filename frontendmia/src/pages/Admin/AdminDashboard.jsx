@@ -11,6 +11,7 @@ import {
   XCircle,
   User,
   MapPin,
+  Download
 } from "lucide-react";
 import styles from "../../css/pages/AdminDashboard.module.css";
 import {
@@ -61,14 +62,41 @@ export default function AdminDashboard() {
     { label: "Tuntas / Selesai", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", icon: CheckCircle, data: "completed" },
   ];
 
-  return (
+ return (
     <div className={styles.adWrap}>
-
-      <header className={styles.header}>
-        <h1 className={styles.title}>Overview</h1>
-        <p className={styles.subtitle}>
-          Pantau laporan masyarakat dan statistik infrastruktur secara real-time.
-        </p>
+      {/* HEADER DENGAN TOMBOL EXPORT */}
+      <header className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+            <h1 className={styles.title}>Overview</h1>
+            <p className={styles.subtitle}>
+              Pantau laporan masyarakat dan statistik infrastruktur secara real-time.
+            </p>
+        </div>
+        
+        {/* --- TOMBOL UNDUH LAPORAN PDF --- */}
+        <button 
+          onClick={() => {
+            // Karena ini unduhan file, kita bisa gunakan window.open yang mengarah ke endpoint API
+            // Pastikan URL disesuaikan dengan base URL API kamu di hosting
+            window.open('https://tuntasin.epistura.web.id/api/admin/export-pdf', '_blank');
+          }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: '#10b981', // Warna hijau
+            color: 'white',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: 'none',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '0.9rem'
+          }}
+        >
+          <Download size={18} />
+          Unduh Laporan (PDF)
+        </button>
       </header>
 
       {loading ? (

@@ -38,13 +38,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // ==========================================
     Route::middleware('admin')->group(function () {
         
-        // Admin Stats & Status & Hapus Paksa
+        // Admin Stats, Status, Hapus Paksa & Export
         Route::prefix("/admin")->group(function () {
             Route::get('/stats', [AdminController::class, 'stats']);
             Route::post('/submissions/{id}/status', [AdminController::class, 'updateStatus']);
-            
-            // --- TAMBAHAN BARU: Route untuk Admin Hapus Laporan ---
             Route::delete('/submissions/{id}', [AdminController::class, 'destroy']);
+            
+            // --- TAMBAHAN BARU: Route untuk Admin Export PDF ---
+            Route::get('/export-pdf', [AdminController::class, 'exportPdf']);
         });
 
         // CRUD Categories khusus Admin (Update & Delete)

@@ -11,7 +11,7 @@
 </head>
 <body>
     <h2>Rekapitulasi Laporan Infrastruktur - Tuntasin</h2>
-    <p>Tanggal Unduh: {{ \Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
+    <p>Tanggal Unduh: {{ date('d F Y H:i') }}</p>
 
     <table>
         <thead>
@@ -20,21 +20,23 @@
                 <th>Judul Laporan</th>
                 <th>Lokasi</th>
                 <th>Status</th>
-                <th>Prioritas (Vote)</th>
                 <th>Tanggal Lapor</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($submissions as $index => $item)
+            @forelse($submissions as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $item->label }}</td>
-                <td>{{ $item->location }}</td>
-                <td>{{ strtoupper($item->status) }}</td>
-                <td>{{ $item->votes()->count() }} Suara</td>
-                <td>{{ $item->created_at->format('d/m/Y') }}</td>
+                <td>{{ $item->label ?? $item->title ?? '-' }}</td>
+                <td>{{ $item->location ?? '-' }}</td>
+                <td>{{ strtoupper($item->status ?? 'PENDING') }}</td>
+                <td>{{ $item->created_at ? $item->created_at->format('d/m/Y') : '-' }}</td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="5" style="text-align: center;">Belum ada data laporan.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </body>

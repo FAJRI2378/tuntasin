@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\Route;
 // PUBLIC ROUTES (Bisa diakses tanpa login)
 // ==========================================
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+
+// --- BAGIAN YANG DIPERBAIKI (Penambahan name login) ---
+Route::post('/login', [AuthController::class, 'login'])->name('login'); 
+
 Route::get('/submissions', [SubmissionController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/landing-stats', [SubmissionController::class, 'landingStats']); 

@@ -15,6 +15,7 @@ import {
   ThumbsUp,
   Activity,
   Loader2,
+  Phone, // <-- Import ikon Phone
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
@@ -30,6 +31,7 @@ export default function Auth({ type }) {
   const [nik, setNik] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState(""); // <-- Tambahan state phone
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -51,14 +53,12 @@ export default function Auth({ type }) {
         const data = response.data;
 
         if (data.valid) {
-          // JIKA SUDAH LOGIN: Arahkan admin ke /admin, user biasa ke /home
           navigate(data.is_admin ? "/admin" : "/home");
         }
       } catch (error) {
-        // belum login, tetap di halaman ini
+        // belum login
       }
     };
-
     verify();
   }, []);
 
@@ -117,6 +117,17 @@ export default function Auth({ type }) {
         setValue: setEmail,
       },
       {
+        // <-- Tambahan Input Phone
+        id: "phone",
+        label: "WhatsApp Number",
+        placeholder: "Contoh: 085285536157",
+        type: "text",
+        icon: Phone,
+        autoComplete: "tel",
+        value: phone,
+        setValue: setPhone,
+      },
+      {
         id: "password",
         label: "password",
         placeholder: "Input Password",
@@ -141,7 +152,6 @@ export default function Auth({ type }) {
 
   const handleLogin = async () => {
     setIsLoading(true);
-
     try {
       const response = await api.post("login", {
         email: email,
@@ -149,11 +159,9 @@ export default function Auth({ type }) {
       });
 
       const { token, user } = response.data;
-
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      // SETELAH KLIK LOGIN: Arahkan admin ke /admin, user biasa ke /home
       navigate(user.role === "admin" ? "/admin" : "/home");
     } catch (error) {
       console.error("Login Error:", error.response);
@@ -186,6 +194,7 @@ export default function Auth({ type }) {
         nik: nik,
         username: username,
         email: email,
+        phone: phone, 
         password: password,
       });
 
@@ -193,16 +202,13 @@ export default function Auth({ type }) {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      // SETELAH REGISTER: Arahkan langsung ke halaman /home
       navigate("/home");
     } catch (error) {
-      console.error("Register Error:", error.response);
-      const errorMessage =
-        error.response?.data?.message ||
-        (error.response?.data?.errors
-          ? Object.values(error.response.data.errors)[0][0]
-          : null) ||
-        "Gagal melakukan registrasi!";
+        const errors = error.response?.data?.errors;
+   const errorMessage =
+     (errors ? Object.values(errors)[0][0] : null) ||
+     error.response?.data?.message ||
+     "Gagal melakukan registrasi!";
 
       Swal.fire({
         icon: "error",
@@ -226,7 +232,6 @@ export default function Auth({ type }) {
       <div className={styles.blobB} />
 
       <div className={styles.panel}>
-        {/* ---------- LEFT ---------- */}
         <div className={styles.panelLeft}>
           <div className={styles.logoWrapper}>
             <div className={styles.icon}>
@@ -260,7 +265,6 @@ export default function Auth({ type }) {
           </ul>
         </div>
 
-        {/* ---------- RIGHT ---------- */}
         <div className={styles.panelRight}>
           <div className={styles.headWrap}>
             <div className={styles.title}>
@@ -305,9 +309,6 @@ export default function Auth({ type }) {
                           type="button"
                           className={styles.eyeBtn}
                           onClick={() => setShowPassword(!showPassword)}
-                          aria-label={
-                            showPassword ? "Hide password" : "Show password"
-                          }
                         >
                           {showPassword ? (
                             <EyeOff size={18} />

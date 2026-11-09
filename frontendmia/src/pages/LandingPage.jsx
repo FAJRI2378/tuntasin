@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import api from "../js/api";
+import api from "../js/api.js";
 import {
   ArrowRight,
   Map as MapIcon,

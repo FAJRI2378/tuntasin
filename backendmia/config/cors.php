@@ -22,6 +22,7 @@ return [
         'https://tuntasin-web.epistura.web.id', // Domain produksi kamu
         'https://tuntasin.epistura.web.id',  // Ganti dengan domain Vercel kamu
         'http://localhost:5173',           // Untuk jaga-jaga saat testing lokal
+        'http://192.168.1.6:5173',
         'http://127.0.0.1:5173'
     ],
     'allowed_origins_patterns' => [],

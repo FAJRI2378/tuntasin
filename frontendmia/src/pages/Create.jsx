@@ -105,10 +105,10 @@ export default function Create() {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
-  // Submit Handler ke API Laravel
-  // Submit Handler ke API Laravel
-  async function handleSubmit(e) {
-    e.preventDefault();
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  console.log("SUBMIT:", { label, description, location, selectedCategory, files: selectedFiles.length });
 
     if (!label || !description || !location || !selectedCategory) {
       Swal.fire({
@@ -190,7 +190,7 @@ export default function Create() {
         });
         navigate("/home");
       }
-    } catch (error) {
+       } catch (error) {
       console.error("Detail Error:", error.response);
       const errorMessage =
         error.response?.data?.message ||
@@ -198,6 +198,12 @@ export default function Create() {
           ? Object.values(error.response.data.errors)[0][0]
           : null) ||
         "Gagal terhubung ke server Laravel!";
+
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }

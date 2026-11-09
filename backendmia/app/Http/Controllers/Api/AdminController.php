@@ -7,6 +7,8 @@ use App\Models\Submission;
 use App\Models\Vote;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -23,7 +25,7 @@ class AdminController extends Controller
         $topVoted = Submission::with('user')
             ->withCount('votes')
             ->orderByDesc('votes_count')
-            ->first(); // Mengambil satu data teratas sebagai object tunggal
+            ->first();
 
         return response()->json([
             'status' => 'success',
@@ -33,43 +35,89 @@ class AdminController extends Controller
                 'process' => $process,
                 'completed' => $completed,
                 'invalid' => $invalid,
-                'top_voted' => $topVoted // Dikirim ke frontend
+                'top_voted' => $topVoted
             ]
         ], 200);
     }
 
-   public function updateStatus(Request $request, $id)
-{
-    $request->validate([
-        'status'         => 'required|in:pending,process,invalid,completed',
-        'feedback'       => 'nullable|string', 
-        'pdf_attachment' => 'nullable|file|mimes:pdf|max:10240', // Maksimal 10MB
-    ]);
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status'         => 'required|in:pending,process,invalid,completed',
+            'feedback'       => 'nullable|string', 
+            'pdf_attachment' => 'nullable|file|mimes:pdf|max:10240', // Maksimal 10MB
+        ]);
 
-    $submission = Submission::findOrFail($id);
-    
-    $updateData = [
-        'status'   => $request->status,
-        'feedback' => $request->feedback,
-    ];
+        $submission = Submission::with('user')->findOrFail($id);
+        
+        $updateData = [
+            'status'   => $request->status,
+            'feedback' => $request->feedback,
+        ];
 
-    if ($request->hasFile('pdf_attachment')) {
-        if ($submission->pdf_attachment) {
-            \Storage::disk('public')->delete($submission->pdf_attachment);
+        if ($request->hasFile('pdf_attachment')) {
+            if ($submission->pdf_attachment) {
+                \Storage::disk('public')->delete($submission->pdf_attachment);
+            }
+            $path = $request->file('pdf_attachment')->store('pdf_proyek', 'public');
+            $updateData['pdf_attachment'] = $path;
         }
-        $path = $request->file('pdf_attachment')->store('pdf_proyek', 'public');
-        $updateData['pdf_attachment'] = $path;
+
+        $submission->update($updateData);
+
+        // =======================================================
+        // FITUR KIRIM NOTIFIKASI WHATSAPP OTOMATIS (FONNTE API)
+        // =======================================================
+        try {
+            $rawPhone = $submission->user->phone ?? null;
+
+            if ($rawPhone) {
+                // Konversi awalan 08xx menjadi 628xx agar sesuai format API Fonnte
+                $formattedPhone = preg_replace('/^0/', '62', trim($rawPhone));
+                
+                $userName = $submission->user->name ?? $submission->user->username ?? 'Warga';
+                $statusUpper = strtoupper($request->status);
+                
+                $pesan = "*TUNTASIN - Update Status Laporan*\n\n"
+                       . "Halo *{$userName}*, laporanmu yang berjudul *{$submission->label}* telah diperbarui oleh Admin.\n\n"
+                       . "Status Saat Ini: *{$statusUpper}*\n";
+
+                if ($request->feedback) {
+                    $pesan .= "Catatan Admin: _{$request->feedback}_\n";
+                }
+
+                $pesan .= "\nTerima kasih telah berpartisipasi membangun lingkungan yang lebih baik!";
+
+                $token = config('services.fonnte.token');
+
+                $response = Http::withHeaders([
+                    'Authorization' => $token,
+                ])->post('https://api.fonnte.com/send', [
+                    'target'  => $formattedPhone,
+                    'message' => $pesan,
+                ]);
+
+                Log::info('Fonnte Response Log', [
+                    'target_original'  => $rawPhone,
+                    'target_formatted' => $formattedPhone,
+                    'http_status'      => $response->status(),
+                    'api_response'     => $response->json(),
+                ]);
+            } else {
+                Log::warning("Notifikasi WA dilewati: User ID {$submission->user_id} tidak memiliki nomor telepon.");
+            }
+        } catch (\Exception $e) {
+            Log::error('Gagal kirim notif WA Tuntasin: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Status dan dokumen berhasil diperbarui',
+            'data'    => $submission->load(['category', 'images', 'user'])
+        ], 200);
     }
 
-    $submission->update($updateData);
-
-    return response()->json([
-        'status'  => 'success',
-        'message' => 'Status dan dokumen berhasil diperbarui',
-        'data'    => $submission->load(['category', 'images', 'user'])
-    ], 200);
-}
-public function destroy($id)
+    public function destroy($id)
     {
         $submission = Submission::findOrFail($id);
         
@@ -78,7 +126,7 @@ public function destroy($id)
             \Storage::disk('public')->delete($submission->pdf_attachment);
         }
 
-        // Hapus data dari database (otomatis menghapus relasi jika ada cascade constraint)
+        // Hapus data dari database
         $submission->delete();
 
         return response()->json([
@@ -86,16 +134,14 @@ public function destroy($id)
             'message' => 'Laporan berhasil dihapus oleh Admin'
         ], 200);
     }
+    
     public function exportPdf()
     {
-        // Ambil semua data laporan, urutkan dari yang terbaru
         $submissions = Submission::with(['category', 'user'])->latest()->get();
 
-        // Buat view sederhana untuk PDF (kita buat view-nya di langkah 3)
         $pdf = Pdf::loadView('exports.submissions', ['submissions' => $submissions])
-                  ->setPaper('a4', 'landscape'); // Format lanskap agar tabel luas
+                  ->setPaper('a4', 'landscape');
 
-        // Langsung unduh/download file PDF-nya
         return $pdf->download('Laporan_Infrastruktur_Tuntasin.pdf');
     }
 }

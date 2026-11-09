@@ -222,7 +222,7 @@ export default function Create() {
               </div>
 
               <div
-                className={clsx(styles.description, styles.descriptionMobile)}
+                className={styles.description}
               >
                 <div className={styles.descriptionLabel}>Input Description</div>
                 <textarea
@@ -235,29 +235,21 @@ export default function Create() {
 
               {/* Kategori Berbasis Admin Data */}
               <div
-                className={styles.subject}
+              className={styles.subject}
                 style={{
-                  marginTop: "15px",
                   display: "flex",
                   flexDirection: "column",
                   gap: "10px",
                 }}
               >
                 <select
+                className={styles.categories}
                   value={selectedCategory}
                   onChange={(e) => {
                     setSelectedCategory(e.target.value);
                     if (e.target.value !== "other") setCustomCategory("");
                   }}
                   required
-                  style={{
-                    padding: "10px",
-                    borderRadius: "8px",
-                    border: "1px solid #ccc",
-                    outline: "none",
-                    backgroundColor: "#1e293b",
-                    color: "#fff",
-                  }}
                 >
                   <option value="" disabled>
                     -- Pilih Kategori Laporan --
@@ -283,7 +275,7 @@ export default function Create() {
               </div>
 
               {/* Upload Gambar */}
-              <div className={styles.image} style={{ marginTop: "15px" }}>
+              <div className={styles.image}>
                 <div className={styles.imageInput} onClick={handleUpload}>
                   <input
                     ref={imageRef}
@@ -317,7 +309,7 @@ export default function Create() {
               </div>
 
               {/* Lokasi Peta */}
-              <div className={styles.location}>
+              <div className={clsx(styles.location, styles.locationMobile)}>
                 <div
                   className={styles.locationHead}
                   onClick={getCurrentLocation}
@@ -350,7 +342,7 @@ export default function Create() {
 
           <div className={styles.formRight}>
             {/* Deskripsi */}
-            <div className={styles.description}>
+            {/* <div className={styles.description}>
               <div className={styles.descriptionLabel}>Input Description</div>
               <textarea
                 placeholder="Ceritakan detail kronologi atau kondisi di lapangan..."
@@ -358,6 +350,23 @@ export default function Create() {
                 onChange={(e) => setDescription(e.target.value)}
                 required
               ></textarea>
+            </div> */}
+            <div className={styles.location}>
+              <div className={styles.locationHead} onClick={getCurrentLocation}>
+                <Target size={20} /> Gunakan Lokasi Saat ini
+              </div>
+              <div className={styles.locationMaps}>
+                <MapLocation
+                  onLocationSelect={(coords) => setLocation(coords)}
+                  currentCord={userPosition}
+                  height="100%"
+                />
+              </div>
+              {location && (
+                <div className={styles.locationFoot}>
+                  <MapPin size={14} /> Lokasi Terpilih: {location}
+                </div>
+              )}
             </div>
           </div>
         </form>

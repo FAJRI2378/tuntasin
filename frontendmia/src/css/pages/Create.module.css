@@ -32,6 +32,7 @@
 
 .formLeft {
   overflow-y: auto;
+  max-width: 400px;
 }
 
 .formLong {
@@ -68,10 +69,19 @@
   color: var(--lime-50);
 }
 
+
+
 .categories {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  background-color: #ffffff43;
+  color: #fff;
+}
+.categories option {
+  border-radius: .3rem;
+  color: var(--electric);
 }
 
 .addCategory {
@@ -258,6 +268,11 @@
   padding: .3rem;
   padding-top: 0;
   border-radius: .8rem;
+  height: 100%;
+}
+.locationMobile {
+  height: unset;
+  display: none;
 }
 
 .locationHead {
@@ -283,6 +298,10 @@
 .locationMaps {
   border: 2px solid var(--electric);
   border-radius: .5rem;
+  height: 100%;
+}
+.locationMobile .locationMaps {
+  height: unset;
 }
 
 .locationFoot {
@@ -301,7 +320,7 @@
     display: none;
   }
 
-  .descriptionMobile {
+  .locationMobile {
     display: flex;
   }
 }

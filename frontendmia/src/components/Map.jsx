@@ -24,7 +24,7 @@ function ChangeMapCenter({ center }) {
   return null;
 }
 
-export default function MapLocation({ onLocationSelect, currentCord }) {
+export default function MapLocation({ onLocationSelect, currentCord, height = "200px" }) {
   const [userPosition, setUserPosition] = useState(currentCord);
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +53,7 @@ export default function MapLocation({ onLocationSelect, currentCord }) {
     <MapContainer
       center={userPosition}
       zoom={13}
-      style={{ height: "200px", width: "100%", borderRadius: "12px" }}
+      style={{ height, width: "100%", borderRadius: "12px" }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

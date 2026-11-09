@@ -15,7 +15,7 @@ export default function Create() {
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [userPosition, setUserPosition] = useState([-6.1753924, 106.8271528]);
+  const [userPosition, setUserPosition] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,38 +47,39 @@ export default function Create() {
       }
     };
 
-    verifyAuth();
-    fetchCategories();
-  }, []);
-
-  function getCurrentLocation() {
-    if (!navigator.geolocation) {
-      Swal.fire({
-        icon: "error",
-        title: "Upss",
-        text: "Browser kamu tidak mendukung Geolocation.",
-      });
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        console.log([lat, lng]);
-        setUserPosition([lat, lng]);
-      },
-      (error) => {
-        console.error(error);
+    function getCurrentLocation() {
+      if (!navigator.geolocation) {
         Swal.fire({
           icon: "error",
           title: "Upss",
-          text: "Gagal mendapatkan lokasi. Pastikan GPS diizinkan di browser yaa!",
+          text: "Browser kamu tidak mendukung Geolocation.",
         });
-      },
-      { enableHighAccuracy: true },
-    );
-  }
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          console.log([lat, lng]);
+          setUserPosition(`${lat}, ${lng}`);
+        },
+        (error) => {
+          console.error(error);
+          Swal.fire({
+            icon: "error",
+            title: "Upss",
+            text: "Gagal mendapatkan lokasi. Pastikan GPS diizinkan di browser yaa!",
+          });
+        },
+        { enableHighAccuracy: true },
+      );
+    }
+
+    verifyAuth();
+    fetchCategories();
+    getCurrentLocation();
+  }, []);
 
   async function fetchCategories() {
     try {
@@ -214,17 +215,17 @@ export default function Create() {
               <div className={styles.subject}>
                 <input
                   type="text"
-                  placeholder="Input Subject / Judul Laporan"
+                  placeholder="Judul Laporan"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   required
                 />
               </div>
 
-              <div
-                className={styles.description}
-              >
-                <div className={styles.descriptionLabel}>Input Description</div>
+              <div className={styles.description}>
+                <div className={styles.descriptionLabel}>
+                  Masukkan Deskripsi
+                </div>
                 <textarea
                   placeholder="Ceritakan detail kronologi atau kondisi di lapangan..."
                   value={description}
@@ -235,7 +236,7 @@ export default function Create() {
 
               {/* Kategori Berbasis Admin Data */}
               <div
-              className={styles.subject}
+                className={styles.subject}
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -243,7 +244,7 @@ export default function Create() {
                 }}
               >
                 <select
-                className={styles.categories}
+                  className={styles.categories}
                   value={selectedCategory}
                   onChange={(e) => {
                     setSelectedCategory(e.target.value);
@@ -312,19 +313,17 @@ export default function Create() {
               <div className={clsx(styles.location, styles.locationMobile)}>
                 <div
                   className={styles.locationHead}
-                  onClick={getCurrentLocation}
                 >
-                  <Target size={20} /> Gunakan Lokasi Saat ini
+                  <MapPin size={20} /> Lokasi Saat ini
                 </div>
                 <div className={styles.locationMaps}>
                   <MapLocation
                     onLocationSelect={(coords) => setLocation(coords)}
-                    currentCord={userPosition}
                   />
                 </div>
-                {location && (
+                {userPosition && (
                   <div className={styles.locationFoot}>
-                    <MapPin size={14} /> Lokasi Terpilih: {location}
+                    <Target size={14} /> Kordinat: {userPosition}
                   </div>
                 )}
               </div>
@@ -341,30 +340,25 @@ export default function Create() {
           </div>
 
           <div className={styles.formRight}>
-            {/* Deskripsi */}
-            {/* <div className={styles.description}>
-              <div className={styles.descriptionLabel}>Input Description</div>
-              <textarea
-                placeholder="Ceritakan detail kronologi atau kondisi di lapangan..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              ></textarea>
-            </div> */}
             <div className={styles.location}>
-              <div className={styles.locationHead} onClick={getCurrentLocation}>
-                <Target size={20} /> Gunakan Lokasi Saat ini
+              <div className={styles.locationHead}>
+                <MapPin size={20} /> Lokasi Saat ini
               </div>
-              <div className={styles.locationMaps}>
+              <div
+                className={styles.locationMaps}
+                style={{
+                  borderRadius: userPosition ? ".8rem 0 0 .8rem" : ".8rem 0 0 0",
+                  borderBottom: userPosition ? "2px solid var(--electric)" : "none",
+                }}
+              >
                 <MapLocation
                   onLocationSelect={(coords) => setLocation(coords)}
-                  currentCord={userPosition}
-                  height="100%"
+                  height="100%" 
                 />
               </div>
-              {location && (
+              {userPosition && (
                 <div className={styles.locationFoot}>
-                  <MapPin size={14} /> Lokasi Terpilih: {location}
+                  <Target size={14} /> Kordinat: {userPosition}
                 </div>
               )}
             </div>

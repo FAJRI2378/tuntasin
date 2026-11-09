@@ -22,7 +22,7 @@ export default function AdminLayout() {
         const data = response.data;
 
         if (!data.is_admin) {
-          navigate("/");
+          navigate("/home");
         }
       } catch (error) {
         navigate("/");

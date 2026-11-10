@@ -73,7 +73,7 @@ export default function PriorityHeatmap() {
 
             {submission.length > 0 &&
               submission.map((item) => {
-                const parts = item.location.split(", ");
+                const parts = item.location.replace(" ", "").split(",");
                 const coorObject = [
                   parseFloat(parts[0].trim()),
                   parseFloat(parts[1].trim()),

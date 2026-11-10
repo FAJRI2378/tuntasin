@@ -397,13 +397,6 @@ const goTo = (ref) => {
           <section ref={fiturRef} id="fitur" className={styles.featuresSection}>
             <div className={styles.sectionHeader}>
               <div>
-                <span className={styles.eyebrow}>
-                  <span
-                    className={styles.eyebrowDot}
-                    style={{ background: C.green }}
-                  />
-                  Fitur Unggulan
-                </span>
                 <h2 className={styles.sectionTitle}>
                   Semua yang kamu butuhkan
                 </h2>
@@ -522,13 +515,6 @@ const goTo = (ref) => {
           >
             <div className={styles.sectionHeader}>
               <div>
-                <span className={styles.eyebrow}>
-                  <span
-                    className={styles.eyebrowDot}
-                    style={{ background: C.green }}
-                  />
-                  Cara Kerja
-                </span>
                 <h2 className={styles.sectionTitle}>Tiga langkah menuju tuntas</h2>
               </div>
               <p className={styles.sectionDesc}>

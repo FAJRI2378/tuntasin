@@ -120,7 +120,7 @@ const responsiveCss = `
     align-items: center;
     padding: 15px;
     box-sizing: border-box;
-    z-index: 9999;
+    z-index: 9999999;
   }
   .as-modal {
     background-color: #1e293b;

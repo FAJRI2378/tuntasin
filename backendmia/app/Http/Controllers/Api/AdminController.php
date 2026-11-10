@@ -140,7 +140,7 @@ class AdminController extends Controller
     {
         $submissions = Submission::with(['category', 'user'])->latest()->get();
 
-        $pdf = Pdf::loadView('exports.submissions', ['submissions' => $submissions])
+        $pdf = Pdf::loadView('submissions', ['submissions' => $submissions])
             ->setPaper('a4', 'landscape');
 
         return $pdf->download('Laporan_Infrastruktur_Tuntasin.pdf');

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -57,7 +58,7 @@ class AdminController extends Controller
 
         if ($request->hasFile('pdf_attachment')) {
             if ($submission->pdf_attachment) {
-                \Storage::disk('public')->delete($submission->pdf_attachment);
+                Storage::disk('public')->delete($submission->pdf_attachment);
             }
             $path = $request->file('pdf_attachment')->store('pdf_proyek', 'public');
             $updateData['pdf_attachment'] = $path;

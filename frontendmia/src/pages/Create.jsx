@@ -46,7 +46,6 @@ export default function Create() {
         setIsLoading(false);
       }
     };
-
     function getCurrentLocation() {
       if (!navigator.geolocation) {
         Swal.fire({
@@ -61,7 +60,7 @@ export default function Create() {
         (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-          console.log([lat, lng]);
+          setLocation([lat, lng]);
           setUserPosition(`${lat}, ${lng}`);
         },
         (error) => {
@@ -105,10 +104,15 @@ export default function Create() {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
-
-async function handleSubmit(e) {
-  e.preventDefault();
-  console.log("SUBMIT:", { label, description, location, selectedCategory, files: selectedFiles.length });
+  async function handleSubmit(e) {
+    e.preventDefault();
+    console.log("SUBMIT:", {
+      label,
+      description,
+      location,
+      selectedCategory,
+      files: selectedFiles.length,
+    });
 
     if (!label || !description || !location || !selectedCategory) {
       Swal.fire({
@@ -190,7 +194,7 @@ async function handleSubmit(e) {
         });
         navigate("/home");
       }
-       } catch (error) {
+    } catch (error) {
       console.error("Detail Error:", error.response);
       const errorMessage =
         error.response?.data?.message ||
@@ -317,9 +321,7 @@ async function handleSubmit(e) {
 
               {/* Lokasi Peta */}
               <div className={clsx(styles.location, styles.locationMobile)}>
-                <div
-                  className={styles.locationHead}
-                >
+                <div className={styles.locationHead}>
                   <MapPin size={20} /> Lokasi Saat ini
                 </div>
                 <div className={styles.locationMaps}>
@@ -353,13 +355,17 @@ async function handleSubmit(e) {
               <div
                 className={styles.locationMaps}
                 style={{
-                  borderRadius: userPosition ? ".8rem 0 0 .8rem" : ".8rem 0 0 0",
-                  borderBottom: userPosition ? "2px solid var(--electric)" : "none",
+                  borderRadius: userPosition
+                    ? ".8rem 0 0 .8rem"
+                    : ".8rem 0 0 0",
+                  borderBottom: userPosition
+                    ? "2px solid var(--electric)"
+                    : "none",
                 }}
               >
                 <MapLocation
                   onLocationSelect={(coords) => setLocation(coords)}
-                  height="100%" 
+                  height="100%"
                 />
               </div>
               {userPosition && (

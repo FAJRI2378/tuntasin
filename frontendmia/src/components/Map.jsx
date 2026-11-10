@@ -21,7 +21,7 @@ L.Icon.Default.mergeOptions({
 
 function ChangeMapCenter({ center }) {
   const map = useMap();
-  map.panTo(center, map.getZoom());
+  map.flyTo(center, 14);
   return null;
 }
 
@@ -92,6 +92,8 @@ export default function MapLocation({
       {loading ? "Loading..." : ""}
 
       <LocationMarker onLocationSelect={onLocationSelect} />
+
+      <ChangeMapCenter center={userPosition} />
     </MapContainer>
   );
 }

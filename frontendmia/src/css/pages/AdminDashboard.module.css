@@ -162,7 +162,7 @@
 }
 
 .votedBadge {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #fff, #ddd);
   color: white;
   padding: 4px 12px;
   border-radius: 20px;
@@ -315,10 +315,8 @@
 }
 
 @media screen and (max-width: 800px) {
-
   .adWrap {
-    padding: 10px;
-    margin-left: 50px;
+    padding: 1.5rem;
     width: auto;
     max-width: calc(100vw - 55px);
     overflow-x: hidden;

@@ -175,6 +175,6 @@
 
 @media screen and (max-width: 800px) {
   .mainContent {
-    padding-right: 2rem !important;
+    padding-right: 0rem !important;
   } 
 }

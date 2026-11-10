@@ -93,12 +93,9 @@ export default function AdminDashboard() {
 
   const handleDownloadPDF = async () => {
     try {
-      const response = await api.get(
-        "admin/export-pdf",
-        {
-          responseType: "blob",
-        },
-      );
+      const response = await api.get("admin/export-pdf", {
+        responseType: "blob",
+      });
 
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
@@ -344,6 +341,12 @@ export default function AdminDashboard() {
                         border: "none",
                         borderRadius: "8px",
                         color: "#fff",
+                      }}
+                      itemStyle={{
+                        color: "#ffffff",
+                      }}
+                      labelStyle={{
+                        color: "#ffffff", 
                       }}
                     />
                     <Bar dataKey="total" radius={[6, 6, 0, 0]} maxBarSize={35}>

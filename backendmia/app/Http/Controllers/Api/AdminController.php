@@ -45,12 +45,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'status'         => 'required|in:pending,process,invalid,completed',
-            'feedback'       => 'nullable|string', 
+            'feedback'       => 'nullable|string',
             'pdf_attachment' => 'nullable|file|mimes:pdf|max:10240', // Maksimal 10MB
         ]);
 
         $submission = Submission::with('user')->findOrFail($id);
-        
+
         $updateData = [
             'status'   => $request->status,
             'feedback' => $request->feedback,
@@ -75,13 +75,13 @@ class AdminController extends Controller
             if ($rawPhone) {
                 // Konversi awalan 08xx menjadi 628xx agar sesuai format API Fonnte
                 $formattedPhone = preg_replace('/^0/', '62', trim($rawPhone));
-                
+
                 $userName = $submission->user->name ?? $submission->user->username ?? 'Warga';
                 $statusUpper = strtoupper($request->status);
-                
+
                 $pesan = "*TUNTASIN - Update Status Laporan*\n\n"
-                       . "Halo *{$userName}*, laporanmu yang berjudul *{$submission->label}* telah diperbarui oleh Admin.\n\n"
-                       . "Status Saat Ini: *{$statusUpper}*\n";
+                    . "Halo *{$userName}*, laporanmu yang berjudul *{$submission->label}* telah diperbarui oleh Admin.\n\n"
+                    . "Status Saat Ini: *{$statusUpper}*\n";
 
                 if ($request->feedback) {
                     $pesan .= "Catatan Admin: _{$request->feedback}_\n";
@@ -121,10 +121,10 @@ class AdminController extends Controller
     public function destroy($id)
     {
         $submission = Submission::findOrFail($id);
-        
+
         // Hapus file fisik PDF jika ada
         if ($submission->pdf_attachment) {
-            \Storage::disk('public')->delete($submission->pdf_attachment);
+            Storage::disk('public')->delete($submission->pdf_attachment);
         }
 
         // Hapus data dari database
@@ -135,13 +135,13 @@ class AdminController extends Controller
             'message' => 'Laporan berhasil dihapus oleh Admin'
         ], 200);
     }
-    
+
     public function exportPdf()
     {
         $submissions = Submission::with(['category', 'user'])->latest()->get();
 
         $pdf = Pdf::loadView('exports.submissions', ['submissions' => $submissions])
-                  ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'landscape');
 
         return $pdf->download('Laporan_Infrastruktur_Tuntasin.pdf');
     }

@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   ExternalLink,
   MessageSquareText,
+  FileText,
 } from "lucide-react";
 
 import api from "../js/api";
@@ -42,7 +43,6 @@ export default function ViewSubmission() {
       const lng = parseFloat(parts[1]);
       const shortAddress = await getAddressName(lat, lng);
       setAddress(shortAddress);
-
     } catch (error) {
       console.error("Gagal mengambil laporan:", error);
 
@@ -130,11 +130,13 @@ export default function ViewSubmission() {
   if (!submission) return null;
 
   const status = getStatus(submission.status);
+  const canEdit = submission.status?.toLowerCase() === "pending";
   const images = submission.images || [];
   const categoryName = submission.category?.name || "Kategori tidak tersedia";
 
   // Feedback hanya ditampilkan jika admin memberikan isi feedback
   const feedback = submission.feedback?.trim();
+  const pdfAttachment = submission.pdf_attachment;
 
   return (
     <div className={styles.container}>
@@ -183,7 +185,7 @@ export default function ViewSubmission() {
             </div>
 
             {/* Feedback Admin */}
-            {feedback && (
+            {(feedback || pdfAttachment) && (
               <div className={styles.card}>
                 <div className={styles.feedbackHeader}>
                   <div className={styles.sidebarTitle}>
@@ -194,9 +196,24 @@ export default function ViewSubmission() {
                   <span className={styles.feedbackBadge}>Tanggapan</span>
                 </div>
 
-                <div className={styles.feedbackContent}>
-                  <p>{feedback}</p>
-                </div>
+                {feedback && (
+                  <div className={styles.feedbackContent}>
+                    <p>{feedback}</p>
+                  </div>
+                )}
+
+                {pdfAttachment && (
+                  <a
+                    href={`https://tuntasin.epistura.web.id/storage/${pdfAttachment}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.pdfAttachment}
+                  >
+                    <FileText size={17} />
+                    Unduh Dokumen Proyek (PDF)
+                    <ExternalLink size={14} />
+                  </a>
+                )}
               </div>
             )}
 
@@ -276,15 +293,25 @@ export default function ViewSubmission() {
             </div>
 
             {/* Action */}
+            {/* Action */}
             <div className={styles.actionCard}>
-              <button
-                type="button"
-                className={styles.editBtn}
-                onClick={() => navigate(`/edit/${submission.id}`)}
-              >
-                <Pencil size={17} />
-                Edit Laporan
-              </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  className={styles.editBtn}
+                  onClick={() => navigate(`/edit/${submission.id}`)}
+                >
+                  <Pencil size={17} />
+                  Edit Laporan
+                </button>
+              )}
+
+              {!canEdit && (
+                <div className={styles.editDisabled}>
+                  Laporan {submission.status == "process" ? "sedang" : "sudah"}{" "}
+                  diproses
+                </div>
+              )}
 
               <button
                 type="button"

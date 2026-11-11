@@ -19,6 +19,7 @@ import clsx from "clsx";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../js/api";
 import { useSubmission } from "../contexts/SubmissionContext";
+import Swal from "sweetalert2";
 
 const MOBILE_QUERY = "(max-width: 800px)";
 
@@ -120,10 +121,18 @@ export default function SideBar() {
 
   // --- FUNGSI HAPUS SUBMISSION ---
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Apakah Anda yakin ingin menghapus laporan ini?",
-    );
-    if (!confirmDelete) return;
+    const result = await Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Laporan yang dihapus tidak dapat dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       await api.delete(`submissions/${id}`);
@@ -133,9 +142,21 @@ export default function SideBar() {
 
       // Memicu event agar komponen lain (seperti Home) ikut memperbarui data
       window.dispatchEvent(new Event("submissionUpdated"));
+
+      Swal.fire({
+        title: "Terhapus!",
+        text: "Laporan berhasil dihapus.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Gagal menghapus:", error);
-      alert("Gagal menghapus laporan.");
+      Swal.fire({
+        title: "Gagal!",
+        text: "Gagal menghapus laporan. Terjadi kesalahan server.",
+        icon: "error",
+      });
     }
   };
 

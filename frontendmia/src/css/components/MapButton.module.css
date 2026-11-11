@@ -6,6 +6,9 @@
   align-items: center;
   padding: 6px;
   border-radius: 6px;
+  color: white;
+  gap: .5rem;
+  text-align: start;
   transition: background 0.2s;
 }
 

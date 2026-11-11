@@ -15,9 +15,10 @@ import {
 import styles from "../css/pages/Home.module.css";
 import LocationModalButton from "../components/MapButton";
 import SubmissionCard from "../components/SubmissionCard";
+import { useSubmission } from "../contexts/SubmissionContext";
 
 export default function Home() {
-  const [submissions, setSubmissions] = useState([]);
+  const {submission, setSubmission} = useSubmission()
   const [loading, setLoading] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,7 +46,8 @@ export default function Home() {
     try {
       setLoading(true);
       const response = await api.get("submissions");
-      setSubmissions(response.data.data || []);
+      setSubmission(response.data.data || []);
+      console.log(response.data.data)
     } catch (error) {
       console.error("Gagal memuat submission:", error);
     } finally {
@@ -63,7 +65,7 @@ export default function Home() {
   };
 
   // --- FILTER, PENCARIAN & SORTING DATA ---
-  const filteredSubmissions = submissions
+  const filteredSubmissions = submission
     .filter((item) => {
       const searchLower = searchQuery.toLowerCase();
       const matchesSearch =

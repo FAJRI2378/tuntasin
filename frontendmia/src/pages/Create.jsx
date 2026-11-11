@@ -174,7 +174,11 @@ export default function Create() {
           }
         } catch (catError) {
           console.error("Gagal membuat kategori baru:", catError);
-          alert("Gagal menambahkan kategori baru ke server.");
+          Swal.fire({
+            title: "Gagal!",
+            text: "Gagal menambahkan kategori baru ke server.",
+            icon: "error",
+          });
           setIsLoading(false);
           return;
         }

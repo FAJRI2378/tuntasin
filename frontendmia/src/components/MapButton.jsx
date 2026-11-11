@@ -9,24 +9,33 @@ export default function LocationModalButton({ data }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [address, setAddress] = useState("");
 
-  // Inisialisasi peta Leaflet saat modal terbuka
   useEffect(() => {
-    if (isModalOpen) {
-      const timer = setTimeout(async () => {
+    if (!data?.location) return;
+
+    const initLocationAndMap = async () => {
+      const parts = data.location.replace(/\s+/g, "").split(",");
+      const lat = parseFloat(parts[0]);
+      const lng = parseFloat(parts[1]);
+
+      if (isNaN(lat) || isNaN(lng)) return;
+
+      const coorObject = [lat, lng];
+      const shortAddress = await getAddressName(lat, lng);
+      setAddress(shortAddress);
+
+      if (isModalOpen) {
+        const container = L.DomUtil.get("modal-map");
+        if (container != null) {
+          container._leaflet_id = null;
+        }
+
         const indonesiaBounds = [
           [-11.0, 95.0],
           [6.0, 141.0],
         ];
 
-        const parts = data.location.replace(" ", "").split(",");
-        const lat = parseFloat(parts[0].trim());
-        const lng = parseFloat(parts[1].trim());
-        const coorObject = [lat, lng];
-        const shortAddress = await getAddressName(lat, lng);
-        setAddress(shortAddress);
-
         const map = L.map("modal-map", {
-          center: coorObject, // Titik tengah Indonesia
+          center: coorObject,
           zoom: 9,
           minZoom: 4,
           maxBounds: indonesiaBounds,
@@ -37,12 +46,28 @@ export default function LocationModalButton({ data }) {
           attribution: "&copy; OpenStreetMap contributors",
         }).addTo(map);
 
-        L.marker(coorObject).addTo(map).bindPopup(data.location).openPopup();
-      }, 100);
+        L.marker(coorObject).addTo(map);
 
-      return () => clearTimeout(timer);
-    }
-  }, [isModalOpen]);
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 150);
+
+        return map;
+      }
+    };
+
+    let mapInstance = null;
+    const timer = setTimeout(async () => {
+      mapInstance = await initLocationAndMap();
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (mapInstance) {
+        mapInstance.remove();
+      }
+    };
+  }, [isModalOpen, data?.location]);
 
   return (
     <div
@@ -61,6 +86,7 @@ export default function LocationModalButton({ data }) {
         title="Klik untuk lihat peta"
       >
         <MapPin size={18} color="#ef4444" />
+        {!!address && address}
       </button>
 
       {/* Tooltip saat di-hover */}
@@ -83,7 +109,7 @@ export default function LocationModalButton({ data }) {
             pointerEvents: "none",
           }}
         >
-          {data.location}
+          {address}
         </div>
       )}
 
@@ -105,9 +131,12 @@ export default function LocationModalButton({ data }) {
                   color: "#f8fafc",
                   fontWeight: "bold",
                   fontSize: "0.95rem",
+                  gap: ".5rem",
+                  display: "inline-flex",
+                  alignItems: "center",
                 }}
               >
-                <MapPin size={14} /> {data.location}
+                <MapPin size={18} /> {address}
               </span>
               <button
                 onClick={() => setIsModalOpen(false)}

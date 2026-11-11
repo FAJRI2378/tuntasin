@@ -20,12 +20,8 @@ export default function MainLayout() {
         
         const response = await api.get("/check");
         const data = response.data;
-        console.log(data);
 
-        // Jika user yang login adalah Admin
         if (data.is_admin && data.valid) {
-          // Admin sama sekali tidak boleh mengakses MainLayout (halaman warga)
-          // Lempar paksa kembali ke halaman admin
           navigate("/admin", { replace: true });
           return;
         }

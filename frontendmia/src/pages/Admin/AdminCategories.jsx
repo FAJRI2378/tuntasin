@@ -34,8 +34,7 @@ export default function AdminCategories() {
       setName("");
       setEditingId(null);
       fetchCategories();
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   function handleEdit(cat) {
@@ -49,7 +48,11 @@ export default function AdminCategories() {
       await api.delete(`categories/${id}`);
       fetchCategories();
     } catch (error) {
-      alert("Gagal menghapus kategori!");
+      Swal.fire({
+        title: "Gagal!",
+        text: "Gagal menghapus kategori!",
+        icon: "error",
+      });
     }
   }
 
@@ -58,26 +61,65 @@ export default function AdminCategories() {
       <h2>Manajemen Kategori</h2>
 
       {/* Form Add / Edit */}
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "8px", margin: "20px 0" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", gap: "8px", margin: "20px 0" }}
+      >
         <input
           type="text"
           placeholder="Nama Kategori Baru"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          style={{ padding: "10px", borderRadius: "6px", border: "1px solid #334155", background: "#1e293b", color: "#fff", flex: 1 }}
+          style={{
+            padding: "10px",
+            borderRadius: "6px",
+            border: "1px solid #334155",
+            background: "#1e293b",
+            color: "#fff",
+            flex: 1,
+          }}
         />
-        <button type="submit" style={{ padding: "10px 16px", background: "#2563eb", border: "none", color: "#fff", borderRadius: "6px", cursor: "pointer" }}>
+        <button
+          type="submit"
+          style={{
+            padding: "10px 16px",
+            background: "#2563eb",
+            border: "none",
+            color: "#fff",
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
           {editingId ? "Update" : "Tambah"}
         </button>
         {editingId && (
-          <button type="button" onClick={() => { setEditingId(null); setName(""); }} style={{ padding: "10px 16px", background: "#475569", border: "none", color: "#fff", borderRadius: "6px" }}>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingId(null);
+              setName("");
+            }}
+            style={{
+              padding: "10px 16px",
+              background: "#475569",
+              border: "none",
+              color: "#fff",
+              borderRadius: "6px",
+            }}
+          >
             Batal
           </button>
         )}
       </form>
 
       {/* Tabel Kategori */}
-      <table style={{ width: "100%", borderCollapse: "collapse", background: "#0f172a" }}>
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          background: "#0f172a",
+        }}
+      >
         <thead>
           <tr style={{ borderBottom: "1px solid #334155", textAlign: "left" }}>
             <th style={{ padding: "12px" }}>ID</th>
@@ -91,10 +133,27 @@ export default function AdminCategories() {
               <td style={{ padding: "12px" }}>{cat.id}</td>
               <td style={{ padding: "12px" }}>{cat.name}</td>
               <td style={{ padding: "12px", textAlign: "right" }}>
-                <button onClick={() => handleEdit(cat)} style={{ background: "none", border: "none", color: "#60a5fa", cursor: "pointer", marginRight: "12px" }}>
+                <button
+                  onClick={() => handleEdit(cat)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#60a5fa",
+                    cursor: "pointer",
+                    marginRight: "12px",
+                  }}
+                >
                   <Edit size={16} />
                 </button>
-                <button onClick={() => handleDelete(cat.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer" }}>
+                <button
+                  onClick={() => handleDelete(cat.id)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#f87171",
+                    cursor: "pointer",
+                  }}
+                >
                   <Trash size={16} />
                 </button>
               </td>

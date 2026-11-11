@@ -13,6 +13,7 @@ import {
 import styles from "../../css/pages/AdminSubmission.module.css";
 import clsx from "clsx";
 import LocationView from "../../components/LocationView.jsx";
+import Swal from "sweetalert2";
 
 export default function AdminSubmissions() {
   const [submissions, setSubmissions] = useState([]);
@@ -62,10 +63,20 @@ export default function AdminSubmissions() {
     try {
       await api.delete(`admin/submissions/${id}`);
       setSubmissions((prev) => prev.filter((item) => item.id !== id));
-      alert("Laporan berhasil dihapus oleh admin.");
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Laporan berhasil dihapus oleh admin.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Gagal menghapus laporan:", error);
-      alert("Gagal menghapus laporan.");
+      Swal.fire({
+        title: "Gagal!",
+        text: "Gagal menghapus laporan.",
+        icon: "error",
+      });
     }
   };
 
@@ -125,7 +136,13 @@ export default function AdminSubmissions() {
         fetchSubmissions();
         setShowFeedbackModal(false);
         setPdfFile(null);
-        alert("Catatan feedback dan dokumen proyek berhasil diperbarui!");
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Catatan feedback dan dokumen proyek berhasil diperbarui!",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
       }
     } catch (error) {
       console.error("Gagal menyimpan feedback:", error.response);

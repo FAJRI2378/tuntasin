@@ -117,7 +117,11 @@ export default function AdminDashboard() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Gagal mendownload PDF:", error);
-      alert("Terjadi kesalahan saat mengunduh file.");
+      Swal.fire({
+        title: "Gagal!",
+        text: "Terjadi kesalahan saat mengunduh file.",
+        icon: "error",
+      });
     }
   };
 

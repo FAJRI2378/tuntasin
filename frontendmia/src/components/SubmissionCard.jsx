@@ -11,6 +11,7 @@ import {
 import Swal from "sweetalert2";
 import LocationModalButton from "./MapButton";
 import api from "../js/api";
+import { useSubmission } from "../contexts/SubmissionContext";
 
 const getStatusBadge = (status) => {
   switch (status) {
@@ -36,6 +37,7 @@ export default function SubmissionCard({
   setActiveImageIndices,
   setModalImage,
 }) {
+  const { submission, setSubmission } = useSubmission();
   const statusInfo = getStatusBadge(item.status);
 
   const isOwnData = item.user_id == userId || item.user?.id == userId;
@@ -64,20 +66,29 @@ export default function SubmissionCard({
     });
   };
 
- // --- FUNGSI KLIK VOTE ---
+  // --- FUNGSI KLIK VOTE ---
   async function handleVote(submissionId, isOwnData) {
     if (isOwnData) {
-      alert("Anda tidak bisa mendukung laporan Anda sendiri.");
+      Swal.fire({
+        title: "Peringatan",
+        icon: "warning",
+        text: "Anda tidak bisa mendukung laporan Anda sendiri.",
+      });
       return;
     }
 
     try {
       const response = await api.post(`submissions/${submissionId}/vote`);
-      
-      // Terima status 200 (batal vote) atau 201 (berhasil vote)
+
       if (response.status === 200 || response.status === 201) {
-        // Beritahu komponen Home untuk memuat ulang data submission
-        window.dispatchEvent(new Event("submissionUpdated"));
+        console.log(submission);
+        setSubmission((prevSubmissions) =>
+          prevSubmissions.map((sub) =>
+            sub.id === item.id
+              ? { ...sub, has_voted: !sub.has_voted }
+              : sub,
+          ),
+        );
       }
     } catch (error) {
       if (error.response?.status === 401) {
@@ -279,66 +290,6 @@ export default function SubmissionCard({
             {new Date(item.created_at).toLocaleDateString("id-ID")}
           </span>
         </div>
-
-        {/* --- FEEDBACK & PDF --- */}
-        {/* <div
-                    style={{
-                      marginTop: "auto",
-                      marginBottom: "12px",
-                      padding: "10px",
-                      backgroundColor: "#0f172a",
-                      borderLeft: `3px solid ${item.feedback ? statusInfo.bg : "#64748b"}`,
-                      borderRadius: "6px",
-                      fontSize: "0.8rem",
-                      color: "#e2e8f0",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                        marginBottom: "4px",
-                        color: item.feedback ? statusInfo.bg : "#94a3b8",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      <MessageSquare size={14} /> Catatan Admin:
-                    </div>
-
-                    <div
-                      className={styles.hmFeedbackText}
-                      style={{
-                        color: item.feedback ? "#e2e8f0" : "#94a3b8",
-                        fontStyle: item.feedback ? "normal" : "italic",
-                      }}
-                    >
-                      {item.feedback ? item.feedback : "Belum ada feedback"}
-                    </div>
-
-                    {item.pdf_attachment && (
-                      <a
-                        href={`https://tuntasin.epistura.web.id/storage/${item.pdf_attachment}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          marginTop: "8px",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "4px",
-                          padding: "4px 8px",
-                          backgroundColor: "#2563eb",
-                          color: "#fff",
-                          borderRadius: "4px",
-                          textDecoration: "none",
-                          fontSize: "0.75rem",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        <FileText size={12} /> Unduh Dokumen Proyek (PDF)
-                      </a>
-                    )}
-                  </div> */}
 
         {/* Tombol Vote */}
         <button

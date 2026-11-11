@@ -12,6 +12,7 @@ import LandingPage from "./pages/LandingPage";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminCategories from "./pages/Admin/AdminCategories";
 import AdminSubmissions from "./pages/Admin/AdminSubmission";
+import ViewSubmission from "./pages/ViewSubmission";
 
 export const routes = createBrowserRouter([
 
@@ -35,6 +36,10 @@ export const routes = createBrowserRouter([
       {
         path: "/edit/:id",
         element: <EditSubmission />,
+      },
+      {
+        path: "/view/:id",
+        element: <ViewSubmission />,
       },
       {
         path: "/heatmap", 

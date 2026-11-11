@@ -230,7 +230,7 @@ export default function SideBar() {
             <div className={styles.reportsWrapper}>
               {mySubmissions.length > 0 ? (
                 mySubmissions.map((item) => (
-                  <div key={item.id} className={styles.reportsItem}>
+                  <div key={item.id} className={styles.reportsItem} onClick={() => navigate(`/view/${item.id}`)}>
                     <div className={styles.report}>
                       <div className={styles.reportName} title={item.label}>
                         {item.label}
@@ -273,35 +273,37 @@ export default function SideBar() {
                               boxShadow: "0 4px 6px rgba(0,0,0,0.5)",
                             }}
                           >
-                            <button
-                              onClick={() => {
-                                navigate(`/edit/${item.id}`);
-                                setActionMenuId(null);
-                                closeOnMobile();
-                              }}
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "6px",
-                                background: "transparent",
-                                color: "#fff",
-                                border: "none",
-                                padding: "6px",
-                                cursor: "pointer",
-                                fontSize: "12px",
-                                borderRadius: "4px",
-                              }}
-                              onMouseOver={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  "#334155")
-                              }
-                              onMouseOut={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  "transparent")
-                              }
-                            >
-                              <Pen size={12} /> Edit
-                            </button>
+                            {item.status == "pending" && (
+                              <button
+                                onClick={() => {
+                                  navigate(`/edit/${item.id}`);
+                                  setActionMenuId(null);
+                                  closeOnMobile();
+                                }}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "6px",
+                                  background: "transparent",
+                                  color: "#fff",
+                                  border: "none",
+                                  padding: "6px",
+                                  cursor: "pointer",
+                                  fontSize: "12px",
+                                  borderRadius: "4px",
+                                }}
+                                onMouseOver={(e) =>
+                                  (e.currentTarget.style.backgroundColor =
+                                    "#334155")
+                                }
+                                onMouseOut={(e) =>
+                                  (e.currentTarget.style.backgroundColor =
+                                    "transparent")
+                                }
+                              >
+                                <Pen size={12} /> Edit
+                              </button>
+                            )}
                             <button
                               onClick={() => {
                                 handleDelete(item.id);

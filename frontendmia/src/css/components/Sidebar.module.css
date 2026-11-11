@@ -250,7 +250,7 @@
 }
 
 .reportsItem {
-  padding-right: 1rem;
+  margin-right: 1rem;
   display: flex;
   flex-direction: column;
   gap: .3rem;
@@ -395,14 +395,6 @@
   display: flex;
   flex-direction: column;
   gap: .3rem;
-}
-
-.reportsItem {
-  padding-right: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: .3rem;
-  overflow: visible !important;
 }
 
 .reportsItem>* {

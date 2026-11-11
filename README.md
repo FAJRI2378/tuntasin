@@ -1,5 +1,10 @@
-# Tuntasin - Platform Pelaporan Infrastruktur Terpadu
+Notes* 
+https://tuntasin-web.epistura.web.id/login
+Masuk Ke Admin 
+Email : admin@tuntasin.id
+Password : admin123
 
+# Tuntasin - Platform Pelaporan Infrastruktur Terpadu
 **Tuntasin** adalah aplikasi berbasis web yang memudahkan masyarakat untuk melaporkan kerusakan fasilitas umum secara transparan, serta membantu pemerintah merespons masalah dengan urutan prioritas berbasis dukungan warga (sistem *voting*).
 
 ### Tech Stack yang Digunakan

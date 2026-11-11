@@ -485,6 +485,63 @@
     margin-top: 0.5rem;
   }
 }
+/* ============ TOP BAR + BACK BUTTON ============ */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(19, 55, 106, 0.15);
+  background: rgba(192, 203, 255, 0.35);
+  color: var(--electric, #13376a);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.backBtn:hover {
+  background: var(--b-lime, #1fc468);
+  border-color: transparent;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(31, 196, 104, 0.3);
+}
+.backBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(31, 196, 104, 0.3);
+}
+.backBtn:active {
+  transform: translateY(0);
+}
+
+/* Responsif: di layar kecil tombol turun ke bawah logo bila tidak muat */
+@media screen and (max-width: 800px) {
+  .topBar {
+    justify-content: space-between;
+  }
+  .backBtn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .panel,

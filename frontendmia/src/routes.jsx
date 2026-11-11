@@ -11,7 +11,7 @@ import LandingPage from "./pages/LandingPage";
 
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminCategories from "./pages/Admin/AdminCategories";
-import AdminSubmissions from "./pages/Admin/AdminSubmissionn";
+import AdminSubmissions from "./pages/Admin/AdminSubmission";
 
 export const routes = createBrowserRouter([
 

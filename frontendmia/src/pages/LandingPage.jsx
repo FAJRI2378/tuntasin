@@ -15,7 +15,7 @@ import {
   User,
   Check,
   Sparkles,
-   Menu,
+  Menu,
   X,
 } from "lucide-react";
 import { ReactLenis } from "lenis/react";
@@ -115,13 +115,21 @@ function HeatMarkers({ items, popupDetail = false }) {
             }}
           >
             <strong
-              style={{ fontSize: "1rem", display: "block", marginBottom: "4px" }}
+              style={{
+                fontSize: "1rem",
+                display: "block",
+                marginBottom: "4px",
+              }}
             >
               {item.label}
             </strong>
             {popupDetail && (
               <p
-                style={{ fontSize: "0.8rem", margin: "0 0 6px 0", color: "#334155" }}
+                style={{
+                  fontSize: "0.8rem",
+                  margin: "0 0 6px 0",
+                  color: "#334155",
+                }}
               >
                 {item.description}
               </p>
@@ -200,12 +208,12 @@ export default function LandingPage() {
 
   const scrollTo = (ref) =>
     ref.current && ref.current.scrollIntoView({ behavior: "smooth" });
-const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-const goTo = (ref) => {
-  setMenuOpen(false);
-  scrollTo(ref);
-};
+  const goTo = (ref) => {
+    setMenuOpen(false);
+    scrollTo(ref);
+  };
   useEffect(() => {
     // 1. Memuat statistik
     api
@@ -261,98 +269,120 @@ const goTo = (ref) => {
             <div className={styles.glowBottomLeft} />
           </div>
 
-         {/* NAVBAR */}
-<nav className={styles.navbar}>
-  <div className={styles.navInner}>
-    <Logo />
+          {/* NAVBAR */}
+          <nav className={styles.navbar}>
+            <div className={styles.navInner}>
+              <Logo />
 
-    <div className={styles.navLinks}>
-      <button type="button" className={styles.navLinkItem} onClick={() => goTo(dampakRef)}>
-        Dampak
-      </button>
-      <button type="button" className={styles.navLinkItem} onClick={() => goTo(fiturRef)}>
-        Fitur
-      </button>
-      <button type="button" className={styles.navLinkItem} onClick={() => goTo(carakerjaRef)}>
-        Cara Kerja
-      </button>
-    </div>
+              <div className={styles.navLinks}>
+                <button
+                  type="button"
+                  className={styles.navLinkItem}
+                  onClick={() => goTo(dampakRef)}
+                >
+                  Dampak
+                </button>
+                <button
+                  type="button"
+                  className={styles.navLinkItem}
+                  onClick={() => goTo(fiturRef)}
+                >
+                  Fitur
+                </button>
+                <button
+                  type="button"
+                  className={styles.navLinkItem}
+                  onClick={() => goTo(carakerjaRef)}
+                >
+                  Cara Kerja
+                </button>
+              </div>
 
-    <div className={styles.navRight}>
-      {user ? (
-        <div className={styles.navActions}>
-          <Link
-            to={user.role === "admin" || user.is_admin ? "/admin" : "/create"}
-            className={styles.loginBtn}
-            style={{ background: C.navy }}
-          >
-            <span>Dashboard</span>
-            <ArrowRight size={16} />
-          </Link>
-          <div className={styles.acc}>
-            <User size={18} className={styles.accIcon} />
-            <div className={styles.accName}>
-              {user.name || user.username || "User"}
+              <div className={styles.navRight}>
+                {user ? (
+                  <div className={styles.navActions}>
+                    <div className={styles.acc}>
+                      <User size={18} className={styles.accIcon} />
+                      <div className={styles.accName}>
+                        {user.name || user.username || "User"}
+                      </div>
+                    </div>
+                    <Link
+                      to={
+                        user.role === "admin" || user.is_admin
+                          ? "/admin"
+                          : "/home"
+                      }
+                      className={styles.loginBtn}
+                      style={{ background: C.navy }}
+                    >
+                      <span>Dashboard</span>
+                      <ArrowRight size={16} />
+                    </Link>
+                  </div>
+                ) : (
+                  <div className={styles.navActions}>
+                    <Link to="/register" className={styles.registerLink}>
+                      Daftar
+                    </Link>
+                    <Link
+                      to="/login"
+                      className={styles.loginBtn}
+                      style={{ background: C.navy }}
+                    >
+                      Masuk
+                    </Link>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  className={styles.menuToggle}
+                  onClick={() => setMenuOpen((o) => !o)}
+                  aria-expanded={menuOpen}
+                  aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+                >
+                  {menuOpen ? <X size={20} /> : <Menu size={20} />}
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      ) : (
-        <div className={styles.navActions}>
-          <Link to="/register" className={styles.registerLink}>
-            Daftar
-          </Link>
-          <Link to="/login" className={styles.loginBtn} style={{ background: C.navy }}>
-            Masuk
-          </Link>
-        </div>
-      )}
 
-      <button
-        type="button"
-        className={styles.menuToggle}
-        onClick={() => setMenuOpen((o) => !o)}
-        aria-expanded={menuOpen}
-        aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
-      >
-        {menuOpen ? <X size={20} /> : <Menu size={20} />}
-      </button>
-    </div>
-  </div>
-
-  {/* Menu dropdown untuk mobile */}
-  {menuOpen && (
-    <div className={styles.mobileMenu}>
-      {[
-        { label: "Dampak", ref: dampakRef },
-        { label: "Fitur", ref: fiturRef },
-        { label: "Cara Kerja", ref: carakerjaRef },
-      ].map((item) => (
-        <button
-          key={item.label}
-          type="button"
-          className={styles.mobileMenuItem}
-          onClick={() => goTo(item.ref)}
-        >
-          {item.label}
-        </button>
-      ))}
-    </div>
-  )}
-</nav>
+            {/* Menu dropdown untuk mobile */}
+            {menuOpen && (
+              <div className={styles.mobileMenu}>
+                {[
+                  { label: "Dampak", ref: dampakRef },
+                  { label: "Fitur", ref: fiturRef },
+                  { label: "Cara Kerja", ref: carakerjaRef },
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    className={styles.mobileMenuItem}
+                    onClick={() => goTo(item.ref)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </nav>
 
           {/* HERO */}
           <main className={styles.heroSection}>
             <div className={styles.heroGrid}>
-              
               {/* Sisi Kiri - Teks & CTA */}
               <div className={styles.heroContent}>
-
                 <h1 className={styles.heroTitle}>
-                  Wujudkan Infrastruktur<br /> Lebih Baik, Bersama.
+                  Wujudkan Infrastruktur
+                  <br /> Lebih Baik, Bersama.
                 </h1>
 
                 <p className={styles.heroDesc}>
-                  Platform yang menghubungkan masyarakat dan pemerintah untuk mewujudkan responsibility. Sampaikan laporan layanan publik dan kerusakan infrastruktur, tentukan prioritas bersama lewat voting, serta pantau progres penanganannya secara real-time.
+                  Platform yang menghubungkan masyarakat dan pemerintah untuk
+                  mewujudkan responsibility. Sampaikan laporan layanan publik
+                  dan kerusakan infrastruktur, tentukan prioritas bersama lewat
+                  voting, serta pantau progres penanganannya secara real-time.
                 </p>
 
                 <div className={styles.heroCtaGroup}>
@@ -373,11 +403,13 @@ const goTo = (ref) => {
               {/* Sisi Kanan - Visual dengan hasil.png */}
               <div className={styles.heroVisual}>
                 <div className={styles.heroImageWrapper}>
-                  <img src="/hasil.png" alt="Infrastruktur dan Pelayanan Publik" className={styles.heroImageMain} />
-                
+                  <img
+                    src="/hasil.png"
+                    alt="Infrastruktur dan Pelayanan Publik"
+                    className={styles.heroImageMain}
+                  />
                 </div>
               </div>
-
             </div>
           </main>
 
@@ -414,7 +446,9 @@ const goTo = (ref) => {
                   <div className={styles.iconBox} data-tone="navy">
                     <MapIcon size={22} color={C.navy} />
                   </div>
-                  <h3 className={styles.cardTitle}>Pemetaan Prioritas Heatmap</h3>
+                  <h3 className={styles.cardTitle}>
+                    Pemetaan Prioritas Heatmap
+                  </h3>
                   <p className={styles.cardDesc}>
                     Visualisasi titik kerusakan infrastruktur secara real-time.
                     Warna dan ukuran titik menandakan urgensi berdasarkan status
@@ -441,7 +475,12 @@ const goTo = (ref) => {
                     scrollWheelZoom={false}
                     zoomControl={false}
                     maxBounds={MAP_BOUNDS}
-                    style={{ position: "absolute", inset: 0, height: "100%", width: "100%" }}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      height: "100%",
+                      width: "100%",
+                    }}
                   >
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -515,11 +554,13 @@ const goTo = (ref) => {
           >
             <div className={styles.sectionHeader}>
               <div>
-                <h2 className={styles.sectionTitle}>Tiga langkah menuju tuntas</h2>
+                <h2 className={styles.sectionTitle}>
+                  Tiga langkah menuju tuntas
+                </h2>
               </div>
               <p className={styles.sectionDesc}>
-                Proses sederhana yang menghubungkan laporan warga dengan tindakan
-                nyata dari pemerintah.
+                Proses sederhana yang menghubungkan laporan warga dengan
+                tindakan nyata dari pemerintah.
               </p>
             </div>
 
@@ -535,9 +576,7 @@ const goTo = (ref) => {
                       >
                         <s.icon size={22} color="#fff" />
                       </div>
-                      <span className={styles.stepNumber}>
-                        0{i + 1}
-                      </span>
+                      <span className={styles.stepNumber}>0{i + 1}</span>
                     </div>
                     <h3 className={styles.stepTitle}>{s.title}</h3>
                     <p className={styles.stepDesc}>{s.desc}</p>
@@ -551,7 +590,9 @@ const goTo = (ref) => {
           <footer className={styles.footer}>
             <div className={styles.footerInner}>
               <Logo size={styles.logoSmSize} />
-              <span>© {new Date().getFullYear()} Tuntasin. Dibuat untuk warga.</span>
+              <span>
+                © {new Date().getFullYear()} Tuntasin. Dibuat untuk warga.
+              </span>
             </div>
           </footer>
         </div>

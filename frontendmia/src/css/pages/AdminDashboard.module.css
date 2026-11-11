@@ -157,20 +157,36 @@
 .votedCard {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 12px;
-  padding: 1.2rem;
+  border-radius: .5rem;
+  overflow: hidden;
+  /* padding: 1.2rem; */
+}
+
+.votedContent {
+  padding: 1rem;
+  padding-top: .5rem;
+}
+
+.adBadge {
+  display: flex;
+  justify-content: end;
+  width: 100%;
 }
 
 .votedBadge {
   background: linear-gradient(135deg, #fff, #ddd);
   color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
+  align-self: flex-end;
+  width: fit-content;
+  padding: .3rem .5rem;
+  border-radius: 0 0 0 .8rem;
   font-size: 0.8rem;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
+  font-size: 0.75rem;
   gap: 4px;
+  color: #ef4444;
 }
 
 @keyframes skeletonPulse {
@@ -246,6 +262,7 @@
 
 .adVotedHead {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   gap: 8px;
@@ -260,18 +277,7 @@
   overflow-wrap: anywhere;
 }
 
-.adBadge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  background-color: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: bold;
-}
+
 
 .adVotedDesc {
   font-size: 0.85rem;

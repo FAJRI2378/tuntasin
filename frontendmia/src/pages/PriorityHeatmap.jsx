@@ -5,6 +5,7 @@ import api from "../js/api.js";
 import { Flame, MapPin, Tag } from "lucide-react";
 import { useSubmission } from "../contexts/SubmissionContext.jsx";
 import styles from "../css/pages/PriorityHeatmap.module.css"
+import LocationView from "../components/LocationView.jsx";
 
 export default function PriorityHeatmap() {
   const { submission, setSubmission } = useSubmission();
@@ -42,7 +43,7 @@ export default function PriorityHeatmap() {
       <h2
         style={{ fontSize: "24px", marginBottom: "10px", fontWeight: "bold" }}
         >
-        <Flame fill="#ffb937" color="#ef644e" /> Peta Panas & Prioritas Infrastruktur Indonesia (Priority Heatmap)
+        <Flame fill="#ffb937" color="#ef644e" /> Peta Panas Prioritas 
       </h2>
       <p style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "20px" }}>
         Visualisasi sebaran laporan infrastruktur di wilayah Indonesia
@@ -122,7 +123,7 @@ export default function PriorityHeatmap() {
                             gap: "2px",
                           }}
                         >
-                          <span>📍 {item.location}</span>
+                          <span><MapPin size={14}/> <LocationView locationString={item.location} size={14}/></span>
                           <span
                             style={{ color: "#ef4444", fontWeight: "bold" }}
                           >
@@ -133,6 +134,7 @@ export default function PriorityHeatmap() {
                               textTransform: "uppercase",
                               fontWeight: "bold",
                               color: "#2563eb",
+                              
                             }}
                           >
                             Status: {item.status}

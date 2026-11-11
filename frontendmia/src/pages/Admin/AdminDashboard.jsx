@@ -128,8 +128,10 @@ export default function AdminDashboard() {
         className={styles.header}
         style={{
           display: "flex",
+          flexDirection: "column",
           justifyContent: "space-between",
           alignItems: "flex-start",
+          gap: ".5rem",
         }}
       >
         <div>
@@ -146,6 +148,7 @@ export default function AdminDashboard() {
           style={{
             display: "flex",
             alignItems: "center",
+            alignSelf: "end",
             gap: "8px",
             backgroundColor: "#10b981", // Warna hijau
             color: "white",
@@ -346,7 +349,7 @@ export default function AdminDashboard() {
                         color: "#ffffff",
                       }}
                       labelStyle={{
-                        color: "#ffffff", 
+                        color: "#ffffff",
                       }}
                     />
                     <Bar dataKey="total" radius={[6, 6, 0, 0]} maxBarSize={35}>
@@ -367,25 +370,29 @@ export default function AdminDashboard() {
               {stats?.top_voted ? (
                 <div
                   className={`${styles.votedCard} ${styles.adVoted}`}
-                  onClick={() => navigate("/admin/submissions")}
+                  onClick={() => navigate("/admin/submission")}
                 >
-                  <div className={styles.adVotedHead}>
-                    <h4>{stats.top_voted.label}</h4>
-                    <div className={`${styles.votedBadge} ${styles.adBadge}`}>
+                  <div className={styles.adBadge}>
+                    <div className={styles.votedBadge}>
                       <Flame size={14} /> {stats.top_voted.votes_count} Votes
                     </div>
                   </div>
-                  <p className={styles.adVotedDesc}>
-                    {stats.top_voted.description}
-                  </p>
-                  <div className={styles.adVotedFoot}>
-                    <span>
-                      <MapPin /> {stats.top_voted.location}
-                    </span>
-                    <span>
-                      <User size={14} />{" "}
-                      {stats.top_voted.user?.username || "Warga"}
-                    </span>
+                  <div className={styles.votedContent}>
+                    <div className={styles.adVotedHead}>
+                      <h4>{stats.top_voted.label}</h4>
+                    </div>
+                    <p className={styles.adVotedDesc}>
+                      {stats.top_voted.description}
+                    </p>
+                    <div className={styles.adVotedFoot}>
+                      <span>
+                        <MapPin size={14} /> {stats.top_voted.location}
+                      </span>
+                      <span>
+                        <User size={14} />{" "}
+                        {stats.top_voted.user?.username || "Warga"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ) : (

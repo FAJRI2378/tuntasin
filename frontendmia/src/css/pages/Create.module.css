@@ -273,6 +273,8 @@
 .locationMobile {
   height: unset;
   display: none;
+  border-radius: .5rem;
+  padding: .3rem;
 }
 
 .locationHead {
@@ -319,11 +321,17 @@
   align-items: center;
   display: flex;
   gap: .5rem;
-  margin-left: .3rem;
-  margin-top: .3rem;
+  margin-left: .5rem;
+  margin-block: .3rem;
 }
 
 @media screen and (max-width: 800px) {
+  .container {
+    padding: 1rem;
+  }
+  .formLeft {
+    max-width: unset;
+  }
   .formRight {
     display: none;
   }

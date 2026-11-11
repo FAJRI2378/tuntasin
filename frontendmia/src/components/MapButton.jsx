@@ -7,7 +7,7 @@ import { getAddressName } from "./LocationView";
 export default function LocationModalButton({ data }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
 
   // Inisialisasi peta Leaflet saat modal terbuka
   useEffect(() => {
@@ -19,11 +19,10 @@ export default function LocationModalButton({ data }) {
         ];
 
         const parts = data.location.replace(" ", "").split(",");
-        const coorObject = [
-          parseFloat(parts[0].trim()),
-          parseFloat(parts[1].trim()),
-        ];
-        const shortAddress = await getAddressName();
+        const lat = parseFloat(parts[0].trim());
+        const lng = parseFloat(parts[1].trim());
+        const coorObject = [lat, lng];
+        const shortAddress = await getAddressName(lat, lng);
         setAddress(shortAddress);
 
         const map = L.map("modal-map", {
@@ -108,7 +107,7 @@ export default function LocationModalButton({ data }) {
                   fontSize: "0.95rem",
                 }}
               >
-                <MapPin size={14}/> {data.location}
+                <MapPin size={14} /> {data.location}
               </span>
               <button
                 onClick={() => setIsModalOpen(false)}

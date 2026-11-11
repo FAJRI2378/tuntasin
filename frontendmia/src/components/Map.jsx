@@ -9,7 +9,7 @@ import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -21,9 +21,31 @@ L.Icon.Default.mergeOptions({
 
 function ChangeMapCenter({ center }) {
   const map = useMap();
-  map.flyTo(center, 14);
+  const isFirstFly = useRef(true);
+
+  useEffect(() => {
+    if (!center) return;
+
+    const currentCenter = map.getCenter();
+    const targetLat = Array.isArray(center) ? center[0] : center.lat;
+    const targetLng = Array.isArray(center) ? center[1] : center.lng;
+
+    const isSameLat = Math.abs(currentCenter.lat - targetLat) < 0.00001;
+    const isSameLng = Math.abs(currentCenter.lng - targetLng) < 0.00001;
+
+    if (!isSameLat || !isSameLng) {
+      if (isFirstFly.current) {
+        map.panTo(center, 14);
+        isFirstFly.current = false;
+      } else {
+        map.panTo(center, map.getZoom());
+      }
+    }
+  }, [center, map]);
+
   return null;
 }
+
 
 export default function MapLocation({
   onLocationSelect,

@@ -6,6 +6,7 @@ import api from "../js/api";
 import Swal from "sweetalert2";
 import MapLocation from "../components/Map";
 import clsx from "clsx";
+import { getAddressName } from "../components/LocationView";
 
 export default function Create() {
   const imageRef = useRef(null);
@@ -18,6 +19,7 @@ export default function Create() {
   const [userPosition, setUserPosition] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [address, setAddress] = useState("");
 
   // State Khusus Kategori
   const [adminCategories, setAdminCategories] = useState([]);
@@ -38,7 +40,7 @@ export default function Create() {
         const response = await api.get("/check");
         const data = response.data;
 
-        console.log(data)
+        console.log(data);
         if (!data.valid) {
           navigate("/login");
         }
@@ -60,11 +62,14 @@ export default function Create() {
       }
 
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
+
           setLocation([lat, lng]);
           setUserPosition(`${lat}, ${lng}`);
+          const shortAddress = await getAddressName(lat, lng);
+          setAddress(shortAddress);
         },
         (error) => {
           console.error(error);
@@ -332,9 +337,10 @@ export default function Create() {
                     onLocationSelect={(coords) => setLocation(coords)}
                   />
                 </div>
-                {userPosition && (
+                {(userPosition || address) && (
                   <div className={styles.locationFoot}>
-                    <Target size={14} /> Kordinat: {userPosition}
+                    <Target size={14} /> {address ? "Alamat" : "Kordinat"}:{" "}
+                    {address || userPosition}
                   </div>
                 )}
               </div>
@@ -371,9 +377,10 @@ export default function Create() {
                   height="100%"
                 />
               </div>
-              {userPosition && (
+              {(userPosition || address) && (
                 <div className={styles.locationFoot}>
-                  <Target size={14} /> Kordinat: {userPosition}
+                  <Target size={14} /> {address ? "Alamat" : "Kordinat"}:{" "}
+                  {address || userPosition}
                 </div>
               )}
             </div>

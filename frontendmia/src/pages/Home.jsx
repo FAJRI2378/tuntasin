@@ -20,7 +20,6 @@ export default function Home() {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // --- STATE FILTER, SORTING & SEARCH ---
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatuses, setSelectedStatuses] = useState([
     "pending",
@@ -83,7 +82,6 @@ export default function Home() {
       return new Date(b.created_at) - new Date(a.created_at);
     });
 
-  // --- USER SAAT INI ---
   let parsedUser = {};
   try {
     parsedUser = JSON.parse(localStorage.getItem("user")) || {};
@@ -92,7 +90,6 @@ export default function Home() {
   }
   const currentUserId = parsedUser.id || parsedUser.user?.id;
   
-  // Deteksi Admin dari localStorage (Sesuaikan dengan struktur response login API Anda)
   const isAdmin = parsedUser.role === "admin" || parsedUser.user?.role === "admin" || parsedUser.is_admin === true;
 
   const statusOptions = [
@@ -105,11 +102,7 @@ export default function Home() {
     <div className={styles.hmWrap}>
       {/* --- HEADER --- */}
       <div className={styles.hmHeader}>
-        <h1 className={styles.hmTitle}>Laporan Terbaru Paling Mendesak</h1>
-        <p className={styles.hmSubtitle}>
-          Daftar laporan infrastruktur dari masyarakat. Berikan vote agar
-          laporan cepat ditindaklanjuti.
-        </p>
+        <h1 className={styles.hmTitle}>Daftar Laporan</h1>
       </div>
 
       {/* --- FILTER & PENCARIAN --- */}

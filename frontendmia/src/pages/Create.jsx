@@ -31,12 +31,14 @@ export default function Create() {
 
         if (!token) {
           setIsLoading(false);
+          navigate("/login");
           return;
         }
 
         const response = await api.get("/check");
         const data = response.data;
 
+        console.log(data)
         if (!data.valid) {
           navigate("/login");
         }
@@ -46,6 +48,7 @@ export default function Create() {
         setIsLoading(false);
       }
     };
+
     function getCurrentLocation() {
       if (!navigator.geolocation) {
         Swal.fire({

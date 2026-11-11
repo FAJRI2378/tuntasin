@@ -99,31 +99,47 @@ class SubmissionController extends Controller
     // ==========================================
     // MENGUPDATE DATA LAPORAN
     // ==========================================
+
     public function update(Request $request, $id)
     {
         $submission = Submission::findOrFail($id);
         $userId = auth('sanctum')->id();
 
-        // Validasi kepemilikan (hanya pembuat laporan yang boleh mengedit)
+        // Validasi kepemilikan
         if ($submission->user_id != $userId) {
             return response()->json([
                 'message' => 'Unauthorized. Anda tidak berhak mengedit laporan ini.'
             ], 403);
         }
 
+        // Validasi request
         $request->validate([
             'label'       => 'required|string|max:255',
             'description' => 'required|string',
             'location'    => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'images'      => 'nullable|array',
+            'images.*'    => 'image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
+        // Update data utama
         $submission->update([
             'category_id' => $request->category_id,
             'label'       => $request->label,
             'description' => $request->description,
             'location'    => $request->location,
         ]);
+
+        // Simpan gambar baru
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('submissions', 'public');
+
+                $submission->images()->create([
+                    'url' => $path,
+                ]);
+            }
+        }
 
         return response()->json([
             'message' => 'Laporan berhasil diperbarui!',
@@ -164,27 +180,27 @@ class SubmissionController extends Controller
     // ==========================================
     // API STATISTIK UNTUK LANDING PAGE
     // ==========================================
-   public function landingStats()
-{
-    // Fungsi helper untuk menyingkat angka (misal: 1500 -> 1.5K)
-    $formatNumber = function($num) {
-        if($num >= 1000) return round($num/1000, 1) . 'K';
-        return (string) $num;
-    };
+    public function landingStats()
+    {
+        // Fungsi helper untuk menyingkat angka (misal: 1500 -> 1.5K)
+        $formatNumber = function ($num) {
+            if ($num >= 1000) return round($num / 1000, 1) . 'K';
+            return (string) $num;
+        };
 
-    // Hitung total dari database
-    $totalLaporan = Submission::count();
+        // Hitung total dari database
+        $totalLaporan = Submission::count();
 
-    // Ubah 'selesai' menjadi 'completed' (atau sesuaikan dengan isi database Anda)
-    $laporanSelesai = Submission::where('status', 'completed')->count(); 
+        // Ubah 'selesai' menjadi 'completed' (atau sesuaikan dengan isi database Anda)
+        $laporanSelesai = Submission::where('status', 'completed')->count();
 
-    $totalDukungan = \App\Models\Vote::count(); 
+        $totalDukungan = \App\Models\Vote::count();
 
-    return response()->json([
-        'total_laporan' => $formatNumber($totalLaporan),
-        'laporan_selesai' => $formatNumber($laporanSelesai),
-        'total_dukungan' => $formatNumber($totalDukungan),
-        'rata_rata_respons' => '1-3 hari'
-    ]);
-}
+        return response()->json([
+            'total_laporan' => $formatNumber($totalLaporan),
+            'laporan_selesai' => $formatNumber($laporanSelesai),
+            'total_dukungan' => $formatNumber($totalDukungan),
+            'rata_rata_respons' => '1-3 hari'
+        ]);
+    }
 }

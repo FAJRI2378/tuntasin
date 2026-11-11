@@ -28,7 +28,8 @@ Proyek ini menggunakan struktur *Monorepo* yang memisahkan sisi Client dan Serve
   - Notification Gateway: **Fonnte.com (WhatsApp API)**
 
 - **Deployment:**
-  - Frontend: Vercel / VPS Hosting
+  - Frontend: Vercel
+  - Backend : VPS Hosting
 
 ---
 
@@ -85,7 +86,7 @@ npm run dev
 
 - **Backend & Integration:**
   - RESTful API Laravel terintegrasi penuh dengan autentikasi Sanctum.
-  - **Notifikasi WhatsApp Otomatis (Fonnte API):** Pengiriman pesan WA otomatis ke nomor HP pelapor setiap kali Admin mengubah status laporan atau memberikan catatan *feedback*.
+  - Notifikasi WhatsApp Otomatis (Fonnte API): Pengiriman pesan WA otomatis ke nomor HP pelapor setiap kali Admin mengubah status laporan atau memberikan catatan feedback.
   - Ekspor laporan infrastruktur ke format PDF (DomPDF).
 
 ---

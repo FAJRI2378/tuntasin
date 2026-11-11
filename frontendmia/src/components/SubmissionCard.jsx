@@ -116,23 +116,9 @@ export default function SubmissionCard({
   };
 
   return (
-    <div key={item.id} className={styles[`hmCard${isTop ? " hmCardTop" : ""}`]}>
+    <div key={item.id} className={styles.hmCard}>
       {/* Badge Rank 1 & Status */}
       <div className={styles.hmBadges}>
-        {isTop && (
-          <div
-            style={{
-              backgroundColor: "#ef4444",
-              color: "#fff",
-              padding: "4px 8px",
-              borderRadius: "12px",
-              fontSize: "0.7rem",
-              fontWeight: "bold",
-            }}
-          >
-            🔥 Prioritas
-          </div>
-        )}
         <div
           style={{
             backgroundColor: statusInfo.bg,

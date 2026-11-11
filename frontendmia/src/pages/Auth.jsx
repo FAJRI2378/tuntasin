@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   MapPin,
   ThumbsUp,
+  ArrowLeft,
   Activity,
   Loader2,
   Phone, // <-- Import ikon Phone
@@ -231,15 +232,26 @@ export default function Auth({ type }) {
       <div className={styles.blobA} />
       <div className={styles.blobB} />
 
-      <div className={styles.panel}>
+       <div className={styles.panel}>
         <div className={styles.panelLeft}>
-          <div className={styles.logoWrapper}>
-            <div className={styles.icon}>
-              <img src={icon} alt="" />
+          <div className={styles.topBar}>
+            <div className={styles.logoWrapper}>
+              <div className={styles.icon}>
+                <img src={icon} alt="" />
+              </div>
+              <div className={styles.logo}>
+                <img src={logo} alt="tuntasin" />
+              </div>
             </div>
-            <div className={styles.logo}>
-              <img src={logo} alt="tuntasin" />
-            </div>
+
+            <button
+              type="button"
+              className={styles.backBtn}
+              onClick={() => navigate("/")}
+            >
+              <ArrowLeft size={16} />
+              Landing Page
+            </button>
           </div>
 
           <div className={styles.about}>

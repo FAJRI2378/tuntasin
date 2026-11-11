@@ -367,7 +367,7 @@ export default function AdminDashboard() {
               {stats?.top_voted ? (
                 <div
                   className={`${styles.votedCard} ${styles.adVoted}`}
-                  onClick={() => navigate("/admin/submissions")}
+                  onClick={() => navigate("/admin/submission")}
                 >
                   <div className={styles.adVotedHead}>
                     <h4>{stats.top_voted.label}</h4>
